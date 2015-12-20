@@ -1,0 +1,142 @@
+<?php 
+/**
+ * @package Modality
+ */
+?>
+
+
+<script>
+$(document).ready(function() {
+	$("#owl-example").owlCarousel();
+});
+
+</script>
+<div class="content-posts-wrap">
+	<div id="content-box-posts">
+		<div id="post-body">
+			<div <?php post_class('post-single'); ?>>
+				<h1 id="post-title" class="content-single-post-title"<?php post_class('entry-title'); ?>><?php the_title(); ?> </h1>
+				<div class="content-single-full-width">
+					<div class="content-single-post-left">
+						<!--VIDEO TITLE-->
+						<?php echo get_post_meta( get_the_ID(), 'wpcf-video', true ); ?><br/>
+						<!--./END OF VIDEO TITLE-->
+						<!--PHOTOGRAPHY TITLE-->
+						<?php echo get_post_meta( get_the_ID(), 'wpcf-photography', true ); ?>
+						<!--./END OF PHOTOGRAPHY TITLE-->
+					</div>				
+					<div class="content-single-post-right">
+						<!--DIROCCO FRAME-->
+						<?php echo get_post_meta( get_the_ID(), 'wpcf-dirocco-frame', true ); ?><br/>
+						<!--./END OF DIROCCO FRAME-->
+						<!--JACKET-->
+						<?php echo get_post_meta( get_the_ID(), 'wpcf-jacket', true ); ?>
+						<!--./END OF JACKET-->
+					</div>
+                </div>
+				<!--VIDEO EMBED-->				
+				<?php $videoimage = get_post_meta( get_the_ID(), 'wpcf-background-video-image', true );?>
+				<?php $caption = get_post_meta( get_the_ID(), 'wpcf-caption-video', true );?>
+				<?php $videolink = get_post_meta( get_the_ID(), 'wpcf-link-videos', true );?>
+								
+				<?php if (!empty($videolink)) {	?>
+					<div class="content-single-post-video">
+					<video class="video-js vjs-default-skin" controls="true" preload="auto" width="960" height="540" poster="<?php echo $videoimage ?>" data-setup="{}">
+						<source src="<?php echo $videolink ?>" type="video/mp4">
+						<source src="<?php echo $videolink ?>" type="video/webm">
+					</video>
+						<p><?php echo $caption ?></p>
+					</div>
+					<!--./END OF VIDEO EMBEDED-->
+				<?php }	?>
+								
+				<!--LEFT IMAGE-->
+				<?php $leftimage = get_post_meta( get_the_ID(), 'wpcf-left-video-image', true ); ?>
+
+				<?php if (!empty($leftimage)) {	?>
+					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 post-video-image-left">
+						<img src="<?php echo $leftimage ?>" />
+						<p><?php echo get_post_meta( get_the_ID(), 'wpcf-text-under-left-video-image', true ); ?></p>
+					</div>
+				<?php }	?>
+				
+				<!--END OF LEFT IMAGE-->
+				
+				<!--RIGHT IMAGE-->
+				<?php $rightimage = get_post_meta( get_the_ID(), 'wpcf-right-video-image', true ); ?>
+				
+				<?php if (!empty($rightimage)) { ?>
+					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 post-video-image-right">
+						<img src="<?php echo $rightimage ?>" />
+						<p><?php echo get_post_meta( get_the_ID(), 'wpcf-text-under-right-video-image', true ); ?></p>
+					</div>
+				<?php }	?>
+				<!--END OF RIGHT IMAGE-->
+				
+				<!--CENTER IMAGE-->
+				<?php $centerimage = get_post_meta( get_the_ID(), 'wpcf-center-video-image', true ); ?>
+				
+				<?php if (!empty($centerimage)) { ?>
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 post-video-image-central">
+						<img src="<?php echo $centerimage ?>" />
+						<p><?php echo get_post_meta( get_the_ID(), 'wpcf-text-under-center-video-image', true ); ?></p>
+					</div>
+				<?php }	?>
+				<!--END OF CENTER IMAGE-->
+				
+			<?php 
+			$modality_theme_options = modality_get_options( 'modality_theme_options' );
+			if ($modality_theme_options['breadcrumbs'] == '1') { ?>
+			<?php } ?>
+				<?php //if ($modality_theme_options['post_info'] == 'above') { get_template_part('post','info');}
+
+					/*if ( has_post_thumbnail() ) { 
+ 
+						if ($modality_theme_options['featured_img_post'] == '1') {?>
+							<div class="thumb-wrapper">
+								<?php the_post_thumbnail('full'); ?>
+							</div><!--thumb-wrapper-->
+							<?php
+						} 
+					} */			
+				?>
+				<div id="article" class="content-single-article">
+					<?php the_content(); 
+					the_tags('<p class="post-tags"><span>'.__('Tags:','modality').'</span> ','','</p>');
+					wp_link_pages( array(
+						'before'      => '<div class="page-links"><span class="page-links-title">' . __( 'Pages:', 'modality' ) . '</span>',
+						'after'       => '</div>',
+						'link_before' => '<span>',
+						'link_after'  => '</span>',
+					) );
+					
+					//Displays navigation to next/previous post.
+					if ( $modality_theme_options['post_navigation'] == 'below') { get_template_part('post','nav'); }
+				
+					// If comments are open or we have at least one comment, load up the comment template.
+					if ( comments_open() || get_comments_number() ) {
+						comments_template( '', true );
+					} ?>
+			
+								
+				<div id="owl-example" class="owl-carousel">
+					<div class="item"><img src="http://owlgraphic.com/owlcarousel/demos/assets/owl1.jpg" alt="Owl Image"></div>
+					<div class="item"><img src="http://owlgraphic.com/owlcarousel/demos/assets/owl2.jpg" alt="Owl Image"></div>
+					<div class="item"><img src="http://owlgraphic.com/owlcarousel/demos/assets/owl3.jpg" alt="Owl Image"></div>
+					<div class="item"><img src="http://owlgraphic.com/owlcarousel/demos/assets/owl4.jpg" alt="Owl Image"></div>
+					<div class="item"><img src="http://owlgraphic.com/owlcarousel/demos/assets/owl5.jpg" alt="Owl Image"></div>
+					<div class="item"><img src="http://owlgraphic.com/owlcarousel/demos/assets/owl6.jpg" alt="Owl Image"></div>
+					<div class="item"><img src="http://owlgraphic.com/owlcarousel/demos/assets/owl7.jpg" alt="Owl Image"></div>
+				</div>
+				
+				</div><!--article-->				
+			</div><!--post-single-->
+				<?php get_template_part('post','sidebar'); ?>
+		</div><!--post-body-->
+	</div><!--content-box-->
+	<!--<div class="sidebar-frame">
+		<div class="sidebar">-->
+			<?php //get_sidebar(); ?>
+		<!--</div>--><!--sidebar-->
+	<!--</div>--><!--sidebar-frame-->
+</div><!--content-posts-wrap-->

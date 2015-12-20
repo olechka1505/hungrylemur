@@ -1,0 +1,2381 @@
+/*NEW FONTS*/
+
+@font-face {
+    font-family: 'GalaxiePolarisLight';
+    src: url("../fonts/GalaxiePolarisLight.otf") format("opentype");
+}
+@font-face {
+    font-family: 'WhitneyBook';
+    src: url("../fonts/Whitney-Book.otf") format("opentype");
+}
+@font-face {
+    font-family: 'Pica';
+    src: url("../fonts/PICAregularSWFTE.ttf") format("truetype");
+}
+@font-face {
+    font-family: 'WhitneyBold';
+    src: url("../fonts/Whitney-Bold.otf") format("opentype");
+}
+@font-face {
+    font-family: 'WhitneyLight';
+    src: url("../fonts/Whitney-Light.otf") format("opentype");
+}
+@font-face {
+    font-family: 'WhitneyMedium';
+    src: url("../fonts/Whitney-Medium.otf") format("opentype");
+}
+@font-face {
+    font-family: 'Pica10';
+    src: url("../fonts/pica-10-pitch-bt.ttf") format("truetype");
+}
+@font-face {
+    font-family: 'GalaxiePolarisBook';
+    src: url("../fonts/GalaxiePolarisBook.otf") format("opentype");
+}
+@font-face {
+    font-family: 'gotham_htfbook';
+    src: url('../fonts/gothamhtf-book-webfont.eot');
+    src: url('../fonts/gothamhtf-book-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/gothamhtf-book-webfont.woff2') format('woff2'),
+         url('../fonts/gothamhtf-book-webfont.woff') format('woff'),
+         url('../fonts/gothamhtf-book-webfont.ttf') format('truetype'),
+         url('../fonts/gothamhtf-book-webfont.svg#gotham_htfbook') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'gotham_htfmedium';
+    src: url('../fonts/gothamhtf-medium-webfont.eot');
+    src: url('../fonts/gothamhtf-medium-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/gothamhtf-medium-webfont.woff2') format('woff2'),
+         url('../fonts/gothamhtf-medium-webfont.woff') format('woff'),
+         url('../fonts/gothamhtf-medium-webfont.ttf') format('truetype'),
+         url('../fonts/gothamhtf-medium-webfont.svg#gotham_htfmedium') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@import url(https://fonts.googleapis.com/css?family=Montserrat);
+
+/*./NEW FONTS*/
+/*HEADER*/
+
+/* HEADER hamburger menu */
+.whopper-container {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex; 
+    -webkit-align-items: center; 
+        -ms-flex-align: center; 
+            align-items: center;
+    position: absolute;
+    top: 34px;
+    left: 45px;
+    transition: all .25s;
+}
+
+.whopper {
+    margin: 13px 0 17px;
+}
+
+.whopper span {
+    padding-left: 20px;
+    font-family: Helvetica;
+    font-weight: bold;
+    font-size: 22px;
+    letter-spacing: 2px;
+}
+
+.close-text {
+    display: none;
+}
+
+.whopper .menu {
+    height: 20px;
+    width: 20px;
+}
+
+.whopper .bar {
+    background-color: black;
+    height: 4px;
+    width: 20px;
+    transition: all .25s;
+    position: relative;
+}
+
+.whopper .one {
+    top: 5px;
+}
+
+.whopper .two {
+    top: 10px;
+}
+
+.whopper:hover .one,
+.whopper:hover .two {
+    background-color : gray;
+}
+.whopper .one-ani {
+    -webkit-transform: rotate(33deg);
+            transform: rotate(33deg);
+    top: 7px;
+    transition: all .25s;
+}
+.whopper .two-ani {
+  -webkit-transform: rotate(-33deg);
+          transform: rotate(-33deg);
+  top: 3px;
+  transition: all .25s;
+}
+/* EOF HEADER hamburger menu */
+
+.navbar-menu {
+    width: 400px;
+    height: 50px;
+    transition: all .25s;
+    overflow: hidden;
+}
+
+.navbar-menu-hidden {
+    width: 0;
+    height: 0;
+}
+
+.navbar-menu-mobile {
+    width: 100%;
+    /*display: none;*/
+}
+
+/*@media screen and (max-width: 899px) {
+    .navbar-menu:not(.navbar-menu-mobile) {
+        display: none;
+    }
+
+    .navbar-menu-mobile {
+        display: block;
+    }
+}*/
+
+div#logo {
+    text-align: center;
+    width: auto!important;
+    height: auto;
+    color: #000000!important;
+    padding: 0;
+    padding-top: 30px!important;
+    margin: 0!important;
+    line-height: 55px;
+    display: inline-block;
+    float: none;
+}
+#logo a {
+    color: #000000!important;
+	font-family: 'gotham_htfmedium';
+}
+#logo a img {
+    width: 113px!important;
+    height: 16px!important;
+}
+.navbar {
+    border: 0!important;
+    max-width: none!important;
+    text-align: center;
+}
+.navbar {
+    position: relative;
+}
+.nav-bar {
+    float: left;
+    text-align: left;
+    width: 100%;
+    max-width: none!important;
+    min-height: 0!important;
+}
+.navbar ul {
+    padding: 0!important;
+    width: 100%;
+    text-align: center;
+    border-top: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+}
+#navbar ul li a {
+    font-family: 'WhitneyBook' !important;
+    font-size: 12px!important;
+    color: #000000!important;
+}
+#header-top .top-phone,
+#header-top p,
+#header-top a,
+#header-top i {
+    color: #000000!important;
+}
+#header-holder {
+    background-color: #ffffff!important;
+    padding: 0!important;
+    border-bottom: 0!important;
+}
+#header-top {
+    background-color: #F2F1EE!important;
+    padding: 0!important;
+    line-height: 27px;
+}
+.top-right.right {
+    text-align:right;
+}
+.top-right a {
+    font-family: 'Pica' !important;
+    margin-left: 5%;
+}
+#header-top .pagetop-inner {
+    max-width: initial!important;
+    width: 95%!important;
+}
+p.no-margin {
+    line-height: 27px;
+}
+#demo-b input {
+    outline: none;
+}
+#demo-b input[type=search] {
+    -webkit-appearance: textfield;
+    -webkit-box-sizing: content-box;
+    font-family: inherit;
+    font-size: 100%;
+}
+#demo-b input::-webkit-search-decoration,
+#demo-b input::-webkit-search-cancel-button {
+    display: none;
+}
+#demo-b input[type=search] {
+    background: url(../images/search-icon.svg) no-repeat 9px center;
+    border: none;
+    padding: 0;
+    width: 55px;
+    border-radius: 10em;
+    transition: all .5s;
+}
+#demo-b input[type=search]:focus {
+    width: 130px;
+    background-color: #fff;
+    border-color: #6dcff6;
+    /*box-shadow: 0 0 5px rgba(109, 207, 246, .5);*/
+}
+/* placeholder */
+
+#demo-b input:-moz-placeholder {
+    color: #999;
+}
+#demo-b input::-webkit-input-placeholder {
+    color: #999;
+}
+#demo-b input[type=search] {
+    width: 30px;
+    padding-left: 10px;
+    color: transparent;
+    cursor: pointer;
+}
+#demo-b input[type=search]:hover {
+    background-color: #fff;
+}
+#demo-b input[type=search]:focus {
+    width: 130px;
+    padding-left: 32px;
+    color: #000;
+    background-color: #fff;
+    cursor: auto;
+}
+#demo-b input:-moz-placeholder {
+    color: transparent;
+}
+#demo-b input::-webkit-input-placeholder {
+    color: transparent;
+}
+/*./HEADER*/
+/*FOOTER*/
+
+#footer {
+    border-top: 1px solid #BEBEBE;
+}
+.footer-widget-col h4 {
+    font-family: 'Montserrat' !important;
+    font-size: 14px !important;
+    color: #090909 !important;
+    margin-bottom: 0px !important;
+}
+.newsletter-description {
+    font-family: 'WhitneyLight','WhitneyBook' !important;
+    font-size: 12px !important;
+    color: #000 !important;
+}
+input#subscriber-email {
+    width: 100%!important;
+}
+.menu-footer-menu-container {
+    font-family: 'Pica' !important;
+    font-size: 11px;
+    text-align: center;
+}
+ul#menu-footer-menu {
+    list-style-type: none;
+}
+
+
+
+.footer-v4 .sidebar-footer {
+
+    width: 100% !important;
+
+    float: left !important;
+
+}
+
+
+.post-title h3 {
+    font-family: 'WhitneyBold','WhitneyBook' !important;
+
+    font-size: 20px !important;
+
+    text-align: left!important;
+
+    margin-top: 0!important;
+
+    padding-top: 0!important;
+
+    margin-bottom: 0!important;
+
+    padding-bottom: 0!important;
+
+    line-height: 46px!important;
+}
+.post-info {
+    font-family: 'WhitneyLight','WhitneyBook' !important;
+    font-size: 13px !important;
+    text-align: left!important;
+    border: 0!important;
+}
+/*.SLIDER*/
+
+#box {
+    text-align: left;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    -webkit-animation-name: fadeIn;
+    -webkit-animation-duration: 3s;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-delay: 0s;
+}
+ul#slider {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    position: relative;
+    width: 100%;
+    height: 530px;
+    overflow: hidden;
+}
+ul#thumb {
+    overflow: none;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    position: relative;
+    overflow: auto;
+    width: 98.66666%;
+    margin-right: 1.3333333%;
+}
+ul#thumb a {
+    -webkit-transition: opacity .2s ease-in-out;
+    width: 32%;
+    height: 100%;
+    display: block;
+    overflow: hidden;
+    float: right;
+    margin: 20px 0 0 1.3333%;
+    opacity: 0.8;
+}
+ul#thumb a img {
+    width: 100%;
+    height: 100%;
+}
+ul#thumb a:hover {
+    opacity: 1;
+}
+ul#slider li {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+ul#slider li img {
+    height: 100%;
+    width: 100%;
+}
+ul#slider li p {
+    font-family: 'WhitneyLight','WhitneyBook' !important;
+
+    font-size: 18px !important;
+    position: absolute;
+    bottom: 45%;
+    width: 25%;
+    margin-left: 7%;
+    text-align: center;
+    left: 0;
+    z-index: inherit;
+    color: #fff;
+}
+
+
+
+ul#slider li h2 {
+
+    font-family: 'WhitneyBold','WhitneyBook' !important;
+
+    font-size: 46px !important;
+
+    position: absolute;
+
+    bottom: 57%;
+
+    width: 25%;
+
+    margin-left: 7%;
+
+    text-align: center;
+
+    left: 0;
+
+    z-index: inherit;
+
+    color: #fff;
+
+}
+
+
+
+
+
+
+ul#slider li h3 {
+
+    font-family: 'WhitneyLight','WhitneyBook' !important;
+
+    font-size: 22px !important;
+
+    position: absolute;
+
+    bottom: 70%;
+
+    width: 25%;
+
+    margin-left: 7%;
+
+    text-align: center;
+
+    left: 0;
+
+    z-index: inherit;
+
+    color: #fff;
+
+}
+
+
+ul#slider li p span {
+    line-height: 1.2em;
+    padding: 10px;
+    display: block;
+}
+/* Animation for the :target image. Slides the image in. */
+
+@-webkit-keyframes moveTarget {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 0px;
+    }
+}
+ul#slider li:target {
+    -webkit-animation-name: moveTarget;
+    -webkit-animation-duration: .5s;
+    -webkit-animation-iteration-count: 1;
+    top: 0px;
+    left: 0px;
+    z-index: 10;
+}
+ul#slider li:not(:target) {
+    -webkit-animation-name: moveIt;
+    -webkit-animation-duration: 1.5s;
+    -webkit-animation-iteration-count: 1;
+    top: 0px;
+    left: 0px;
+}
+/*./SLIDER*/
+
+
+
+.content-home-short-news p {
+
+    font-size: 14px !important;
+
+    line-height: 20px !important;
+
+    letter-spacing: 0.5px;
+
+}
+
+
+
+.content-home-short-news {
+
+    font-family: 'WhitneyLight','WhitneyBook' !important;
+
+    text-align: justify!important;
+
+    color: #000!important;
+
+    padding-top: 15px;
+
+}
+
+
+
+.post-info span {
+
+    font-style: normal!important;
+
+}
+
+
+
+.post-info span a {
+
+    font-style: normal!important;
+
+}
+
+
+
+.owl-image.imgLiquidFill.imgLiquid.imgLiquid_bgSize.imgLiquid_ready {
+
+    height: 300px;
+
+}
+
+
+
+.home-page-h3 {
+
+    font-family: 'Montserrat', sans-serif;
+    color: #000;
+    font-size: 14px;
+    letter-spacing: 6px;
+    text-align: center;
+
+}
+
+
+
+.home-page-h2 {
+
+	font-family: 'WhitneyBold','WhitneyBook' !important;
+
+    font-size: 28px;
+
+    text-align: center;
+
+    color: #000;
+
+    padding-top: 0;
+
+    margin-top: 0!important;
+
+    letter-spacing: 0;
+
+    margin-bottom: 0;
+
+}
+
+
+
+.owl-item {
+
+    width:33.333333%!important;
+
+}
+
+
+
+.owl-wrapper {
+
+    width:100%!important;
+
+}
+
+
+
+div#from-blog-wrap {
+
+    max-width: none!important;
+
+}
+
+
+
+#from-blog-wrap div h2 {
+
+    margin-bottom: 0!important;
+
+}
+
+
+
+.from-blog {
+
+    padding:0!important;
+
+}
+
+
+
+/*video { 
+
+   width:100%; 
+
+   height:160px;  
+
+   background:transparent url('poster.jpg') no-repeat 0 0; 
+
+   -webkit-background-size:cover; 
+
+   -moz-background-size:cover; 
+
+   -o-background-size:cover; 
+
+   background-size:cover; 
+
+}*/
+
+
+
+.copyright-wrap, #footer-wrap {
+
+max-width:none!important;
+
+/*width:95%!important;*/
+
+}
+
+
+/*CART*/
+
+.woocommerce a.remove:hover {
+    color: #000!important;
+    background: transparent!important;
+}
+
+.remove-cart {
+    font-size: 16px!important;
+    font-family: 'Pica' !important;
+    color: #000000!important;
+    white-space: nowrap;
+    font-weight:300!important;
+}
+
+.product-price  {
+    font-size: 16px!important;
+    font-family: 'WhitneyBook' !important;
+    color: #000000!important;
+    white-space: nowrap;
+}
+
+.product-name   {
+    font-size: 16px!important;
+    font-family: 'WhitneyLight','WhitneyBook' !important;
+    color: #000000!important;
+    white-space: nowrap;
+}
+
+a.checkout-button {
+    font-family: 'WhitneyLight','WhitneyBook' !important;
+    font-size: 12px!important;
+    font-weight: 300!important;
+    display: inline;
+    text-align: center;
+    background: transparent!important;
+    border: 1px solid #000!important;
+    color: #000!important;
+    border-radius: 0!important;
+    text-transform: uppercase!important;
+ 
+}
+
+div#content-box {
+    border: 0!important;
+}
+
+.shopping-cart-title {
+    font-family: 'WhitneyBold','WhitneyBook' !important;
+    font-size: 24px!important;
+    color:#000!important;
+    text-align:center;
+    padding-bottom: 30px!important;
+    
+}
+
+tr.cart-subtotal {
+    float: right;
+}
+
+.submit-subtotal-cart {
+    font-family: 'WhitneyLight','WhitneyBook' !important;
+    font-size: 16px!important;
+    font-weight:600!important;
+    color: #000!important;
+    text-transform: uppercase!important;
+    padding-right: 50px!important;
+    line-height: 45px!important;
+}
+
+.shop_table.cart {
+    background: #fff!important;
+    border:0!important;
+}
+
+.submit-subtotal-cart-back>.subtotal-cart-back {
+    float:left;
+    padding-right: 5px;
+}
+
+.submit-subtotal-cart-back>.amount {
+    float:left;
+}
+
+.post-body-cart {
+    background: #F7F7F6!important;
+}
+
+.main-cart {
+    background: #F7F7F6!important;
+}
+
+.woocommerce table.shop_table tbody:first-child tr:first-child td, .woocommerce table.shop_table tbody:first-child tr:first-child th {
+    border-bottom:0;
+}
+
+h1.page-title-shop {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+	letter-spacing: 6px;
+    text-align: center;
+    color: #000!important;
+    margin-bottom: 0!important;
+    padding-bottom: 0!important;
+}
+
+h2.page-subtitle-shop {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 22px;
+    text-align: center;
+    color: #000!important;
+    margin-top: 0!important;
+    padding-top: 5px!important;
+}
+
+.woocommerce-result-count {
+    display: none!important;
+}
+
+.woocommerce-page li.product {
+    width: 100%!important;
+	border-bottom: none;
+    /*border-bottom:1px solid #C8C4BC;*/
+}
+
+.content-product-title {
+    font-family: 'GalaxiePolarisBook' !important;
+    font-size: 18px !important;
+    font-weight: 400;
+    color:#000!important;
+    padding-bottom:10px;
+}   
+
+.content-product-description p{
+    font-family: 'GalaxiePolarisLight' !important;
+    font-size: 14px !important;
+    font-weight: 300;
+    color:#000!important;
+    text-align:left;
+}   
+    
+.content-product-price {
+    font-family: 'GalaxiePolarisBook' !important;
+    font-size: 18px !important;
+    color:#000!important;
+    text-align: right;
+}
+
+/*#content-box {
+    width:100%!important;
+}
+*/
+
+.content-product-left {
+    float: left;
+    width: 30%;
+    margin-right: 5%;
+    margin-left: 34.5%;
+}
+
+.content-product-right {
+    float: right;
+}
+
+.single-product-cart-price {
+    float: left;
+}
+
+.single-product-cart-title {
+    float: left;
+}
+
+.single-product-cart-track {
+    background: #F2F1EE!important;
+    float: left;
+    width: 100%!Important;
+    height: 48px;
+    display:none;
+    /* padding: 0!important; */
+    /* white-space: nowrap; */
+}
+
+button.single-product-buy-now {
+    font-family: 'GalaxiePolarisLight' !important;
+    font-size: 12px!important;
+    color: #fff!important;  
+    background: #000!important;
+    border-radius: 0!important;
+    height: 32px;
+    line-height: 32px!important;
+    padding: 0 10px!important;
+    float: right!important;
+    margin-right: 3%!important;
+    margin-top: 8px!important;
+    margin-bottom: 8px!important;
+}
+
+.single-product-cart-price {
+    font-family: 'WhitneyBold','WhitneyBook' !important;
+    font-size: 18px!important;
+    color: #000!important;
+    float: right;
+    margin-right: 5%!important;
+    line-height: 32px;
+    margin-top: 8px;
+}
+
+.single-product-cart-title {
+    font-family: 'WhitneyBold','WhitneyBook' !important;
+    font-size: 18px!important;
+    color: #000!important;
+    float: right;
+    margin-right: 15%!important;
+    line-height: 32px;
+    margin-top: 8px;
+    text-transform:uppercase;
+}
+
+h1.single-product-title {
+    font-family: 'WhitneyBold','WhitneyBook' !important;
+    font-size: 36px!important;
+    padding-bottom: 25px!important;
+}
+
+.single-product-description p {
+    font-family: 'GalaxiePolarisLight' !important;
+    font-size: 16px!important;
+    line-height: 22px;
+    text-align:justify;
+    color:#000;
+    letter-spacing: 0!important;
+}
+
+/* TABS IMAGE*/
+
+.woocommerce-tabs img {
+    width: 100%!Important;
+}
+
+.crp_related {
+    background: #F2F1EE;
+    float: left;
+    width: 100%!important;
+}
+
+.crp_related h3 {
+    font-family: 'Pica' !important;
+    font-size:16px!important;
+    color: #000;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.crp_related ul {
+    list-style-type: none;
+}
+
+.crp_related li{
+    float: left;
+    width: 15% !important;
+    padding-bottom: 20px;
+    margin-right: 2%;
+}
+
+.crp_thumb {
+    height: 130px!important;
+    width: 100%!important;
+}
+
+.content-single-post-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size:18px;
+    color:#000;
+    text-align: center;
+}
+
+.content-single-post-left {
+    font-family: 'WhitneyLight','WhitneyBook' !important;
+    font-size: 13px!important;
+    color: #000 !important;
+    float: left;
+    text-align: left;
+    margin-bottom:20px;
+}
+
+.content-single-post-right {
+    font-family: 'WhitneyLight','WhitneyBook' !important;
+    font-size: 13px!important;
+    color: #000 !important;
+    float: right;
+    text-align: right;
+}
+
+.content-single-article {
+    clear: both;
+    margin-top:20px;
+}
+
+.content-single-article img {
+    width:100%;
+}
+
+.vjs-poster {
+    background-size: 100%!important;
+    background-color: #fff!important;
+}
+
+.kgvid_below_video {
+    text-align: center;
+    padding-top: 10px;
+}
+
+.kgvid-caption {
+    font-family:'Pica10';
+    font-size:14x!important;
+    color:#000!important;
+    font-style:normal!important;
+}
+
+.gallery-item {
+    padding: 0;
+}
+
+.gallery-item {
+    width: 48%!important;
+    padding: 0!important;
+    margin-top: 30px;
+    max-width:none!important;
+}
+
+.gallery-item:first-child {
+    margin-right: 4%!important;
+}
+
+.gallery-caption {
+    font-family: 'Pica10'!important;
+    font-style: normal!important;   
+    font-size: 13px;
+    width: 80%!important;
+    margin: 0 auto;
+    color: #000;
+    line-height: 26px;
+}
+
+.gallery-item img {
+    height: 800px;
+}
+
+.post-single-bottom {
+    font-family: 'Pica10'!important;
+    font-style: normal!important;   
+    font-size: 13px;
+    width: 80%!important;
+    margin: 0 auto;
+    color: #000;
+    line-height: 26px;
+    text-align: center;
+    padding-bottom: 70px;
+}
+
+ul.lcp_catlist {
+    list-style: none;
+    margin:0;
+}
+
+
+ul.lcp_catlist > li {
+    -webkit-transition: opacity .2s ease-in-out;
+    width: 32.5%;
+    height: auto;
+    display: block;
+    overflow: hidden;
+    float: left;
+    margin: 20px 1.25% 0 0;
+}
+
+ul.lcp_catlist > li:last-child {
+    -webkit-transition: opacity .2s ease-in-out;
+    width: 32.5%;
+    height: auto;
+    display: block;
+    overflow: hidden;
+    float: left;
+    margin: 20px 0 0 0%;
+}
+
+ul.lcp_catlist img {
+    width: 100%;
+}
+
+
+@media (max-width: 768px){
+ul.lcp_catlist > li {
+    -webkit-transition: opacity .2s ease-in-out;
+    width: 100%;
+    height: 270px;
+    display: block;
+    overflow: hidden;
+    float: left;
+    margin: 20px 1.25% 0 0;
+}
+
+ul.lcp_catlist > li:last-child {
+    -webkit-transition: opacity .2s ease-in-out;
+    width: 100%;
+    height: auto;
+    display: block;
+    overflow: hidden;
+    float: left;
+    margin: 20px 0 0 0%;
+}
+}
+
+#menu-main-menu {
+    list-style: none!important;
+    margin: 0!important;
+    padding: 0!important;
+    text-align: center;
+    background: transparent;
+}
+
+#navbar #menu-main-menu {
+    border: none!important;
+    border-color: transparent!important;
+}
+
+.navbar-nav > li {
+    float: none!important;
+    display: inline!important;
+}
+
+#navbar ul li a {
+    display: inline-block!important;
+}
+
+h1#post-title {
+	font-family: 'Montserrat', sans-serif;
+	letter-spacing: 6px;
+	font-size: 14px;
+    color: #000;
+    text-align: center;
+}
+
+div.warranty-content {
+    width: 74%!important;
+    float: left;
+}
+
+.warranty-content p {
+    font-family: 'WhitneyLight','WhitneyBook';
+    font-size: 14px!important;
+    color: #000!important;
+}
+
+.warranty-title {
+    font-family: 'WhitneyMedium','WhitneyBook';
+    font-size: 16px;    
+    color: #000;
+    text-transform: uppercase;
+    text-align: left;
+    padding-top: 13px!important;
+}
+
+.warranty-sidebar > .widget_nav_menu {
+    font-family: 'WhitneyBold','WhitneyBook'!important;
+    font-size: 18px!important;  
+    text-transform: uppercase!important;
+    color:#000!important;
+    border: 0!important;
+    padding-left: 0!important;
+}
+
+.warranty-sidebar li {
+    font-family: 'WhitneyBold','WhitneyBook'!important;
+    font-size: 18px!important;
+    border: 0!important;
+    padding: 0!important;
+    word-break: keep-all;
+}
+
+/* Main Slider */ 
+
+#advpsslideshow_1 img {
+    width:100%;
+}
+
+div#advps_container1 {
+    max-width:none !important;
+}
+
+.advps-slide {
+    width:100%!important;
+}
+
+.advps-overlay-one {
+    background:transparent!important;
+}
+
+.advps-excerpt-block-one {
+    padding-top: 40%;
+}
+
+/*h2.advs-title {
+    font-family: 'WhitneyBold' !important;
+    font-size: 46px !important;
+    color: #fff; 
+}*/
+
+h2.advs-title a {
+    font-family: 'WhitneyBold','WhitneyBook' !important;
+    font-size: 42px !important; 
+    line-height: 42px !important;
+    color: #fff; 
+}
+
+.advps-excerpt-one {
+    margin-left: 3%;
+}
+
+.advps-excerpt-block-one p {
+    font-family: 'WhitneyLight','WhitneyBook' !important;
+    font-size: 15px !important;
+    line-height: 18px!important;
+    font-weight: 100!important;
+    padding-top: 2%!important;
+    padding-left: 13%;
+    padding-right: 13%;
+}
+
+.advs-title a {
+    font-family: 'WhitneyBold','WhitneyBook' !important;
+    font-size: 46px !important;
+    color: #fff;
+    line-height: 42px !important;
+}
+
+img.play-image {
+    margin: 0 auto;
+    width: 55px!important;
+}
+
+/*.post-info {
+    font-family: 'WhitneyLight' !important;
+    font-size: 13px !important;
+    text-align: left!important;
+    border: 0!important;
+}//
+
+/* Main Slider */ 
+
+/* world journal */
+ 
+.world-journal-home li {
+    list-style: none;
+}
+
+.world-journal-home img {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.world-journal-title {
+    font-family: 'WhitneyBold','WhitneyBook';
+    color: #111;
+    font-size: 20px;
+    text-align: left;
+    margin-top: 0px;
+    padding-top: 0px;
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+    line-height: 46px;
+}
+
+.world-journal-desc {
+    font-family: 'WhitneyLight','WhitneyBook' !important;
+    line-height: 20px !important;
+    text-align: justify !important;
+    padding-top: 5px;
+}
+
+.world-journal-desc a {
+    font-size: 14px !important;
+    color: #000 !important;
+    line-height: 20px !important;
+    letter-spacing: 0.5px;
+}
+
+.post-info span {
+    color: #000!important;
+}
+
+.post-info span a {
+    color: #000!important;
+}
+
+/* ./world journal */
+
+.our-story-desc {
+    position: absolute;
+    z-index: 1;
+    right: 5%;
+    top: 25%;
+    width: 35%;
+    text-align: center;
+}
+
+.our-story-desc-description {
+    font-family: 'WhitneyLight','WhitneyBook' !important;
+    font-size: 15px !important;
+    line-height: 18px!important;
+    font-weight: 100!important;
+    padding-top: 2%!important;
+    padding-left: 13%;
+    padding-right: 13%;
+    text-align: center;
+}
+
+.our-story-desc-description a {
+    color:#fff!important;
+}
+
+.our-story-desc.play-image {
+    text-align:center;
+}
+
+.our-story-desc h3 {
+    font-family: 'WhitneyBold','WhitneyBook' !important;
+    font-size: 36px !important;
+    line-height: 42px !important;
+    color: #fff;
+    padding-bottom: 0!important;
+    padding-top: 0!important;
+    margin-top: 0!Important;
+}
+
+.our-story-desc h2 {
+    font-family: 'WhitneyLight','WhitneyBook' !important;
+    font-size: 22px !important;
+    padding-bottom: 0!important;
+    margin-bottom: 0!important;
+    color: #fff!important;
+}
+
+
+.padding-0 {
+    padding:0!important;
+}
+
+.product-home-image {
+    text-align: center;
+}
+
+.product-home-description {
+    font-family:'GalaxiePolarisLight';
+    font-size:14px;
+    color:#000!important;
+    text-align: center;
+    width: 100%;
+    padding-left: 35%;
+    padding-right: 35%;
+    padding-top: 1%;
+    padding-bottom: 4%;
+}
+
+.product-home-title {
+    font-family: 'GalaxiePolarisBook';
+    font-size: 16px!important;
+    line-height: 16px;
+    text-align: center;
+    color: #000!Important;
+    text-transform: uppercase;
+    padding-top: 0!important;    
+    margin-top: 0!important;
+    
+}
+
+.product-home-explore {
+    font-family: 'WhitneyBold','WhitneyBook' !important;
+    font-size: 16px;
+    color: #000!important;
+    padding-right: 10%;
+    float: right;
+    padding-top: 1%;
+}
+
+.custom-fields-product {
+    float: left;
+    width: 100% !important;
+	margin: 0px 0px 0px 2em !important;
+}
+
+.product-image-upload img {
+    width: 100%!important;
+    padding-top: 2%;
+}
+
+.custom-fields-product h2 {
+    font-family: 'GalaxiePolarisLight';
+    width: 50%;
+    font-size: 44px;
+    font-weight: 300;
+    text-transform: none;
+    color: #000;
+}
+
+.custom-fields-product p {
+    font-family: 'GalaxiePolarisLight';
+    width: 50%;
+    line-height: 22px;
+    font-size: 16px;
+    text-align: justify;
+    letter-spacing: 0!important;
+}
+
+.single-product-cart-track.cart-visible {
+    display: inline!important;
+}
+
+.content-posts-wrap {
+    max-width: none!important;
+}
+
+/* Billing */
+
+.woocommerce-billing-fields {
+    width: 30%;
+    margin-left: 20%;
+}
+
+.woocommerce-billing-fields label {     
+	font-family: 'WhitneyBook';
+    font-size: 12px;
+    color: #000000;
+}
+
+#billing_first_name_field {
+    width: 100%!important;
+}
+
+#billing_first_name_field label {
+    display: none!important;
+}
+
+input#billing_first_name {
+    /*border-color:#333;*/
+}
+
+input#billing_first_name::-webkit-input-placeholder {
+    font-family: 'WhitneyLight','WhitneyBook';
+    font-size: 14px;
+    color: #333;
+    letter-spacing: 1.5px;
+    line-height: 19px;
+}
+
+#billing_last_name_field {
+    width: 100%!important;
+}
+
+#billing_last_name_field label {
+    display: none!important;
+}
+
+input#billing_last_name {
+    /*border-color:#333;*/
+}
+
+input#billing_last_name::-webkit-input-placeholder {
+    font-family: 'WhitneyLight','WhitneyBook';
+    font-size: 14px;
+    color: #333;
+    letter-spacing: 1.5px;
+    line-height: 19px;
+}
+
+#billing_company_field label {
+    display: none;
+}
+
+input#billing_company {
+    /*border-color:#333;*/
+}
+
+input#billing_company::-webkit-input-placeholder {
+    font-family: 'WhitneyLight','WhitneyBook';
+    font-size: 14px;
+    color: #333;
+    letter-spacing: 1.5px;
+    line-height: 19px;
+}
+
+#billing_address_1_field label {
+    display: none;
+}
+
+input#billing_address_1 {
+    /*border-color:#333;*/
+}
+
+input#billing_address_1::-webkit-input-placeholder {
+    font-family: 'WhitneyLight','WhitneyBook';
+    font-size: 14px;
+    color: #333;
+    letter-spacing: 1.5px;
+    line-height: 19px;
+}
+
+input#billing_address_2 {
+    /*border-color:#333;*/
+}
+
+input#billing_address_2::-webkit-input-placeholder {
+    font-family: 'WhitneyLight','WhitneyBook';
+    font-size: 14px;
+    color: #333;
+    letter-spacing: 1.5px;
+    line-height: 19px;
+}
+
+#billing_postcode_field {
+    vertical-align: middle;
+    width: 100%!important;
+}
+
+#billing_postcode_field label {
+    font-family: 'WhitneyLight','WhitneyBook';
+    font-size: 13px;
+    display: inline-block;
+    vertical-align: middle;
+    float: right;
+}
+
+input#billing_postcode {
+    display: inline-block;
+    vertical-align: middle;
+    width: auto;
+    float: left;
+    border-color:#333;
+}
+
+input#billing_postcode::-webkit-input-placeholder {
+    font-family: 'WhitneyLight','WhitneyBook';
+    font-size: 14px;
+    color: #333;
+    letter-spacing: 1.5px;
+    line-height: 19px;
+}
+
+#billing_phone_field {
+    width: 100%!important;
+}
+
+#billing_phone_field label{
+    display: none;
+}
+
+input#billing_phone {
+    /*border-color:#333;*/
+}
+
+input#billing_phone::-webkit-input-placeholder {
+    font-family: 'WhitneyLight','WhitneyBook';
+    font-size: 14px;
+    color: #333;
+    letter-spacing: 1.5px;
+    line-height: 19px;
+}
+
+abbr.required {
+    display: none;
+}
+
+.woocommerce-billing-fields h3 {
+    font-family: 'WhitneyMedium','WhitneyBook' !important;
+    color: #333!important;
+    font-size: 21px;
+    border-bottom: 1px solid black;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    margin-left: 3px;
+    margin-right: 3px;
+    width: 60%;
+}
+
+/* Shipping */
+
+.woocommerce-shipping-fields {
+    width: 30%;
+    margin-left: 20%;
+}
+
+h3#ship-to-different-address {
+    font-family: 'WhitneyMedium','WhitneyBook' !important;
+    color: #333!important;
+    font-size: 21px;
+    border-bottom: 1px solid black;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+#shipping_first_name_field {
+    width: 100%!important;
+}
+
+#shipping_first_name_field label {
+    display: none!important;
+}
+
+input#shipping_first_name {
+    /*border-color:#333;*/
+}
+
+input#shipping_first_name::-webkit-input-placeholder {
+    font-family: 'WhitneyLight','WhitneyBook';
+    font-size: 14px;
+    color: #333;
+    letter-spacing: 1.5px;
+    line-height: 19px;
+}
+
+#shipping_last_name_field {
+    width: 100%!important;
+}
+
+#shipping_last_name_field label {
+    display: none!important;
+}
+
+input#shipping_last_name {
+    /*border-color:#333;*/
+}
+
+input#shipping_last_name::-webkit-input-placeholder {
+    font-family: 'WhitneyLight','WhitneyBook';
+    font-size: 14px;
+    color: #333;
+    letter-spacing: 1.5px;
+    line-height: 19px;
+}
+
+#shipping_company_field label {
+    display: none;
+}
+
+input#shipping_company {
+    /*border-color:#333;*/
+}
+
+input#shipping_company::-webkit-input-placeholder {
+    font-family: 'WhitneyLight','WhitneyBook';
+    font-size: 14px;
+    color: #333;
+    letter-spacing: 1.5px;
+    line-height: 19px;
+}
+
+#shipping_address_1_field label {
+    display: none;
+}
+
+input#shipping_address_1 {
+    /*border-color:#333;*/
+}
+
+input#shipping_address_1::-webkit-input-placeholder {
+    font-family: 'WhitneyLight','WhitneyBook';
+    font-size: 14px;
+    color: #333;
+    letter-spacing: 1.5px;
+    line-height: 19px;
+}
+
+input#shipping_address_2 {
+    /*border-color:#333;*/
+}
+
+input#shipping_address_2::-webkit-input-placeholder {
+    font-family: 'WhitneyLight','WhitneyBook';
+    font-size: 14px;
+    color: #333;
+    letter-spacing: 1.5px;
+    line-height: 19px;
+}
+
+#shipping_postcode_field {
+    vertical-align: middle;
+    width: 100%!important;
+}
+
+#shipping_postcode_field label {
+    font-family: 'WhitneyLight','WhitneyBook';
+    font-size: 13px;
+    display: inline-block;
+    vertical-align: middle;
+    float: right;
+}
+
+input#shipping_postcode {
+    display: inline-block;
+    vertical-align: middle;
+    width: auto;
+    float: left;
+    border-color:#333;
+}
+
+input#shipping_postcode::-webkit-input-placeholder {
+    font-family: 'WhitneyLight','WhitneyBook';
+    font-size: 14px;
+    color: #333;
+    letter-spacing: 1.5px;
+    line-height: 19px;
+}
+
+#shipping_phone_field {
+    width: 100%!important;
+}
+
+#shipping_phone_field label{
+    display: none;
+}
+
+input#shipping_phone {
+    /*border-color:#333;*/
+}
+
+input#shipping_phone::-webkit-input-placeholder {
+    font-family: 'WhitneyLight','WhitneyBook';
+    font-size: 14px;
+    color: #333;
+    letter-spacing: 1.5px;
+    line-height: 19px;
+}
+
+.woocommerce .col2-set .col-1, .woocommerce-page .col2-set .col-1 {
+    width: 100%;
+    float: left !important;
+}
+
+.woocommerce .col2-set .col-2, .woocommerce-page .col2-set .col-2 {
+    width: 100%;
+    float: left !important;
+}
+
+table.shop_table.order_details.thankyou-page {
+    border: 0!important;
+}
+
+table.shop_table.order_details.thankyou-page td {
+    text-align:center;
+    border: 0!important;
+}
+
+h2.order-received-title {
+    font-family: 'WhitneyLight','WhitneyBook' !important;
+    font-size: 26px;
+    color: #333;
+    letter-spacing: 1px;
+}
+
+p.order-received-shipping {
+    font-family: 'WhitneyLight','WhitneyBook' !important;
+    font-size: 16px;
+    color: #000;
+    margin-bottom: 0!important;
+    font-weight: 600;
+    line-height: 22px;
+  
+}
+
+p.order-number-main {
+    margin-bottom: 0;
+    font-family: 'WhitneyMedium','WhitneyBook' !important;
+    font-size: 16px;
+    text-transform: uppercase;
+}      
+
+ul#menu-top-menu {
+    list-style-type: none!important;
+    min-width: 300px;
+}
+
+ul#menu-top-menu li {
+    display: inline!important;
+}
+
+#menu-top-menu a {
+    font-family: 'Pica' !important;
+    margin-left: 5%!important;
+}
+
+.main-login h2 {
+    font-family: 'WhitneyMedium','WhitneyBook' !important;
+    font-size: 22px;
+    color: #000;
+    text-transform: uppercase;
+    text-align: center;
+    margin-top: 0;
+    border-bottom: 1px solid black;
+    margin-bottom: 6%;
+    padding-bottom: 6%;
+}
+
+.main-login input {
+    border: 1px solid #151011;
+}
+
+.main-register h2 {
+    font-family: 'WhitneyMedium','WhitneyBook' !important;
+    font-size: 22px;
+    color: #000;
+    text-transform: uppercase;
+    text-align: center;
+    margin-top: 0;
+    border-bottom: 1px solid black;
+    margin-bottom: 6%;
+    padding-bottom: 6%;
+}
+
+.main-register input {
+    border: 1px solid#000;
+}
+
+.login-first input.button {
+    font-family: 'WhitneyLight','WhitneyBook' !important;
+    font-size: 13px!important;
+    color: #000;
+    width: 80%;
+    background: transparent;
+    margin-left: 10%!important;
+    border: 1px solid #000!important;
+    border-radius: 0!important;
+}
+
+.main-register input.button {
+    font-family: 'WhitneyLight','WhitneyBook' !important;
+    font-size: 13px!important;
+    color: #000;
+    width: 80%;
+    background: transparent;
+    margin-left: 10%!important;
+    border: 1px solid #000!important;
+    border-radius: 0!important;
+}
+
+form.login.main-login {
+    border: 1px solid #443D40;
+    border-radius: 0;
+}
+
+form.register.main-register {
+    border: 1px solid #443D40;
+    border-radius: 0;
+}
+
+.main-login .lost_password {
+    width: 100%;
+    text-align: right;
+}
+
+.main-login .lost_password a {
+    font-family: 'WhitneyLight','WhitneyBook' !important;
+    font-size: 11px;
+    color: #333!important;
+    text-transform: uppercase;
+}
+
+.col-lg-3.col-md-3.col-sm-3.col-xs-12.login-first {
+    margin-left: 15.5%;
+    margin-right: 9.5%;
+}
+
+.col-lg-3.col-md-3.col-sm-3.col-xs-12.register-first {
+    margin-left: 9.5%;
+    margin-right: 15.5%;
+}
+
+@media (max-width: 768px){
+    .col-lg-3.col-md-3.col-sm-3.col-xs-12.login-first {
+    margin-left: 0!important;
+    margin-right: 0!important;
+}
+
+.col-lg-3.col-md-3.col-sm-3.col-xs-12.register-first {
+    margin-left: 0!important;
+    margin-right: 0!important;
+}
+}
+
+form.register.main-register .form-row-first {
+    width: 100%!important;
+}
+
+form.register.main-register .form-row-last {
+    width: 100%!important;
+}
+
+p.myaccount_user.myaccount-title {
+    font-family: 'WhitneyLight','WhitneyBook' !important;
+    font-size: 15px!important;
+    text-align: center;
+}
+
+table.shop_table.shop_table_responsive.my_account_orders.myaccount-orders {
+    border:0!important;
+}
+
+table.shop_table.shop_table_responsive.my_account_orders.myaccount-orders td {
+    font-family: 'WhitneyLight','WhitneyBook' !important;
+    font-size: 15px!important;
+    color: #000!important;
+    width: 20%;
+    text-align: center;
+    /* line-height: 20px; */
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-left: 0;
+    border-right: 0;
+    border-top: 0!important;
+    border-bottom: 1px solid #000!important;
+    
+}
+
+table.shop_table.shop_table_responsive.my_account_orders.myaccount-orders td:first-child {
+    font-family: 'WhitneyMedium','WhitneyBook' !important;
+    font-size: 12px!important;
+    font-weight: 600;
+}
+
+form.my-account-edit {
+    margin-top: 40px;
+}
+
+form.my-account-edit h2 {
+    font-family: 'WhitneyMedium','WhitneyBook' !important;
+    font-size: 22px;
+    color: #333;
+    margin-top: 0;
+    padding-top: 0;
+    text-align: center;
+    border-bottom: 1px solid #333;
+    margin-bottom: 22px;
+    padding-bottom: 22px;
+}
+
+.my-account-edit p {
+    width: 100%!important;
+}
+
+.main-login input {
+    font-family: 'WhitneyLight','WhitneyBook';
+    font-size: 14px;
+    color: #333;
+    letter-spacing: 1.5px;
+    line-height: 19px;
+}
+
+.main-login input::-webkit-input-placeholder {
+    font-family: 'WhitneyLight','WhitneyBook';
+    font-size: 14px;
+    color: #333;
+    letter-spacing: 1.5px;
+    line-height: 19px;
+}
+
+.main-register input::-webkit-input-placeholder {
+    font-family: 'WhitneyLight','WhitneyBook';
+    font-size: 14px;
+    color: #333;
+    letter-spacing: 1.5px;
+    line-height: 19px;
+}
+
+.main-login input::-moz-placeholder {
+    font-family: 'WhitneyLight','WhitneyBook';
+    font-size: 14px;
+    color: #333;
+    letter-spacing: 1.5px;
+    line-height: 19px;
+}
+
+.main-register input{
+    font-family: 'WhitneyLight','WhitneyBook';
+    font-size: 14px;
+    color: #333;
+    letter-spacing: 1.5px;
+    line-height: 19px;
+}
+
+.main-register input::-moz-placeholder {
+    font-family: 'WhitneyLight','WhitneyBook';
+    font-size: 14px;
+    color: #333;
+    letter-spacing: 1.5px;
+    line-height: 19px;
+}
+
+.edit-account-submit-button input.button {
+    font-family: 'WhitneyLight','WhitneyBook'!important;
+    font-size: 12px!important;
+    background: transparent!important;
+    border: 1px solid #333!important;
+    border-radius: 0!important;
+}
+
+p.edit-account-submit-button {
+    text-align:center!important;
+}
+
+h1.main-account-title {
+    font-family: 'WhitneyBold','WhitneyBook'!important;
+    font-size: 22px!important;
+    color: #333;
+    text-align: center;
+    margin-top: 0;
+    padding-top: 0;
+}
+
+h2.main-account-subtitle {
+    font-family: 'WhitneyLight','WhitneyBook'!important;
+    font-size: 16px!important;
+    padding-top: 0;
+    margin-top: 0;
+    text-transform: none!important;
+    text-align: center;
+    color: #333;
+}
+
+.change-password {
+    margin-top: 68.5px;
+}
+
+.my-account-edit input {
+    font-family: 'WhitneyLight','WhitneyBook';
+    font-size: 14px;
+    color: #333;
+    letter-spacing: 1.5px;
+    line-height: 22px;
+}
+
+.my-account-edit input::-webkit-input-placeholder {
+    font-family: 'WhitneyLight','WhitneyBook';
+    font-size: 14px;
+    color: #333;
+    letter-spacing: 1.5px;
+    line-height: 22px;
+}
+
+.my-account-edit input::-moz-placeholder {
+    font-family: 'WhitneyLight','WhitneyBook';
+    font-size: 14px;
+    color: #333;
+    letter-spacing: 1.5px;
+    line-height: 22px;
+}
+
+.my-account-edit h3 {
+    font-family: 'WhitneyMedium','WhitneyBook' !important;
+    font-size: 22px;
+    color: #333;
+    margin-top: 0;
+    padding-top: 0;
+    text-align: center;
+    border-bottom: 1px solid #333;
+    margin-bottom: 22px;
+    padding-bottom: 22px;
+}
+
+a.edit {
+    font-family: 'WhitneyBold','WhitneyBook'!important;
+    font-size: 14px!important;
+    text-transform: uppercase;
+    background: transparent!important;
+    border-radius: 0!important;
+}
+
+form.my-account-edit address {
+    font-family: 'WhitneyLight','WhitneyBook';
+    font-size: 16px!important;
+    border: 0!important;
+    margin-left: 0;
+    padding-left: 0;
+    padding-top: 0!important;
+}
+
+.edit-address-title {
+    font-family: 'WhitneyMedium','WhitneyBook' !important;
+    font-size: 22px;
+    color: #333;
+    margin-top: 0;
+    padding-top: 0;
+    text-align: left;
+    border-bottom: 1px solid #333;
+    margin-bottom: 22px;
+    padding-bottom: 22px;
+}
+
+.edit-account-billing-submit-button input.button {
+    font-family: 'WhitneyLight','WhitneyBook'!important;
+    font-size: 12px!important;
+    background: transparent;
+    border: 1px solid #333!important;
+    border-radius: 0!important;
+}
+
+.big-letters {
+    text-transform:uppercase!important;
+}
+
+input#shipping_method_0_flat_rate {
+    margin: 0 20px 0 0;
+}
+
+input#shipping_method_0_free_shipping {
+    margin-right: 20px;
+}
+
+tr.shipping th {
+    background: #fff!important;
+    border: 0!important;
+}
+
+table.shop_table.woocommerce-checkout-review-order-table td {
+    border: 0!important;
+}
+
+table.shop_table.woocommerce-checkout-review-order-table {
+    border: 0!important;
+}
+
+.payment_box.payment_method_cheque {
+    display: none;
+}
+
+.woocommerce-checkout #payment {
+    border-radius: 0;
+    background: transparent!important;
+}
+
+input#place_order {
+    font-family: 'WhitneyLight','WhitneyBook'!important;
+    font-size: 12px!important;
+    background: transparent;
+    border: 1px solid #333;
+    border-radius: 0;
+    color: #333!important;
+}
+
+.entry-summary>.product_meta {
+    display: none!important;
+}
+
+.content-single-full-width {
+    width:100%;
+    float: left;
+}
+
+.content-single-image img {
+    width:100%;
+}
+
+.payment_box.payment_method_cheque {
+    display: none!important;
+}
+
+
+ul#menu-footer-menu {
+    text-align: center !important;
+    padding: 0 !important;
+}
+
+ul#menu-footer-menu li {
+    display: inline-block;
+    padding-right: 1%;
+}
+
+.breadcrumbs ul li {
+    display: inline-block!important;
+    padding-right: 1%!important;
+    float: none!important;
+}
+    
+.breadcrumbs .breadcrumbs-wrap ul li, .breadcrumbs .breadcrumbs-wrap ul li a {
+    font-style:normal !important;
+}
+    
+.breadcrumbs ul {
+    margin: 0!important;
+    line-height: 1.8em!important;
+    text-align: center !important;
+    padding: 0 !important;
+}
+
+.breadcrumbs {
+    width: 100%!important;
+    border-top: 1px solid #333!important;
+    overflow: visible!important;
+    padding: 1% 0!important;
+    font-size: 12px!important;
+    color: #333!important;
+    border-bottom: 1px solid #333!important;
+    text-transform: uppercase!important;
+    font-weight: 600!important;
+    margin-bottom: 35px!important;
+}
+
+.content-page-dirocco {
+    font-family: 'WhitneyLight','WhitneyBook';
+    font-size: 14px;
+    color: #000;
+}
+
+.content-single-post-video {
+    float: left;
+    width: 100%;
+}
+
+div#video_kgvid {
+    width: 100%!important;
+    min-height: 640px!important;
+}
+
+.kgvid_wrapper {
+    width: 100%!important;
+}
+
+.fitvidsignore {
+    width: 100%!important;
+    min-height: 640px!important;
+}
+
+.post-video-image-left {
+    padding-left: 0!important;
+}
+
+.post-video-image-right {
+    padding-right: 0!important;
+}
+
+
+.post-video-image-left p {
+    font-family: 'Pica10'!important;
+    font-style: normal!important;
+    font-size: 13px;
+    width: 80%!important;
+    margin: 0 auto;
+    color: #000;
+    line-height: 26px;
+    text-align: center;
+    padding-bottom: 25px;
+	padding-top: 10px;
+}
+
+.post-video-image-right p {
+    font-family: 'Pica10'!important;
+    font-style: normal!important;
+    font-size: 13px;
+    width: 80%!important;
+    margin: 0 auto;
+    color: #000;
+    line-height: 26px;
+    text-align: center;
+    padding-bottom: 25px;
+	padding-top: 10px;
+}
+
+.post-video-image-left img {
+    width: 100%;
+    max-height: 850px;
+}
+
+.post-video-image-right img {
+    width: 100%;
+    max-height: 850px;
+}
+
+.post-video-image-central {
+    padding-left:0!important;
+    padding-right:0!important;
+}
+
+.post-video-image-central img {
+    width: 100%;
+}
+
+.post-video-image-central p {
+    font-family: 'Pica10'!important;
+    font-style: normal!important;
+    font-size: 13px;
+    width: 80%!important;
+    margin: 0 auto;
+    color: #000;
+    line-height: 26px;
+    text-align: center;
+    padding-bottom: 70px!important;
+	padding-top: 10px!important; 
+}
+
+.featured-price-home ul li .content-product-left {
+    width: 100%!important;
+    /*padding-left: 30%!important;
+	padding-right: 30%!important;*/
+    margin: 0!important;
+}
+
+.featured-price-home ul li .content-product-right {
+    width: 100%;
+    float: left;
+	text-align: left;
+}
+
+.featured-price-home ul li .content-product-right>.content-product-description p {
+    text-align: center;
+}
+
+.featured-price-home ul li .content-product-right h3 {
+    font-size: 18px!important;
+    font-weight: 600!important;
+    padding-bottom: 10px;
+}
+
+.featured-price-home ul li .content-product-right>.content-product-price {
+    display: none!important;
+}
+
+.explore-all-products {
+    font-family: 'WhitneyBold','WhitneyBook'!important;
+    /* float: left!important; */
+    padding-top: 20%;
+    font-weight: 600!important;
+    color: #000!important;
+    text-transform: uppercase;
+    cursor: pointer;
+    /* text-align: center!important; */
+    font-size: 15px;
+    /* margin: 0 auto; */
+    /* position: absolute; */
+    padding-left: 35%!important;
+}
+
+.woocommerce.columns-1 {
+    float: left;
+    width: 80%;
+    padding-left: 20%;
+}
+
+div#mc4wp-form-1 input::-webkit-input-placeholder {
+    display: none!important;
+}
+
+div#mc4wp-form-1 input:-moz-placeholder { /* Firefox 18- */
+   display: none!important;
+}
+
+div#mc4wp-form-1 input::-moz-placeholder {  /* Firefox 19+ */
+   display: none!important; 
+}
+
+div#mc4wp-form-1 input:-ms-input-placeholder {  
+   display: none!important;
+}
+
+div#mc4wp-form-1 input:-ms-input-placeholder {  
+   display: none!important;
+}
+
+div#mc4wp-form-1 input {  
+   width:100%;
+   font-family: 'WhitneyLight','WhitneyBook' !important;
+   font-size: 15px !important;
+   color: #000 !important;
+   padding-left: 10px;
+}
+
+/* .mc4wp-alert.mc4wp-notice {
+    display: none;
+}*/
+
+div#mc4wp-form-1 input[type="submit"] {
+    width: 150px;
+    font-size: 13px!important;
+    line-height: 18px!important;
+    margin-top: 15px;
+}
+
+.content-single-post-video p {
+    font-family: 'Pica10'!important;
+    font-style: normal!important;
+    font-size: 13px!important;
+    width: 80%!important;
+    margin: 0 auto!important;
+    color: #000!important;
+    line-height: 26px!important;
+    text-align: center!important;
+    padding-bottom: 25px!important;
+}   
+
+#myvideo {
+    background:#000!important;
+    cursor:pointer;
+}
+
+@media screen and (max-width: 1026px) {
+    .fp-section,
+    .fp-tableCell {
+        height: auto !important;
+    }
+}

@@ -1,0 +1,126 @@
+/* Scroll ToTop */
+.scrollup,.scrollup:hover,.scrollup:visited,.scrollup:focus {
+	color: #fff;
+	box-shadow: none;
+}
+.scrollup {
+	background-color: rgba(0, 0, 0, 0.3);
+	border-radius: 50% !important;
+	width: 40px;
+	line-height: 40px;
+	text-align: center;
+	text-decoration: none;
+	position: fixed;
+	right: 25px;
+	bottom: 20px;
+	display: none;
+	z-index: 10000;
+}
+.wrap h2 {
+	margin-bottom: 10px;
+}
+#textsizer {
+	float: left;
+	margin-bottom: 10px;
+}
+#textsizer p {
+	float: left;
+	margin: 0 5px 0 0 !important;
+}
+ul.textresizer {
+	list-style: none;
+	display: inline;
+	margin: 0;
+	padding: 0;
+}
+ul.textresizer li {
+	display: inline;
+	margin: 0;
+	margin-right: 5px;
+	padding: 0;
+}
+ul.textresizer a {
+	border: solid 1px #999;
+	padding: 2px 3px;
+	font-weight: 700;
+	text-decoration: none;
+	border-radius: 3px !important;
+}
+ul.textresizer a:hover {
+	background: #e5e5e5;
+	border: solid 1px #ccc;
+}
+ul.textresizer .small-text {
+	font-size: 12px;
+}
+ul.textresizer .medium-text {
+	font-size: 14px;
+}
+ul.textresizer .large-text {
+	font-size: 16px;
+}
+ul.textresizer .larger-text {
+	font-size: 18px;
+}
+ul.textresizer .giga-text {
+	font-size: 18px;
+}
+ul.textresizer a.textresizer-active {
+	border: solid 1px #2B562B;
+	background: #FFCA6F;
+	color: #000;
+}
+.button-primary {
+	height: 50px !important;
+	width: 130px !important;
+	position: fixed;
+	right: 25px;
+	top: 45px;
+	z-index: 50;
+	font-size: 30px !important;
+	border-radius: 10% !important;
+}
+.ace_search.right {
+    font-size: 9px !important;
+}
+.ace_search_options {
+	float: left;
+	line-height: 20px;
+	font-size: 12px !important;
+}
+.ace_search_options::after {
+	color: #000;
+	content: " (CTRL|CMD+F = Replace Form!)";
+	font-style: italic;
+}
+#my_custom_css {
+	border: 1px solid #DFDFDF;
+	border-radius: 3px;
+	width: 100%;
+	height: 400px;
+	position: relative;
+	top: -5px;
+	font-size: 14px;
+	line-height: 150% !important;
+}
+#thememenu {
+	float: left;
+	margin-left: 10px;
+	margin-top: -5px;
+}
+/* Fix wordpress footer */
+#wpfooter {
+	position: relative;
+}
+#footer-upgrade {
+	float: left;
+	padding-left: 5px;
+	font-style: italic;
+}
+#mccss_credit {
+	float: right;
+	font-style: italic;
+}
+#mccss_credit a {
+	text-decoration: none;
+}

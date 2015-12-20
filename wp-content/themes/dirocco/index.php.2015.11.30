@@ -1,0 +1,142 @@
+<?php
+/**
+ * The main template file.
+ *
+ * This is the most generic template file in a WordPress theme
+ * and one of the two required files for a theme (the other being style.css).
+ * It is used to display a page when nothing more specific matches a query.
+ * E.g., it puts together the home page when no home.php file exists.
+ * Learn more: http://codex.wordpress.org/Template_Hierarchy
+ *
+ * @package Modality
+ */
+$modality_theme_options = modality_get_options( 'modality_theme_options' );
+get_header(); ?>
+<script>
+	jQuery(document).ready(function() {
+		jQuery('#fullpage').fullpage({
+			responsiveWidth: 1027,
+			responsiveHeight: 0,
+			fitToSection: false,
+			afterLoad: function() {
+				// if (jQuery(window).width() >= 1027) {
+				// 	jQuery.fn.fullpage.setFitToSection(true);
+				// }
+			}
+		});
+	});
+</script>
+<div id="main" class="<?php echo esc_attr($modality_theme_options['layout_settings']); ?>">
+	<div id="fullpage">
+		<div class="section slider">
+			<!-- mainslider -->
+			<?php echo do_shortcode ('[advps-slideshow optset="1"]'); ?>
+			<!-- ./mainslider -->
+		</div>
+		<!-- newest storytellers -->
+		<div class="section">
+			<!--<h3 class="home-page-h3">Newest</h3>--!>
+			<h2 class="home-page-h3">Newest Storytellers</h3>
+			<?php query_posts('cat=8&showposts=6'); ?>
+			<?php if (have_posts()) : while (have_posts()) : the_post(); ?>
+				<div class="world-journal-home col-lg-4 col-md-4 col-sm-12 col-xs-12">
+					<li>
+						<span class="new-wrapper">
+<a href="<?php the_permalink() ?>"><?php echo get_the_post_thumbnail( $post_id, $size=0, $attr ); ?></a>
+<h3 class="text-content"><span class="subtitle"><?php the_subtitle(); ?></span><br><span><?php the_title(); ?></span></h3>
+</span>
+					</li>
+				</div>
+			<?php endwhile; endif; ?>
+			<div class="clearfix"></div>
+		</div>
+		<!-- ./newest storytellers -->
+
+
+		<!-- our story -->
+		<div class="section">
+			<!--<h3 class="home-page-h3">Our</h3>--!>
+			<h2 class="home-page-h3">Our Story</h3>
+			<?php query_posts('cat=13&showposts=1'); ?>
+			<?php if (have_posts()) : while (have_posts()) : the_post(); ?>
+				<div class="world-journal-home padding-0 row">
+					<li>
+						<a class="world-journal-thumb" href="<?php the_permalink() ?>"><?php the_post_thumbnail(); ?></a>
+						<div class="our-story-desc col-sm-12">
+							<a href="<?php the_permalink() ?>"><h2><?php the_subtitle(); ?></h2></a>
+							<a href="<?php the_permalink() ?>"><h3><?php the_title(); ?></h3></a>
+							<p class="our-story-desc-description"><a href="<?php the_permalink() ?>"><?php echo get_excerpt(82); ?></a></p>
+<p class="icon"><a href="<?php the_permalink() ?>"><i class="fa fa-play"></i></a></p>
+							<!--<a href="<?php the_permalink() ?>"><img src="http://dev.hungrylemur.com/wp-content/themes/dirocco/images/play.png" class="play-image" alt="play" /></a>--!>
+						</div>
+					</li>
+				</div>
+			<?php endwhile; endif; ?>
+			<div class="clearfix"></div>
+		</div>
+		<!-- ./our story -->
+
+
+		<!-- world journal -->
+		<div class="section">
+			<!--<h3 class="home-page-h3">World</h3>--!>
+			<h2 class="home-page-h3">World Journal</h3>
+			<?php query_posts('cat=1&showposts=3'); ?>
+			<?php if (have_posts()) : while (have_posts()) : the_post(); ?>
+				<div class="world-journal-home col-lg-4 col-md-4 col-sm-12 col-xs-12">
+					<li>
+						<a class="world-journal-thumb" href="<?php the_permalink() ?>"><?php the_post_thumbnail(); ?></a> <!-- world journal thumb -->
+						<a class="world-journal-title" href="<?php the_permalink() ?>"><?php the_title(); ?></a> <!-- world journal title -->
+						<p class="world-journal-desc"><a href="<?php the_permalink() ?>"><?php echo get_excerpt(180); ?></a></p> <!-- world journal descripion -->
+						<div class="post-info">
+							<span><?php the_time('m/d/Y') ?> </span> |
+							<span>by <?php the_author() ?> </span>
+						</div>
+					</li>
+				</div>
+			<?php endwhile; endif; ?>
+			<div class="clearfix"></div>
+		</div>
+		<!-- ./world journal -->
+
+
+	<div class="section row">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+			<!--<h3 class="home-page-h3">Featured</h3>--!>
+			<h2 class="home-page-h3">Featured Piece</h3>
+			<div class="featured-price-home">
+				<?php $url = get_site_url(); ?>
+				<?php echo do_shortcode('[featured_products per_page="1" columns="1"]'); ?>
+				<div class="explore-all-products col-sm-12">
+				<a href="<?php echo $url.'/shop'; ?>">Explore all the fine pieces</a></div>
+				</div>
+		</div>
+			<?php
+			/*$product_DI = 7; //Product ID
+            $pro = new WC_Product($product_DI);
+            echo "<div class='product-home-image'>".$pro->get_image($size = '400'); echo"</div>";  //get image
+            echo "<div class='product-home-title'>";echo "<a href='http://dev.hungrylemur.com/product/mgm/'>".$pro->get_title();"</a>";echo"</div>"; //get title
+            echo "<div class='product-home-explore'>"; echo"<a href='http://dev.hungrylemur.com/shop/'>"; echo"EXPLORE ALL THE FINE PIECES"; echo"</a>"; echo"</div>";
+            echo "<div class='product-home-description'>".$pro->get_post_data()->post_excerpt; echo"</div>";  //get description
+            */?>
+		</div>
+		<?php if ($modality_theme_options['social_section_on'] == '1') {
+			get_template_part( 'social', 'section' );
+		} ?>
+
+
+<div id="footer" class="section">
+	<div class="clear"></div>
+	<?php if ( $modality_theme_options['footer_widgets'] == '1') { ?>
+		<div id="footer-wrap">
+			<?php  get_sidebar('footer'); ?>
+		</div><!--footer-wrap-->
+	<?php } ?>
+	<?php wp_nav_menu( array('menu' => 'footer-menu' )); ?>
+</div><!--footer-->
+</div>
+</div>
+</div><!--grid-container-->
+<?php wp_footer(); ?>
+<script type="text/javascript" src="http://vjs.zencdn.net/c/video.js"></script>
+</body>
