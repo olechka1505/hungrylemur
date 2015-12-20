@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 ?>
 
-theme/woocommerce/myaccount/form-login.php
+<?php //theme/woocommerce/myaccount/form-login.php ?>
 
 <?php wc_print_notices(); ?>
 
