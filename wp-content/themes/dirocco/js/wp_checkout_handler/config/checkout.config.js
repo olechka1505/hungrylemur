@@ -10,6 +10,16 @@ checkoutApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                 }],
             },
         })
+        .state('details', {
+            url: "/details",
+            templateUrl: "/wp-content/themes/dirocco/woocommerce/checkout/templates/details.php",
+            controller:'CheckoutDetailsCtrl',
+            resolve: {
+                checkoutDetailsData: ['CheckoutService', function(CheckoutService) {
+                    return CheckoutService.request('details', {})
+                }],
+            },
+        })
         .state('login', {
             url: "/login",
             templateUrl: "/wp-content/themes/dirocco/woocommerce/checkout/templates/login.php",

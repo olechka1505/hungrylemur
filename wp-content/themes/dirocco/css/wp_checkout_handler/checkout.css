@@ -7,19 +7,18 @@
 .checkout-form {
     color: #1f1f1f;
 }
-.checkout-form a {
+.checkout a {
     font-size: 10px;
 }
-.checkout-form .checkout-form-title {
-    text-align: center;
+.checkout .checkout-form-title {
     border-bottom: solid 2px #dad9d9;
     margin-bottom: 15px;
 }
-.checkout-form ::-webkit-input-placeholder {color:#1f1f1f;}
-.checkout-form ::-moz-placeholder          {color:#1f1f1f;}
-.checkout-form :-moz-placeholder           {color:#1f1f1f;}
-.checkout-form :-ms-input-placeholder      {color:#1f1f1f;}
-.checkout-form .btn-checkout {
+.checkout ::-webkit-input-placeholder {color:#1f1f1f;}
+.checkout ::-moz-placeholder          {color:#1f1f1f;}
+.checkout :-moz-placeholder           {color:#1f1f1f;}
+.checkout :-ms-input-placeholder      {color:#1f1f1f;}
+.checkout .btn-checkout {
     background: #ffffff;
     border: solid 1px #1f1f1f;
     color: #1f1f1f;

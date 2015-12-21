@@ -1,6 +1,6 @@
 <div class="col-xs-12">
     <form class="col-md-3 col-xs-12 align-center checkout-form checkout-login" ng-submit="login()">
-        <h3 class="checkout-form-title">LOG IN</h3>
+        <h3 class="checkout-form-title text-center">LOG IN</h3>
         <div class="form-group">
             <input ng-model="loginData.login" class="form-control" type="text" placeholder="Email address"/>
         </div>

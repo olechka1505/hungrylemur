@@ -1,6 +1,6 @@
 <div class="col-xs-12">
     <form class="col-md-4 checkout-form checkout-billing" ng-class="{'col-md-offset-1': !billingData.asShippingAddress, 'col-md-offset-4': billingData.asShippingAddress}" ng-submit="billing()">
-        <h3 class="checkout-form-title">BILLING ADDRESS</h3>
+        <h3 class="checkout-form-title text-center">BILLING ADDRESS</h3>
         <div class="form-group">
             <input ng-model="billingData.first_name" class="form-control" type="text" placeholder="First Name"/>
         </div>
@@ -42,7 +42,7 @@
     </form>
 
     <form ng-if="!billingData.asShippingAddress" class="col-md-4 col-md-offset-1 col-xs-12 checkout-form checkout-shipping">
-        <h3 class="checkout-form-title">SHIPPING ADDRESS</h3>
+        <h3 class="checkout-form-title text-center">SHIPPING ADDRESS</h3>
         <div class="form-group">
             <input ng-model="shippingData.first_name" class="form-control" type="text" placeholder="First Name"/>
         </div>

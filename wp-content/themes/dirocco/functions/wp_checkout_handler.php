@@ -13,10 +13,28 @@ class WP_Checkout_handler
         add_action('wp_enqueue_scripts', array($this, 'add_scripts'));
         add_action($this->ajax_full_action('billing'), array($this, 'billing'));
         add_action($this->ajax_full_action_nopriv('billing'), array($this, 'billing'));
+        add_action($this->ajax_full_action('details'), array($this, 'details'));
+        add_action($this->ajax_full_action_nopriv('details'), array($this, 'details'));
         add_action($this->ajax_full_action('login'), array($this, 'login'));
         add_action($this->ajax_full_action_nopriv('login'), array($this, 'login'));
         add_action($this->ajax_full_action('signup'), array($this, 'signup'));
         add_action($this->ajax_full_action_nopriv('signup'), array($this, 'signup'));
+    }
+
+    function details()
+    {
+        // if user is not logged in
+        if (!is_user_logged_in()) {
+            $this->response(array(
+                'message' => 'Forbidden',
+            ), 403);
+        }
+        global $current_user;
+        // get billing details
+        $response['billing'] = $this->get_billing_details();
+        // get shipping details
+        $response['shipping'] = $this->get_shipping_details();
+        $this->response($response);
     }
 
     function billing()
@@ -51,6 +69,8 @@ class WP_Checkout_handler
             update_user_meta( $current_user->ID, "shipping_postcode", $shipping['postcode'] );
             update_user_meta( $current_user->ID, "shipping_phone", $shipping['phone'] );
             update_user_meta( $current_user->ID, "shipping_suite", $shipping['suite'] );
+
+            $response['status'] = true;
         }
         // get billing details
         $response['billing'] = $this->get_billing_details();

@@ -1,6 +1,6 @@
 <div class="col-xs-12">
     <form class="col-md-3 col-xs-12 align-center checkout-form checkout-signup" ng-submit="signup()">
-        <h3 class="checkout-form-title">REGISTER</h3>
+        <h3 class="checkout-form-title text-center">REGISTER</h3>
         <div class="form-group">
             <input ng-model="signupData.login" class="form-control" type="email" placeholder="Email address"/>
         </div>

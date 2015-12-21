@@ -6,10 +6,14 @@ checkoutApp.controller('CheckoutBillingCtrl',['$scope','$http', '$location', '$s
         var promise = CheckoutService.request('billing', {billingData: $scope.billingData, shippingData: $scope.shippingData});
         promise.then(function(response){
             if (response.data.status) {
-                $state.go('billing');
+                $state.go('details');
             }
         })
     }
+}]);
+checkoutApp.controller('CheckoutDetailsCtrl',['$scope','$http', '$location', '$state', 'checkoutDetailsData', 'CheckoutService', function($scope, $http, $location, $state, checkoutDetailsData, CheckoutService) {
+    $scope.details = checkoutDetailsData.data;
+
 }]);
 
 checkoutApp.controller('CheckoutLoginCtrl',['$scope','$http', '$location', '$state', 'CheckoutService', function($scope, $http, $location, $state, CheckoutService) {

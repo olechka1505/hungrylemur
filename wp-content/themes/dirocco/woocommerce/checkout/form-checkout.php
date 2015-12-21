@@ -1,4 +1,4 @@
-<div ng-app="checkoutApp">
+<div class="checkout" ng-app="checkoutApp">
 	<div ng-show="loading">
 		<div class="col-xs-12 checkout-loading text-center">
 			<h3>Loading...</h3>

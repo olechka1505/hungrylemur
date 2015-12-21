@@ -1,6 +1,6 @@
 <div class="col-xs-12">
     <form class="col-md-3 col-xs-12 align-center checkout-form checkout-forgot">
-        <h3 class="checkout-form-title">RESTORE PASSWORD</h3>
+        <h3 class="checkout-form-title text-center">RESTORE PASSWORD</h3>
         <div class="form-group">
             <input class="form-control" type="text" placeholder="Email address"/>
         </div>
