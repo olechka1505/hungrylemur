@@ -50,18 +50,50 @@ class WP_Checkout_handler
     
     function signup()
     {
-        if ($signup = $this->data()) {
+        if ($signup = $this->data('signupData')) {
             $response = array('status' => true);
             $statusCode = 200;
-            $user = wp_signon(array(
-                'user_login'    => $login['login'],
-                'user_password' => $login['password'],
-            ), false);
-            if (is_wp_error($user)) {
+            // Validation
+            if (empty($signup['login'])) {
                 $response['status'] = false;
-                $response['errors'][] = __('Invalid email or password.');
+                $response['errors'][] = __("User email can't be blank.");
                 $statusCode = 500;
-            }                     
+            } 
+            if (empty($signup['password']) || empty($signup['confirmPassword'])) {
+                $response['status'] = false;
+                $response['errors'][] = __("Password can't be blank.");
+                $statusCode = 500;
+            }
+            
+            if (!is_email($signup['login'])) {
+                $response['status'] = false;
+                $response['errors'][] = __('Invalid email address.');
+                $statusCode = 500;
+            }
+            
+            if ($user_id = username_exists($signup['login']) || email_exists($user_email)) {
+                $response['status'] = false;
+                $response['errors'][] = __('This user is already exist.');
+                $statusCode = 500;
+            }
+            if ($signup['confirmPassword'] != $signup['password']) {
+                $response['status'] = false;
+                $response['errors'][] = __('Please confirm your password.');
+                $statusCode = 500;
+            } 
+            // create user and logged in
+            if ($response['status']) {
+                $user_id = wp_create_user( $signup['login'], $signup['password'], $signup['login'] );
+                $user = wp_signon(array(
+                    'user_login'    => $signup['login'],
+                    'user_password' => $signup['password'],
+                ), false);
+                if (is_wp_error($user)) {
+                    $response['status'] = false;
+                    $response['errors'][] = __('Invalid email or password.');
+                    $statusCode = 500;
+                }
+            }
         }
         $this->response($response, $statusCode);
     }

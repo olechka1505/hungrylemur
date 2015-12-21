@@ -1,7 +1,7 @@
 <div class="col-xs-12">
     <form class="col-md-4 col-md-offset-4 col-xs-12" ng-submit="signup()">
         <div class="form-group">
-            <input ng-model="signupData.login" class="form-control" type="text" placeholder="Email address"/>
+            <input ng-model="signupData.login" class="form-control" type="email" placeholder="Email address"/>
         </div>
         <div class="form-group">
             <input ng-model="signupData.password" class="form-control" type="password" placeholder="Password"/>
