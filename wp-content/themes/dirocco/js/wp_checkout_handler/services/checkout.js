@@ -1,4 +1,4 @@
-checkoutApp.factory('CheckoutService', ['$http', '$rootScope', function($http, $rootScope){
+checkoutApp.factory('CheckoutService', ['$http', '$rootScope', '$state', function($http, $rootScope, $state){
     return {
         request: function(action, data) {
             $rootScope.loading = true;
@@ -14,8 +14,17 @@ checkoutApp.factory('CheckoutService', ['$http', '$rootScope', function($http, $
                 return response;
             }, function(response){
                 $rootScope.hasError = true;
-                $rootScope.errors = response.data.errors;
                 $rootScope.loading = false;
+                $rootScope.statusCode = response.status;
+                switch (response.status) {
+                    case 403:
+                        $state.go('login');
+                        break;
+                    case 500:
+                    default:
+                        $rootScope.errors = response.data.errors;
+                        break;
+                }
                 return response;
             });
         }

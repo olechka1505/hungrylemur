@@ -11,29 +11,38 @@ class WP_Checkout_handler
 
         // Actions
         add_action('wp_enqueue_scripts', array($this, 'add_scripts'));
-        add_action($this->ajax_full_action('billing'), array($this, 'index'));
-        add_action($this->ajax_full_action('auth'), array($this, 'index'));
+        add_action($this->ajax_full_action('billing'), array($this, 'billing'));
+        add_action($this->ajax_full_action_nopriv('billing'), array($this, 'billing'));
+        add_action($this->ajax_full_action('login'), array($this, 'login'));
+        add_action($this->ajax_full_action_nopriv('login'), array($this, 'login'));
 
 
     }
 
     function billing()
     {
-        $this->response(array(
-            'is_logged_in' => is_user_logged_in(),
-        ));
+        // if user is not logged in
+        if (!is_user_logged_in()) {
+            $this->response(array(
+                'message' => 'Forbidden',
+            ), 403);    
+        }
+        
     }
 
-    function auth()
+    function login()
     {
-        $this->response(array(
-            'is_logged_in' => is_user_logged_in(),
-        ));
+        
     }
 
-    function ajax_full_action($action, $logged_in = true)
+    function ajax_full_action($action)
     {
-        return ($logged_in ? 'wp_ajax_': 'wp_ajax_nopriv_') . $this->ajaxPrefix . $action;
+        return 'wp_ajax_' . $this->ajaxPrefix . $action;
+    }
+
+    function ajax_full_action_nopriv($action)
+    {
+        return 'wp_ajax_nopriv_' . $this->ajaxPrefix . $action;
     }
 
     function add_scripts()

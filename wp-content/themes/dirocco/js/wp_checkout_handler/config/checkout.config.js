@@ -10,15 +10,15 @@ checkoutApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                 }],
             },
         })
-        .state('auth', {
-            url: "/auth",
-            templateUrl: "/wp-content/themes/dirocco/woocommerce/checkout/templates/auth.php",
-            controller:'CheckoutAuthCtrl',
-            resolve: {
-                checkoutAuthData: ['CheckoutService', function(CheckoutService) {
-                    return CheckoutService.request('auth', {})
-                }],
-            },
+        .state('login', {
+            url: "/login",
+            templateUrl: "/wp-content/themes/dirocco/woocommerce/checkout/templates/login.php",
+            controller:'CheckoutLoginCtrl',
+        })
+        .state('signup', {
+            url: "/signup",
+            templateUrl: "/wp-content/themes/dirocco/woocommerce/checkout/templates/signup.php",
+            controller:'CheckoutSignupCtrl',
         })
     $urlRouterProvider.otherwise("/billing");
 }]);

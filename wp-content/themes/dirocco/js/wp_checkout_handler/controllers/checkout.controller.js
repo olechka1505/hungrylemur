@@ -7,7 +7,10 @@ checkoutApp.controller('CheckoutBillingCtrl',['$scope','$http', '$location', '$s
 
 }]);
 
-checkoutApp.controller('CheckoutAuthCtrl',['$scope','$http', '$location', '$state', 'checkoutAuthData', function($scope, $http, $location, $state, checkoutAuthData) {
-    $scope.checkoutData = checkoutAuthData.data;
+checkoutApp.controller('CheckoutLoginCtrl',['$scope','$http', '$location', '$state', function($scope, $http, $location, $state) {
+	
+}]);
 
+checkoutApp.controller('CheckoutSignupCtrl',['$scope','$http', '$location', '$state', function($scope, $http, $location, $state) {
+	
 }]);

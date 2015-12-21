@@ -2,20 +2,10 @@
 	<div ng-show="loading">
 		<span class="">Loading...</span>
 	</div>
-	<div ng-hide="loading" ng-switch="statusCode" class="col-md-12">
-		<div ng-switch-when="200">
-			<div ui-view></div>
+	<div ng-hide="loading" class="col-md-12">
+		<div ng-if="hasError" class="col-xs-12 has-error error">
+			<p ng-repeat="error in errors">{{error}}</p>
 		</div>
-		<div ng-switch-when="403">
-			<div ng-repeat="error in errors" ng-cloak ng-show="hasError" class="alert alert-warning" role="alert">
-				<span class="glyphicon glyphicon-warning-sign pull-left" aria-hidden="true"><strong>Warning:&nbsp;</strong></span>
-				<div ng-bind-html="error"></div>
-			</div>
-		</div>
-		<div ng-switch-when="500">
-			<div ng-cloak class="alert alert-danger" role="alert">
-				<p>Unknown error occurred</p>
-			</div>
-		</div>
+		<div ui-view></div>
 	</div>
 </div>
