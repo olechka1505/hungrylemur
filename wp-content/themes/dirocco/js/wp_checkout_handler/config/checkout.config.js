@@ -20,5 +20,10 @@ checkoutApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             templateUrl: "/wp-content/themes/dirocco/woocommerce/checkout/templates/signup.php",
             controller:'CheckoutSignupCtrl',
         })
+        .state('forgot', {
+            url: "/forgot",
+            templateUrl: "/wp-content/themes/dirocco/woocommerce/checkout/templates/forgot.php",
+            controller:'CheckoutForgotCtrl',
+        })
     $urlRouterProvider.otherwise("/billing");
 }]);

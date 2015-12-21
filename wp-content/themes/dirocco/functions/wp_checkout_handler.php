@@ -32,12 +32,38 @@ class WP_Checkout_handler
 
     function login()
     {
-        
+        if ($login = $this->data('loginData')) {
+            $response = array('status' => true);
+            $statusCode = 200;
+            $user = wp_signon(array(
+                'user_login'    => $login['login'],
+                'user_password' => $login['password'],
+            ), false);
+            if (is_wp_error($user)) {
+                $response['status'] = false;
+                $response['errors'][] = __('Invalid email or password.');
+                $statusCode = 500;
+            }                     
+        }
+        $this->response($response, $statusCode);
     }
     
     function signup()
     {
-        
+        if ($signup = $this->data()) {
+            $response = array('status' => true);
+            $statusCode = 200;
+            $user = wp_signon(array(
+                'user_login'    => $login['login'],
+                'user_password' => $login['password'],
+            ), false);
+            if (is_wp_error($user)) {
+                $response['status'] = false;
+                $response['errors'][] = __('Invalid email or password.');
+                $statusCode = 500;
+            }                     
+        }
+        $this->response($response, $statusCode);
     }
 
     function ajax_full_action($action)
@@ -62,7 +88,9 @@ class WP_Checkout_handler
         wp_enqueue_script('angular.service.checkout', get_template_directory_uri() . '/js/wp_checkout_handler/services/checkout.js', array('angular.module.checkout'));
         wp_enqueue_script('angular.controller.checkout', get_template_directory_uri() . '/js/wp_checkout_handler/controllers/checkout.controller.js', array('angular.service.checkout'));
         wp_enqueue_script('angular.config.checkout', get_template_directory_uri() . '/js/wp_checkout_handler/config/checkout.config.js', array('angular.controller.checkout'));
-
+        // load stylesheets
+        wp_enqueue_style('checkout.css', get_template_directory_uri() . '/css/wp_checkout_handler/checkout.css');
+        
         //some variables to scripts
         wp_localize_script('angular.service.checkout', 'ajaxUrl', $this->ajaxUrl);
         wp_localize_script('angular.service.checkout', 'ajaxPrefix', $this->ajaxPrefix);
@@ -87,13 +115,14 @@ class WP_Checkout_handler
         return ($status[$code])?$status[$code]:$status[500];
     }
 
-    public function get_data()
+    public function data($key = false)
     {
-        if ($postdata = file_get_contents("php://input")) {
-            return json_decode($postdata, TRUE);
-        } else {
-            return false;
+        if (isset($_POST['data'])) {
+            if ($data = json_decode(stripslashes($_POST['data']), TRUE)) {
+                return $data[$key];
+            }
         }
+        return false;
     }
 
 }

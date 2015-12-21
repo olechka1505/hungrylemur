@@ -9,10 +9,12 @@ checkoutApp.factory('CheckoutService', ['$http', '$rootScope', '$state', functio
                 method: 'POST',
                 data: data,
                 transformRequest: function(obj){
-                    var str = [];
+                    /*var str = [];
                     for(var p in obj)
                     str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
-                    return str.join('&');
+                    return str.join('&');*/
+                    
+                    return 'action=' + data.action + '&data=' + JSON.stringify(obj);
                 },
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             }).then(function(response){

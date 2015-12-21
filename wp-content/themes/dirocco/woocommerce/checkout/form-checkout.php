@@ -4,7 +4,7 @@
 	</div>
 	<div ng-hide="loading" class="col-md-12">
 		<div ng-if="hasError" class="col-xs-12 has-error error">
-			<p ng-repeat="error in errors">{{error}}</p>
+			<p ng-repeat="error in errors" ng-bind-html="error"></p>
 		</div>
 		<div ui-view></div>
 	</div>
