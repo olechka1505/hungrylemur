@@ -15,8 +15,8 @@ class WP_Checkout_handler
         add_action($this->ajax_full_action_nopriv('billing'), array($this, 'billing'));
         add_action($this->ajax_full_action('login'), array($this, 'login'));
         add_action($this->ajax_full_action_nopriv('login'), array($this, 'login'));
-
-
+        add_action($this->ajax_full_action('signup'), array($this, 'signup'));
+        add_action($this->ajax_full_action_nopriv('signup'), array($this, 'signup'));
     }
 
     function billing()
@@ -31,6 +31,11 @@ class WP_Checkout_handler
     }
 
     function login()
+    {
+        
+    }
+    
+    function signup()
     {
         
     }

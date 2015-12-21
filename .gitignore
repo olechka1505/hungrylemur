@@ -6,3 +6,5 @@ wp-includes
 wp-content/uploads
 wp-content/updraft
 wp-content/upgrade
+nbproject
+*~

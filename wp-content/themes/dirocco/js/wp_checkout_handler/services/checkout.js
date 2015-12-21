@@ -2,12 +2,19 @@ checkoutApp.factory('CheckoutService', ['$http', '$rootScope', '$state', functio
     return {
         request: function(action, data) {
             $rootScope.loading = true;
-            data.action = ajaxPrefix + action;
             data = data || {};
+            data.action = ajaxPrefix + action;
             return $http({
                 url: ajaxUrl,
                 method: 'POST',
                 data: data,
+                transformRequest: function(obj){
+                    var str = [];
+                    for(var p in obj)
+                    str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
+                    return str.join('&');
+                },
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             }).then(function(response){
                 $rootScope.statusCode = response.status;
                 $rootScope.loading = false;
