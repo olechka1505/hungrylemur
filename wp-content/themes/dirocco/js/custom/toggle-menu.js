@@ -1,4 +1,4 @@
-$(".whopper").click(function() {
-  $(".one").toggleClass("one-ani");
-  $(".two").toggleClass("two-ani");
+jQuery(".whopper").click(function() {
+  jQuery(".one").toggleClass("one-ani");
+  jQuery(".two").toggleClass("two-ani");
 });

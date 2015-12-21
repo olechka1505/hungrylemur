@@ -27,7 +27,36 @@ class WP_Checkout_handler
                 'message' => 'Forbidden',
             ), 403);    
         }
-        
+
+        global $current_user;
+        $billing = $this->data('billingData');
+        $shipping = $this->data('shippingData');
+
+        if ($billing) {
+            // update billing info
+            update_user_meta( $current_user->ID, "billing_first_name", $billing['first_name'] );
+            update_user_meta( $current_user->ID, "billing_last_name", $billing['last_name'] );
+            update_user_meta( $current_user->ID, "billing_company", $billing['company'] );
+            update_user_meta( $current_user->ID, "billing_address_1", $billing['address_1'] );
+            update_user_meta( $current_user->ID, "billing_postcode", $billing['postcode'] );
+            update_user_meta( $current_user->ID, "billing_phone", $billing['phone'] );
+            update_user_meta( $current_user->ID, "billing_suite", $billing['suite'] );
+
+            // update shipping info
+            $shipping = $billing['asShippingAddress'] ? $billing: $shipping;
+            update_user_meta( $current_user->ID, "shipping_first_name", $shipping['first_name'] );
+            update_user_meta( $current_user->ID, "shipping_last_name", $shipping['last_name'] );
+            update_user_meta( $current_user->ID, "shipping_company", $shipping['company'] );
+            update_user_meta( $current_user->ID, "shipping_address_1", $shipping['address_1'] );
+            update_user_meta( $current_user->ID, "shipping_postcode", $shipping['postcode'] );
+            update_user_meta( $current_user->ID, "shipping_phone", $shipping['phone'] );
+            update_user_meta( $current_user->ID, "shipping_suite", $shipping['suite'] );
+        }
+        // get billing details
+        $response['billing'] = $this->get_billing_details();
+        // get shipping details
+        $response['shipping'] = $this->get_shipping_details();
+        $this->response($response);
     }
 
     function login()
@@ -41,7 +70,7 @@ class WP_Checkout_handler
             ), false);
             if (is_wp_error($user)) {
                 $response['status'] = false;
-                $response['errors'][] = __('Invalid email or password.');
+                $response['errors'][] = $user->get_error_message();
                 $statusCode = 500;
             }                     
         }
@@ -51,8 +80,7 @@ class WP_Checkout_handler
     function signup()
     {
         if ($signup = $this->data('signupData')) {
-            $response = array('status' => true);
-            $statusCode = 200;
+            $response['status'] = true;
             // Validation
             if (empty($signup['login'])) {
                 $response['status'] = false;
@@ -71,7 +99,7 @@ class WP_Checkout_handler
                 $statusCode = 500;
             }
             
-            if ($user_id = username_exists($signup['login']) || email_exists($user_email)) {
+            if ($user_id = username_exists($signup['login']) || email_exists($signup['login'])) {
                 $response['status'] = false;
                 $response['errors'][] = __('This user is already exist.');
                 $statusCode = 500;
@@ -92,10 +120,42 @@ class WP_Checkout_handler
                     $response['status'] = false;
                     $response['errors'][] = __('Invalid email or password.');
                     $statusCode = 500;
+                } else {
+                    $response['status'] = true;
+                    $statusCode = 200;
                 }
             }
+        } else {
+            $response['status'] = false;
+            $response['errors'][] = __("Please fill all fields.");
+            $statusCode = 500;
         }
         $this->response($response, $statusCode);
+    }
+
+    function get_billing_details()
+    {
+        global $current_user;
+        $response['billing']['first_name'] = get_user_meta( $current_user->ID, 'billing_first_name', true );
+        $response['billing']['last_name'] = get_user_meta( $current_user->ID, 'billing_last_name', true );
+        $response['billing']['company'] = get_user_meta( $current_user->ID, 'billing_company', true );
+        $response['billing']['address_1'] = get_user_meta( $current_user->ID, 'billing_address_1', true );
+        $response['billing']['postcode'] = get_user_meta( $current_user->ID, 'billing_postcode', true );
+        $response['billing']['phone'] = get_user_meta( $current_user->ID, 'billing_phone', true );
+        $response['billing']['suite'] = get_user_meta( $current_user->ID, 'billing_suite', true );
+        return $response['billing'];
+    }
+
+    function get_shipping_details()
+    {
+        global $current_user;
+        $response['shipping']['first_name'] = get_user_meta( $current_user->ID, 'shipping_first_name', true );
+        $response['shipping']['last_name'] = get_user_meta( $current_user->ID, 'shipping_last_name', true );
+        $response['shipping']['company'] = get_user_meta( $current_user->ID, 'shipping_company', true );
+        $response['shipping']['address_1'] = get_user_meta( $current_user->ID, 'shipping_address_1', true );
+        $response['shipping']['postcode'] = get_user_meta( $current_user->ID, 'shipping_postcode', true );
+        $response['shipping']['suite'] = get_user_meta( $current_user->ID, 'shipping_suite', true );
+        return $response['shipping'];
     }
 
     function ajax_full_action($action)

@@ -1,0 +1,27 @@
+.align-center{float:none;margin: 0 auto;}
+.checkout-form {
+    border: solid 2px #a6a7a8;
+    padding: 15px;
+}
+.woocommerce-checkout #post-title{display: none;}
+.checkout-form {
+    color: #1f1f1f;
+}
+.checkout-form a {
+    font-size: 10px;
+}
+.checkout-form .checkout-form-title {
+    text-align: center;
+    border-bottom: solid 2px #dad9d9;
+    margin-bottom: 15px;
+}
+.checkout-form ::-webkit-input-placeholder {color:#1f1f1f;}
+.checkout-form ::-moz-placeholder          {color:#1f1f1f;}
+.checkout-form :-moz-placeholder           {color:#1f1f1f;}
+.checkout-form :-ms-input-placeholder      {color:#1f1f1f;}
+.checkout-form .btn-checkout {
+    background: #ffffff;
+    border: solid 1px #1f1f1f;
+    color: #1f1f1f;
+}
+.no-padding {padding: 0!important;}

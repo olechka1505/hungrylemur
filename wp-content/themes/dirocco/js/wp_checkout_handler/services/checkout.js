@@ -2,6 +2,8 @@ checkoutApp.factory('CheckoutService', ['$http', '$rootScope', '$state', functio
     return {
         request: function(action, data) {
             $rootScope.loading = true;
+            $rootScope.hasError = false;
+            $rootScope.statusCode = 200;
             data = data || {};
             data.action = ajaxPrefix + action;
             return $http({
