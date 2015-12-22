@@ -20,6 +20,16 @@ checkoutApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                 }],
             },
         })
+        .state('confirm', {
+            url: "/confirm",
+            templateUrl: "/wp-content/themes/dirocco/woocommerce/checkout/templates/confirm.php",
+            controller:'CheckoutConfirmCtrl',
+            resolve: {
+                checkoutConfirmData: ['CheckoutService', function(CheckoutService) {
+                    return CheckoutService.request('confirm', {})
+                }],
+            },
+        })
         .state('login', {
             url: "/login",
             templateUrl: "/wp-content/themes/dirocco/woocommerce/checkout/templates/login.php",
@@ -34,6 +44,11 @@ checkoutApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             url: "/guest",
             templateUrl: "/wp-content/themes/dirocco/woocommerce/checkout/templates/guest.php",
             controller:'CheckoutGuestCtrl',
+        })
+        .state('payment', {
+            url: "/payment",
+            templateUrl: "/wp-content/themes/dirocco/woocommerce/checkout/templates/payment.php",
+            controller:'CheckoutPaymentCtrl',
         })
         .state('forgot', {
             url: "/forgot",

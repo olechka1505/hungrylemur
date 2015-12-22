@@ -21,6 +21,10 @@ class WP_Checkout_handler
         add_action($this->ajax_full_action_nopriv('signup'), array($this, 'signup'));
         add_action($this->ajax_full_action('guest'), array($this, 'guest'));
         add_action($this->ajax_full_action_nopriv('guest'), array($this, 'guest'));
+        add_action($this->ajax_full_action('payment'), array($this, 'payment'));
+        add_action($this->ajax_full_action_nopriv('payment'), array($this, 'payment'));
+        add_action($this->ajax_full_action('confirm'), array($this, 'confirm'));
+        add_action($this->ajax_full_action_nopriv('confirm'), array($this, 'confirm'));
     }
 
     function details()
@@ -28,10 +32,19 @@ class WP_Checkout_handler
         // if user is not logged in
         $this->check_permissions();
         global $current_user;
-        // get billing details
-        $response['billing'] = $this->get_billing_details();
-        // get shipping details
-        $response['shipping'] = $this->get_shipping_details();
+        if ($delivery = $this->data('deliveryData')) {
+            if ($this->guest_data()) {
+                $this->set_guest_data('checkout_delivery', $delivery);
+                $response['status'] = true;
+            } else {
+                $response['status'] = update_user_meta( $current_user->ID, "checkout_delivery", $delivery );
+            }
+        } else {
+            // get billing details
+            $response['billing'] = $this->get_billing_details();
+            // get shipping details
+            $response['shipping'] = $this->get_shipping_details();
+        }
         $this->response($response);
     }
 
@@ -70,6 +83,8 @@ class WP_Checkout_handler
             $shipping = $billing['asShippingAddress'] ? $billing: $shipping;
             if ($response['status']) {
                 if ($this->guest_data()) {
+                    $billing['country'] = 'US';
+                    $shipping['country'] = 'US';
                     $this->set_guest_data('billing', $billing);
                     $this->set_guest_data('shipping', $shipping);
                 } else {
@@ -83,6 +98,7 @@ class WP_Checkout_handler
                     update_user_meta( $current_user->ID, "billing_suite", $billing['suite'] );
                     update_user_meta( $current_user->ID, "billing_city", $billing['city'] );
                     update_user_meta( $current_user->ID, "billing_state", $billing['state'] );
+                    update_user_meta( $current_user->ID, "billing_country", $billing['country'] );
 
                     // update shipping info
                     update_user_meta( $current_user->ID, "shipping_first_name", $shipping['first_name'] );
@@ -94,6 +110,7 @@ class WP_Checkout_handler
                     update_user_meta( $current_user->ID, "shipping_suite", $shipping['suite'] );
                     update_user_meta( $current_user->ID, "shipping_state", $shipping['state'] );
                     update_user_meta( $current_user->ID, "shipping_city", $shipping['city'] );
+                    update_user_meta( $current_user->ID, "shipping_country", $shipping['country'] );
                 }
             }
         }
@@ -118,6 +135,55 @@ class WP_Checkout_handler
                 $response['errors'][] = $user->get_error_message();
                 $statusCode = 500;
             }                     
+        }
+        $this->response($response, $statusCode);
+    }
+
+    function payment()
+    {
+        $response = array('status' => true);
+        $statusCode = 200;
+        $this->response($response, $statusCode);
+    }
+
+    function confirm()
+    {
+        global $woocommerce;
+        $products = $woocommerce->cart->get_cart();
+        if ($payment = $this->data('confirmData')) {
+            $response = array('status' => true);
+            $statusCode = 200;
+            $order = wc_create_order();
+            foreach ($products as $product) {
+                $order->add_product(get_product($product['product_id']), 1);
+            }
+
+            $order->set_address( $this->get_billing_details(), 'billing' );
+            $order->set_address( $this->get_shipping_details(), 'shipping' );
+            $order->calculate_totals();
+
+            $available_gateways = WC()->payment_gateways->get_available_payment_gateways();
+            $current_gateway = array_keys($available_gateways)[0];
+
+            update_post_meta( $order->id, '_payment_method', $current_gateway );
+            update_post_meta( $order->id, '_payment_method_title', $current_gateway );
+
+            WC()->session->order_awaiting_payment = $order->id;
+            $result = $available_gateways[$current_gateway]->process_payment( $order->id );
+
+        } else {
+            foreach ($products as $product) {
+                $_tax = new WC_Tax();
+                $rates = $_tax->get_rates($product['data']->get_tax_class());
+                $response['products'][] = array(
+                    'id'        => $product['product_id'],
+                    'name'      => $product['data']->post->post_name,
+                    'image'     => wp_get_attachment_url(get_post_thumbnail_id($product['product_id'])),
+                    'price'     => $product['data']->price,
+                );
+            }
+            $response['shipping'] = $this->get_delivery();
+            $response['tax'] = !empty($rates) ? $rates[0]: 0;
         }
         $this->response($response, $statusCode);
     }
@@ -217,6 +283,7 @@ class WP_Checkout_handler
             $response['billing']['suite'] = get_user_meta( $current_user->ID, 'billing_suite', true );
             $response['billing']['city'] = get_user_meta( $current_user->ID, 'billing_city', true );
             $response['billing']['state'] = get_user_meta( $current_user->ID, 'billing_state', true );
+            $response['billing']['country'] = get_user_meta( $current_user->ID, 'country', true );
         }
         return $response['billing'];
     }
@@ -235,6 +302,7 @@ class WP_Checkout_handler
             $response['shipping']['suite'] = get_user_meta( $current_user->ID, 'shipping_suite', true );
             $response['shipping']['city'] = get_user_meta( $current_user->ID, 'shipping_city', true );
             $response['shipping']['state'] = get_user_meta( $current_user->ID, 'shipping_state', true );
+            $response['shipping']['country'] = get_user_meta( $current_user->ID, 'country', true );
         }
         return $response['shipping'];
     }
@@ -312,6 +380,16 @@ class WP_Checkout_handler
     function guest_data()
     {
         return isset($_SESSION['checkout_as_guest']) ? $_SESSION['checkout_as_guest']: false;
+    }
+
+    function get_delivery()
+    {
+        if ($data = $this->guest_data()) {
+            return $data['checkout_delivery'];
+        } else {
+            global $current_user;
+            return get_user_meta( $current_user->ID, 'checkout_delivery', true );
+        }
     }
 
     function set_guest_data($key, $data)

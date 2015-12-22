@@ -30,7 +30,19 @@ checkoutApp.controller('CheckoutBillingCtrl',['$scope','$http', '$location', '$s
     }
 }]);
 checkoutApp.controller('CheckoutDetailsCtrl',['$scope','$http', '$location', '$state', 'checkoutDetailsData', 'CheckoutService', function($scope, $http, $location, $state, checkoutDetailsData, CheckoutService) {
-    $scope.details = checkoutDetailsData.data;
+    $scope.detailsData = checkoutDetailsData.data;
+    $scope.deliveryData = {};
+    $scope.process = false;
+
+    $scope.detailsSave = function() {
+        $scope.process = true;
+        var promise = CheckoutService.request('details', {deliveryData: $scope.deliveryData});
+        promise.then(function(response){
+            if (response.data.status) {
+                $state.go('payment');
+            }
+        })
+    }
 
 }]);
 
@@ -42,6 +54,38 @@ checkoutApp.controller('CheckoutLoginCtrl',['$scope','$http', '$location', '$sta
         promise.then(function(response){
             if (response.data.status) {
                 $state.go('billing');
+            }
+        })
+    }
+}]);
+
+checkoutApp.controller('CheckoutPaymentCtrl',['$scope','$http', '$location', '$state', 'CheckoutService', function($scope, $http, $location, $state, CheckoutService) {
+    $scope.paymentData = {};
+    $scope.years = [2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025,2026,2027,2028,2029,2030];
+    $scope.month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+    $scope.process = false;
+
+    $scope.payment = function() {
+        $scope.process = true;
+        var promise = CheckoutService.request('payment', {paymentData: $scope.paymentData});
+        promise.then(function(response){
+            if (response.data.status) {
+                $state.go('confirm');
+            }
+        })
+    }
+}]);
+
+checkoutApp.controller('CheckoutConfirmCtrl',['$scope','$http', '$location', '$state', 'checkoutConfirmData', 'CheckoutService', function($scope, $http, $location, $state, checkoutConfirmData, CheckoutService) {
+    $scope.confirmData = checkoutConfirmData.data;
+
+    console.log($scope.confirmData)
+
+    $scope.confirm = function() {
+        var promise = CheckoutService.request('confirm', {confirmData: $scope.confirmData});
+        promise.then(function(response){
+            if (response.data.status) {
+                //$state.go('billing');
             }
         })
     }
