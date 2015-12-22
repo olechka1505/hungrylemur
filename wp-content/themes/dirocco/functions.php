@@ -7,10 +7,13 @@
 
 // Use a child theme instead of placing custom functions here
 // http://codex.wordpress.org/Child_Themes
-
+/* Enable Session */
+if (!session_id()) {
+    session_start();
+}
 /* ------------------------------------------------------------------------- *
  *  Load theme files
-/* ------------------------------------------------------------------------- */	
+/* ------------------------------------------------------------------------- */
 require_once ('functions/modality-functions.php'); 			// Theme Custom Functions
 require_once ('functions/modality-customizer.php');			// Load Customizer
 require_once ('functions/modality-image-sliders.php'); 		// Theme Custom Functions

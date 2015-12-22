@@ -1,5 +1,5 @@
-<div class="col-xs-12">
-    <form class="col-md-3 col-xs-12 align-center checkout-form checkout-login" ng-submit="login()">
+<div class="col-md-8 col-xs-12 col-md-offset-2">
+    <form class="col-md-4 col-xs-12 checkout-form checkout-login" ng-submit="login()">
         <h3 class="checkout-form-title text-center">LOG IN</h3>
         <div class="form-group">
             <input ng-model="loginData.login" class="form-control" type="text" placeholder="Email address"/>
@@ -15,4 +15,10 @@
             <a ui-sref="signup" class="pull-right">CLICK HERE TO REGISTER</a>
         </div>
     </form>
+    <div class="col-md-4 col-xs-12 text-center checkout-or-section">
+        <h3>OR</h3>
+    </div>
+    <div class="col-md-4 col-xs-12 checkout-form checkout-as-guest">
+        <a ui-sref="guest">CHECKOUT AS GUEST</a>
+    </div>
 </div>

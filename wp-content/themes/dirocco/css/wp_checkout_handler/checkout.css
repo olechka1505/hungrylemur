@@ -24,3 +24,23 @@
     color: #1f1f1f;
 }
 .no-padding {padding: 0!important;}
+.checkout-or-section{
+    height: 318px;
+    position: relative;
+}
+.checkout-or-section h3{
+    line-height: 265px;
+    color: #1f1f1f;
+}
+.checkout-as-guest a{
+    font-size: 13px;
+    margin: 121px 0;
+    padding: 10px 0;
+    display: block;
+    text-align: center;
+    border-top: solid 2px #dad9d9;
+    border-bottom: solid 2px #dad9d9;
+}
+.checkout-form .error{
+    border: solid 1px red;
+}
