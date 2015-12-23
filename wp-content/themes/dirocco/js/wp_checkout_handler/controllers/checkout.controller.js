@@ -17,6 +17,7 @@ checkoutApp.controller('CheckoutBillingCtrl',['$scope','$http', '$location', '$s
             if (response.data.status) {
                 $state.go('details');
             } else {
+                $scope.process = false;
                 $scope.errors = response.data.invalid;
             }
         })

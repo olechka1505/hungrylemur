@@ -185,19 +185,6 @@ class WP_Checkout_handler
                 $response['errors'][] = __('Invalid promo code.');
                 $statusCode = 500;
             }
-                
-            
-            /*$coupons = $woocommerce->cart->get_coupons() ;                   
-            foreach ($coupons as $coupon) {
-                if ($post = get_post($coupon->id)) {
-                    if ($promo == $coupon->code) {
-                        $this->set_current_promo_id($coupon->id);
-                        $response['status'] = true;
-                        $statusCode = 200;
-                        break;
-                    }
-                }
-            }*/
         }
         $this->response($response, $statusCode);
     }
