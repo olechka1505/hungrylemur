@@ -1,13 +1,36 @@
 <?php
 
+require_once (get_template_directory() . '/lib/autoload.php');
+
 class WP_Checkout_handler
 {
-    public $ajaxUrl = false;
-    public $ajaxPrefix = false;
+    public $ajaxUrl             = false;
+    public $ajaxPrefix          = false;
+    private $braintree_config   = false;
+    private $clientToken        = false;
+    
+    
     function __construct()
     {
         $this->ajaxUrl = admin_url('admin-ajax.php');
         $this->ajaxPrefix = 'wp_checkout_';
+        $this->braintree_config = get_option('woocommerce_braintree_credit_card_settings');
+        
+        $environment = $this->braintree_config['environment'];
+        $public_key = $environment == 'sandbox' ? $this->braintree_config['sandbox_public_key']: $this->braintree_config['public_key'];
+        $private_key = $environment == 'sandbox' ? $this->braintree_config['sandbox_private_key']: $this->braintree_config['private_key'];
+        $merchant_id = $environment == 'sandbox' ? $this->braintree_config['sandbox_merchant_id']: $this->braintree_config['merchant_id'];
+        
+        //Braintree_Configuration::environment('sandbox');
+        //Braintree_Configuration::merchantId('38ghysq4hy6wvmhg');
+        //Braintree_Configuration::publicKey('6gp2br32grcb3g8t');
+        //Braintree_Configuration::privateKey('5b376992e5287b987b0a191b2184e4c4');
+        
+        Braintree_Configuration::environment($environment);
+        Braintree_Configuration::merchantId($merchant_id);
+        Braintree_Configuration::publicKey($public_key);
+        Braintree_Configuration::privateKey($private_key);
+        $this->clientToken = Braintree_ClientToken::generate();
 
         // Actions
         add_action('wp_enqueue_scripts', array($this, 'add_scripts'));
@@ -82,9 +105,13 @@ class WP_Checkout_handler
 
             $shipping = $billing['asShippingAddress'] ? $billing: $shipping;
             if ($response['status']) {
-                if ($this->guest_data()) {
+                if ($guest_data = $this->guest_data()) {
                     $billing['country'] = 'US';
                     $shipping['country'] = 'US';
+                    
+                    $billing['email'] = $guest_data['email'];
+                    $shipping['email'] = $guest_data['email'];
+                    
                     $this->set_guest_data('billing', $billing);
                     $this->set_guest_data('shipping', $shipping);
                 } else {
@@ -99,6 +126,7 @@ class WP_Checkout_handler
                     update_user_meta( $current_user->ID, "billing_city", $billing['city'] );
                     update_user_meta( $current_user->ID, "billing_state", $billing['state'] );
                     update_user_meta( $current_user->ID, "billing_country", $billing['country'] );
+                    update_user_meta( $current_user->ID, "billing_email", $current_user->user_email );
 
                     // update shipping info
                     update_user_meta( $current_user->ID, "shipping_first_name", $shipping['first_name'] );
@@ -111,6 +139,7 @@ class WP_Checkout_handler
                     update_user_meta( $current_user->ID, "shipping_state", $shipping['state'] );
                     update_user_meta( $current_user->ID, "shipping_city", $shipping['city'] );
                     update_user_meta( $current_user->ID, "shipping_country", $shipping['country'] );
+                    update_user_meta( $current_user->ID, "shipping_email", $current_user->user_email );
                 }
             }
         }
@@ -141,8 +170,41 @@ class WP_Checkout_handler
 
     function payment()
     {
+        global $current_user;
         $response = array('status' => true);
         $statusCode = 200;
+        if ($nonce = $this->data('nonce')) {
+            $billing = $this->get_billing_details();
+            
+            // create new user if not exist
+            if (!$braintree_user_id = $this->get_braintree_user_id()) {
+                $result = Braintree_Customer::create([
+                    'firstName'             => $billing['first_name'],
+                    'lastName'              => $billing['last_name'],
+                    'company'               => $billing['company'],
+                    'phone'                 => $billing['phone'],
+                    'email'                 => $billing['email'],
+                ]);
+                if ($guest = $this->guest_data()) {
+                    $this->set_guest_data('braintree_customer_id', $result->customer->id);
+                } else {
+                    update_user_meta( $current_user->ID, "braintree_customer_id", $result->customer->id );
+                }
+            }
+            
+            // create credit card
+            $result = Braintree_PaymentMethod::create([
+                'customerId' => $braintree_user_id,
+                'paymentMethodNonce' => $nonce,
+            ]);
+            
+            if (!$result->success) {
+                $response['status'] = false;
+                $response['errors'][] = __('Invalid card info.');
+                $statusCode = 500;
+            }
+        }
+        
         $this->response($response, $statusCode);
     }
 
@@ -291,6 +353,7 @@ class WP_Checkout_handler
             $response['billing']['city'] = get_user_meta( $current_user->ID, 'billing_city', true );
             $response['billing']['state'] = get_user_meta( $current_user->ID, 'billing_state', true );
             $response['billing']['country'] = get_user_meta( $current_user->ID, 'country', true );
+            $response['billing']['email'] = get_user_meta( $current_user->ID, 'billing_email', true );
         }
         return $response['billing'];
     }
@@ -310,6 +373,7 @@ class WP_Checkout_handler
             $response['shipping']['city'] = get_user_meta( $current_user->ID, 'shipping_city', true );
             $response['shipping']['state'] = get_user_meta( $current_user->ID, 'shipping_state', true );
             $response['shipping']['country'] = get_user_meta( $current_user->ID, 'country', true );
+            $response['shipping']['email'] = get_user_meta( $current_user->ID, 'shipping_email', true );
         }
         return $response['shipping'];
     }
@@ -344,6 +408,7 @@ class WP_Checkout_handler
         wp_localize_script('angular.service.checkout', 'ajaxUrl', $this->ajaxUrl);
         wp_localize_script('angular.service.checkout', 'ajaxPrefix', $this->ajaxPrefix);
         wp_localize_script('angular.controller.checkout', 'states', $states);
+        wp_localize_script('angular.controller.checkout', 'clientToken', $this->clientToken);
     }
 
     public function response($data, $status = 200)
@@ -381,6 +446,16 @@ class WP_Checkout_handler
             $this->response(array(
                 'message' => 'Forbidden',
             ), 403);
+        }
+    }
+    
+    function get_braintree_user_id()
+    {
+        global $current_user;
+        if ($data = $this->guest_data()) {
+            return isset($data['braintree_customer_id']) ? $data['braintree_customer_id']: false;
+        } else {
+            return get_user_meta( $current_user->ID, 'braintree_customer_id', true );
         }
     }
 

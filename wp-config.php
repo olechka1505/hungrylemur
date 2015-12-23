@@ -26,7 +26,7 @@ define('DB_NAME', 'hungryle_wpDiro2');
 define('DB_USER', 'root');
 
 /** MySQL database password */
-define('DB_PASSWORD', '1111');
+define('DB_PASSWORD', 'gfhjkm125RF');
 
 /** MySQL hostname */
 define('DB_HOST', 'localhost');
