@@ -80,6 +80,15 @@ checkoutApp.controller('CheckoutPaymentCtrl',['$scope','$http', '$location', '$s
     $scope.clientToken = clientToken;
     delete (clientToken);
     
+    $scope.promo = function(){
+        var promise = CheckoutService.request('promo', {promo: $scope.paymentData.promo});
+        promise.then(function(response){
+            if (response.data.status) {
+                //$state.go('payment');
+            }
+        })
+    },
+    
     $scope.payment = function() {
         $scope.process = true;
         

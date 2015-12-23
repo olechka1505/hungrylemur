@@ -48,6 +48,8 @@ class WP_Checkout_handler
         add_action($this->ajax_full_action_nopriv('payment'), array($this, 'payment'));
         add_action($this->ajax_full_action('confirm'), array($this, 'confirm'));
         add_action($this->ajax_full_action_nopriv('confirm'), array($this, 'confirm'));
+        add_action($this->ajax_full_action('promo'), array($this, 'promo'));
+        add_action($this->ajax_full_action_nopriv('promo'), array($this, 'promo'));
     }
 
     function details()
@@ -167,11 +169,42 @@ class WP_Checkout_handler
         }
         $this->response($response, $statusCode);
     }
+    
+    function promo()
+    {
+        global $woocommerce;
+        
+        if ($promo = $this->data('promo')) {
+            $response = array('status' => false);
+            $statusCode = 200;
+            
+            if (!$woocommerce->cart->add_discount( sanitize_text_field( $promo ))) {
+                $response['status'] = false;
+                $response['errors'][] = __('Invalid promo code.');
+                $statusCode = 500;
+            }
+                
+            
+            /*$coupons = $woocommerce->cart->get_coupons() ;                   
+            foreach ($coupons as $coupon) {
+                if ($post = get_post($coupon->id)) {
+                    if ($promo == $coupon->code) {
+                        $this->set_current_promo_id($coupon->id);
+                        $response['status'] = true;
+                        $statusCode = 200;
+                        break;
+                    }
+                }
+            }*/
+        }
+        $this->response($response, $statusCode);
+    }
 
     function payment()
     {
-        global $current_user;
+        global $current_user, $woocommerce;
         $response = array('status' => true);
+        
         $statusCode = 200;
         if ($nonce = $this->data('nonce')) {
             $billing = $this->get_billing_details();
@@ -198,7 +231,47 @@ class WP_Checkout_handler
                 'paymentMethodNonce' => $nonce,
             ]);
             
-            if (!$result->success) {
+            if ($result->success) {
+                
+                // create order
+                $products = $woocommerce->cart->get_cart();
+                $order = wc_create_order();
+                foreach ($products as $product) {
+                    $order->add_product(get_product($product['product_id']), 1);
+                }
+
+                $order->set_address( $this->get_billing_details(), 'billing' );
+                $order->set_address( $this->get_shipping_details(), 'shipping' );
+                $order->calculate_totals();
+
+                $available_gateways = WC()->payment_gateways->get_available_payment_gateways();
+                $current_gateway = 'braintree_credit_card';
+
+                update_post_meta( $order->id, '_payment_method', $current_gateway );
+                update_post_meta( $order->id, '_payment_method_title', $current_gateway );
+
+                WC()->session->order_awaiting_payment = $order->id;
+                
+                $result = Braintree_Transaction::sale([
+                    'amount' => $woocommerce->cart->total,
+                    'paymentMethodNonce' => $nonce,
+                    'options' => [
+                      'submitForSettlement' => true,
+                    ]
+                ]);
+                
+                if ($result->success) {
+                    $order = new WC_Order($order->id);
+                    $order->update_status('completed');
+                    $response['status'] = true;
+                    $statusCode = 200;
+                } else {
+                    $response['status'] = true;
+                    $response['errors'][] = __('Unsuccessfully.');
+                    $statusCode = 200;
+                }
+                //$result = $available_gateways[$current_gateway]->process_payment( $order->id );
+            } else {
                 $response['status'] = false;
                 $response['errors'][] = __('Invalid card info.');
                 $statusCode = 500;
@@ -477,6 +550,16 @@ class WP_Checkout_handler
     function set_guest_data($key, $data)
     {
         $_SESSION['checkout_as_guest'][$key]= $data;
+    }
+    
+    function get_current_promo_id()
+    {
+        return isset($_SESSION['current_promo_id']) ? $_SESSION['current_promo_id']: false;
+    }
+    
+    function set_current_promo_id($promo_id)
+    {
+        $_SESSION['current_promo_id'] = $promo_id;
     }
 
 }

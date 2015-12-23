@@ -35,7 +35,7 @@
                 <input type="text" ng-model="paymentData.promo" class="form-control" placeholder="Promo Code">
             </div>
             <div class="col-md-6 col-xs-12">
-                <input type="button" class="btn btn-checkout" value="APPLY">
+                <input type="button" ng-click="promo()" class="btn btn-checkout" value="APPLY">
             </div>
         </div>
 
