@@ -43,6 +43,7 @@
         <div class="separator"></div>
 
         <div class="col-xs-12 text-center">
+            <a ui-sref="details" class="btn btn-checkout">GO BACK</a>
             <input type="submit" class="btn btn-checkout" value="REVIEW & SUBMIT">
         </div>
     </form>

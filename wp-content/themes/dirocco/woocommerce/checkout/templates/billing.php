@@ -34,14 +34,14 @@
         </div>
 
         <div class="form-group">
+            <input ng-class="{error: is_invalid('phone', 'billing')}" ng-model="billingData.phone" class="form-control" type="text" placeholder="Phone Number"/>
+        </div>
+
+        <div class="form-group">
             <label>
                 <input ng-model="billingData.asShippingAddress" type="checkbox" />
                 ALSO USE THIS AS MY SHIPPING ADDRESS
             </label>
-        </div>
-
-        <div class="form-group">
-            <input ng-class="{error: is_invalid('phone', 'billing')}" ng-model="billingData.phone" class="form-control" type="text" placeholder="Phone Number"/>
         </div>
 
         <div class="form-group clearfix">

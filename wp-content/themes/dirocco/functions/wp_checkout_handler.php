@@ -64,7 +64,8 @@ class WP_Checkout_handler
                 $this->set_guest_data('checkout_delivery', $delivery);
                 $response['status'] = true;
             } else {
-                $response['status'] = update_user_meta( $current_user->ID, "checkout_delivery", $delivery );
+                update_user_meta( $current_user->ID, "checkout_delivery", $delivery ) || add_user_meta( $current_user->ID, "checkout_delivery", $delivery, true );
+                $response['status'] = true;
             }
         } else {
             // get billing details
@@ -222,9 +223,17 @@ class WP_Checkout_handler
         $statusCode = 200;
         if ($nonce = $this->data('nonce')) {
             $billing = $this->get_billing_details();
-            
+
+            $braintree_user_id = $this->get_braintree_user_id();
+            try {
+                $bt_customer = Braintree_Customer::find($braintree_user_id);
+            } catch (Exception $e) {
+                delete_user_meta($current_user->ID, "braintree_customer_id");
+                $braintree_user_id = $this->get_braintree_user_id();
+            }
+
             // create new user if not exist
-            if (!$braintree_user_id = $this->get_braintree_user_id()) {
+            if (!$braintree_user_id) {
                 $result = Braintree_Customer::create([
                     'firstName'             => $billing['first_name'],
                     'lastName'              => $billing['last_name'],
@@ -277,7 +286,7 @@ class WP_Checkout_handler
                 if ($data = $this->guest_data()) {
                     $this->set_guest_data('_braintree_transaction_id', $result->transaction->id);
                 } else {
-                    update_post_meta( $order->id, '_braintree_transaction_id', $result->transaction->id );
+                    update_user_meta( $current_user->ID, '_braintree_transaction_id', $result->transaction->id ) || update_user_meta( $current_user->ID, '_braintree_transaction_id', $result->transaction->id, true );
                 }
 
                 WC()->session->order_awaiting_payment = $order->id;
@@ -420,7 +429,8 @@ class WP_Checkout_handler
             $response['billing']['suite'] = get_user_meta( $current_user->ID, 'billing_suite', true );
             $response['billing']['city'] = get_user_meta( $current_user->ID, 'billing_city', true );
             $response['billing']['state'] = get_user_meta( $current_user->ID, 'billing_state', true );
-            $response['billing']['country'] = get_user_meta( $current_user->ID, 'country', true );
+//            $response['billing']['country'] = get_user_meta( $current_user->ID, 'country', true );
+            $response['billing']['country'] = 'US';
             $response['billing']['email'] = get_user_meta( $current_user->ID, 'billing_email', true );
         }
         return $response['billing'];
@@ -440,7 +450,8 @@ class WP_Checkout_handler
             $response['shipping']['suite'] = get_user_meta( $current_user->ID, 'shipping_suite', true );
             $response['shipping']['city'] = get_user_meta( $current_user->ID, 'shipping_city', true );
             $response['shipping']['state'] = get_user_meta( $current_user->ID, 'shipping_state', true );
-            $response['shipping']['country'] = get_user_meta( $current_user->ID, 'country', true );
+//            $response['shipping']['country'] = get_user_meta( $current_user->ID, 'country', true );
+            $response['shipping']['country'] = 'US';
             $response['shipping']['email'] = get_user_meta( $current_user->ID, 'shipping_email', true );
         }
         return $response['shipping'];
