@@ -408,7 +408,7 @@ class WP_Checkout_handler
     function get_billing_details()
     {
         global $current_user;
-        if ($data = $this->guest_data() && !is_user_logged_in()) {
+        if ($data = $this->guest_data()) {
             $response['billing'] = $data['billing'];
         } else {
             $response['billing']['first_name'] = get_user_meta( $current_user->ID, 'billing_first_name', true );
@@ -529,7 +529,7 @@ class WP_Checkout_handler
 
     function guest_data()
     {
-        return isset($_SESSION['checkout_as_guest']) && !is_user_logged_in() ? $_SESSION['checkout_as_guest']: false;
+        return (isset($_SESSION['checkout_as_guest']) && !is_user_logged_in()) ? $_SESSION['checkout_as_guest']: false;
     }
 
     function get_delivery()
