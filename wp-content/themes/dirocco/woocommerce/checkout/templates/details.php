@@ -1,15 +1,25 @@
 <div class="col-xs-12" ng-if="!process">
     <div class="col-md-4 col-md-offset-1 col-xs-12 checkout-details checkout-billing-details">
-        <h3 class="checkout-form-title text-left">BILLING ADDRESS</h3>
-        <p>{{detailsData.billing.first_name}} {{detailsData.billing.last_name}}</p>
-        <p>{{detailsData.billing.suite}}, {{detailsData.billing.company}}</p>
-        <p>{{detailsData.billing.address_1}}, {{detailsData.billing.postcode}}</p>
+        <div class="col-xs-11 no-padding">
+            <h3 class="checkout-form-title text-left">BILLING ADDRESS</h3>
+            <p>{{detailsData.billing.first_name}} {{detailsData.billing.last_name}}</p>
+            <p>{{detailsData.billing.suite}}, {{detailsData.billing.company}}</p>
+            <p>{{detailsData.billing.address_1}}, {{detailsData.billing.postcode}}</p>
+        </div>
+        <div class="col-xs-1 no-padding">
+            <a ng-click="edit('billing')" class="btn-edit"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
+        </div>
     </div>
     <div class="col-md-4 col-md-offset-1 col-xs-12 checkout-details checkout-shipping-details">
-        <h3 class="checkout-form-title text-left">SHIPPING ADDRESS</h3>
-        <p>{{detailsData.shipping.first_name}} {{detailsData.shipping.last_name}}</p>
-        <p>{{detailsData.shipping.suite}}, {{detailsData.shipping.company}}</p>
-        <p>{{detailsData.shipping.address_1}}, {{detailsData.shipping.postcode}}</p>
+        <div class="col-xs-11 no-padding">
+            <h3 class="checkout-form-title text-left">SHIPPING ADDRESS</h3>
+            <p>{{detailsData.shipping.first_name}} {{detailsData.shipping.last_name}}</p>
+            <p>{{detailsData.shipping.suite}}, {{detailsData.shipping.company}}</p>
+            <p>{{detailsData.shipping.address_1}}, {{detailsData.shipping.postcode}}</p>
+        </div>
+        <div class="col-xs-1 no-padding">
+            <a ng-click="edit('shipping')" class="btn-edit"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
+        </div>
     </div>
     <div class="col-md-4 col-md-offset-1 col-xs-12 checkout-details checkout-delivery-details">
         <h3 class="checkout-form-title text-left">DELIVERY OPTIONS</h3>

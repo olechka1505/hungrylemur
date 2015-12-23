@@ -1,8 +1,10 @@
-checkoutApp.controller('CheckoutBillingCtrl',['$scope','$http', '$location', '$state', 'checkoutBillingData', 'CheckoutService', function($scope, $http, $location, $state, checkoutBillingData, CheckoutService) {
+checkoutApp.controller('CheckoutBillingCtrl',['$scope','$http', '$location', '$state', '$rootScope', 'checkoutBillingData', 'CheckoutService', function($scope, $http, $location, $state, $rootScope, checkoutBillingData, CheckoutService) {
     $scope.billingData = checkoutBillingData.data.billing;
     $scope.shippingData = checkoutBillingData.data.shipping;
     $scope.states = states;
     $scope.process = false;
+    $scope.billingData.asShippingAddress = $rootScope.type != 'shipping';
+
     $scope.errors = {
         billing: [],
         shipping: [],
@@ -29,7 +31,7 @@ checkoutApp.controller('CheckoutBillingCtrl',['$scope','$http', '$location', '$s
         return false;
     }
 }]);
-checkoutApp.controller('CheckoutDetailsCtrl',['$scope','$http', '$location', '$state', 'checkoutDetailsData', 'CheckoutService', function($scope, $http, $location, $state, checkoutDetailsData, CheckoutService) {
+checkoutApp.controller('CheckoutDetailsCtrl',['$scope','$http', '$location', '$state', '$rootScope', 'checkoutDetailsData', 'CheckoutService', function($scope, $http, $location, $state, $rootScope, checkoutDetailsData, CheckoutService) {
     $scope.detailsData = checkoutDetailsData.data;
     $scope.deliveryData = {};
     $scope.process = false;
@@ -42,6 +44,11 @@ checkoutApp.controller('CheckoutDetailsCtrl',['$scope','$http', '$location', '$s
                 $state.go('payment');
             }
         })
+    }
+
+    $scope.edit = function(type){
+        $rootScope.type = type;
+        $state.go('billing');
     }
 
 }]);
@@ -78,8 +85,6 @@ checkoutApp.controller('CheckoutPaymentCtrl',['$scope','$http', '$location', '$s
 
 checkoutApp.controller('CheckoutConfirmCtrl',['$scope','$http', '$location', '$state', 'checkoutConfirmData', 'CheckoutService', function($scope, $http, $location, $state, checkoutConfirmData, CheckoutService) {
     $scope.confirmData = checkoutConfirmData.data;
-
-    console.log($scope.confirmData)
 
     $scope.confirm = function() {
         var promise = CheckoutService.request('confirm', {confirmData: $scope.confirmData});

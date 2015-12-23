@@ -52,3 +52,9 @@
 }
 .checkout-confirm-table img{max-width: 100%;}
 .checkout-confirm-table tr td {width: 25%;border:none;font-weight: 600;}
+.checkout-details .btn-edit {
+    font-size: 16px;
+    margin-top: 32px;
+    display: none;
+}
+.checkout-details:hover .btn-edit {display: block;}

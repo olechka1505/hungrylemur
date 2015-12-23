@@ -35,7 +35,7 @@
 
         <div class="form-group">
             <label>
-                <input ng-init="billingData.asShippingAddress = true"  ng-model="billingData.asShippingAddress" type="checkbox" />
+                <input ng-model="billingData.asShippingAddress" type="checkbox" />
                 ALSO USE THIS AS MY SHIPPING ADDRESS
             </label>
         </div>

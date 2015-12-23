@@ -163,7 +163,7 @@ class WP_Checkout_handler
             $order->calculate_totals();
 
             $available_gateways = WC()->payment_gateways->get_available_payment_gateways();
-            $current_gateway = array_keys($available_gateways)[0];
+            $current_gateway = 'braintree_credit_card';
 
             update_post_meta( $order->id, '_payment_method', $current_gateway );
             update_post_meta( $order->id, '_payment_method_title', $current_gateway );
@@ -172,18 +172,25 @@ class WP_Checkout_handler
             $result = $available_gateways[$current_gateway]->process_payment( $order->id );
 
         } else {
-            foreach ($products as $product) {
-                $_tax = new WC_Tax();
-                $rates = $_tax->get_rates($product['data']->get_tax_class());
-                $response['products'][] = array(
-                    'id'        => $product['product_id'],
-                    'name'      => $product['data']->post->post_name,
-                    'image'     => wp_get_attachment_url(get_post_thumbnail_id($product['product_id'])),
-                    'price'     => $product['data']->price,
-                );
+            if (!empty($products)) {
+                foreach ($products as $product) {
+                    $_tax = new WC_Tax();
+                    $rates = $_tax->get_rates($product['data']->get_tax_class());
+                    $response['products'][] = array(
+                        'id'        => $product['product_id'],
+                        'name'      => $product['data']->post->post_name,
+                        'image'     => wp_get_attachment_url(get_post_thumbnail_id($product['product_id'])),
+                        'price'     => $product['data']->price,
+                    );
+                }
+                $response['shipping'] = $this->get_delivery();
+                $response['tax'] = !empty($rates) ? $rates[0]: 0;
+            } else {
+                $response['status'] = false;
+                $response['errors'][] = __('No products.');
+                $statusCode = 500;
             }
-            $response['shipping'] = $this->get_delivery();
-            $response['tax'] = !empty($rates) ? $rates[0]: 0;
+
         }
         $this->response($response, $statusCode);
     }

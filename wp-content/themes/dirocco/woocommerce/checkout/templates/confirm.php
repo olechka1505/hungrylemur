@@ -22,7 +22,7 @@
     <div class="separator"></div>
     <div class="separator"></div>
 
-    <div class="col-xs-12 text-center">
-        <input type="submit" class="btn btn-checkout" value="REVIEW & SUBMIT">
+    <div class="col-xs-12 text-right">
+        <input type="button" ng-click="confirm()" class="btn btn-checkout" value="SUBMIT ORDER">
     </div>
 </div>
