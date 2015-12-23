@@ -20,13 +20,13 @@ checkoutApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                 }],
             },
         })
-        .state('confirm', {
-            url: "/confirm",
-            templateUrl: "/wp-content/themes/dirocco/woocommerce/checkout/templates/confirm.php",
-            controller:'CheckoutConfirmCtrl',
+        .state('complete', {
+            url: "/complete/:order_id",
+            templateUrl: "/wp-content/themes/dirocco/woocommerce/checkout/templates/complete.php",
+            controller:'CheckoutCompleteCtrl',
             resolve: {
-                checkoutConfirmData: ['CheckoutService', function(CheckoutService) {
-                    return CheckoutService.request('confirm', {})
+                checkoutCompleteData: ['CheckoutService', '$stateParams', function(CheckoutService, $stateParams) {
+                    return CheckoutService.request('complete', {order_id: $stateParams.order_id})
                 }],
             },
         })

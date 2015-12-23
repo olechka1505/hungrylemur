@@ -50,6 +50,8 @@ class WP_Checkout_handler
         add_action($this->ajax_full_action_nopriv('confirm'), array($this, 'confirm'));
         add_action($this->ajax_full_action('promo'), array($this, 'promo'));
         add_action($this->ajax_full_action_nopriv('promo'), array($this, 'promo'));
+        add_action($this->ajax_full_action('complete'), array($this, 'complete'));
+        add_action($this->ajax_full_action_nopriv('complete'), array($this, 'complete'));
     }
 
     function details()
@@ -218,21 +220,32 @@ class WP_Checkout_handler
                     'phone'                 => $billing['phone'],
                     'email'                 => $billing['email'],
                 ]);
-                if ($guest = $this->guest_data()) {
-                    $this->set_guest_data('braintree_customer_id', $result->customer->id);
+                if ($result->success) {
+                    if ($guest = $this->guest_data()) {
+                        $this->set_guest_data('braintree_customer_id', $result->customer->id);
+                        $braintree_user_id = $this->get_braintree_user_id();
+                    } else {
+                        update_user_meta( $current_user->ID, "braintree_customer_id", $result->customer->id );
+                    }
                 } else {
-                    update_user_meta( $current_user->ID, "braintree_customer_id", $result->customer->id );
+                    $response['status'] = true;
+                    $response['errors'][] = __("Customer wasn't created.");
+                    $statusCode = 500;
                 }
             }
-            
-            // create credit card
-            $result = Braintree_PaymentMethod::create([
-                'customerId' => $braintree_user_id,
+            $delivery = $this->get_delivery();
+            $total = (isset($delivery['expedited']) && $delivery['expedited']) ?  $woocommerce->cart->total + 40: $woocommerce->cart->total;
+            // create transaction
+            $result = Braintree_Transaction::sale([
+                'amount' => $total,
                 'paymentMethodNonce' => $nonce,
+                'customerId' => $braintree_user_id,
+                'options' => [
+                    'storeInVaultOnSuccess' => true,
+                ]
             ]);
-            
+
             if ($result->success) {
-                
                 // create order
                 $products = $woocommerce->cart->get_cart();
                 $order = wc_create_order();
@@ -249,31 +262,20 @@ class WP_Checkout_handler
 
                 update_post_meta( $order->id, '_payment_method', $current_gateway );
                 update_post_meta( $order->id, '_payment_method_title', $current_gateway );
+                if ($data = $this->guest_data()) {
+                    $this->set_guest_data('_braintree_transaction_id', $result->transaction->id);
+                } else {
+                    update_post_meta( $order->id, '_braintree_transaction_id', $result->transaction->id );
+                }
 
                 WC()->session->order_awaiting_payment = $order->id;
-                
-                $result = Braintree_Transaction::sale([
-                    'amount' => $woocommerce->cart->total,
-                    'paymentMethodNonce' => $nonce,
-                    'options' => [
-                      'submitForSettlement' => true,
-                    ]
-                ]);
-                
-                if ($result->success) {
-                    $order = new WC_Order($order->id);
-                    $order->update_status('completed');
-                    $response['status'] = true;
-                    $statusCode = 200;
-                } else {
-                    $response['status'] = true;
-                    $response['errors'][] = __('Unsuccessfully.');
-                    $statusCode = 200;
-                }
-                //$result = $available_gateways[$current_gateway]->process_payment( $order->id );
+                $order->update_status('completed');
+                $response['status'] = true;
+                $response['order_id'] = $order->id;
+                $statusCode = 200;
             } else {
                 $response['status'] = false;
-                $response['errors'][] = __('Invalid card info.');
+                $response['errors'][] = $result->message;
                 $statusCode = 500;
             }
         }
@@ -281,50 +283,31 @@ class WP_Checkout_handler
         $this->response($response, $statusCode);
     }
 
-    function confirm()
+    function complete()
     {
         global $woocommerce;
-        $products = $woocommerce->cart->get_cart();
-        if ($payment = $this->data('confirmData')) {
-            $response = array('status' => true);
-            $statusCode = 200;
-            $order = wc_create_order();
-            foreach ($products as $product) {
-                $order->add_product(get_product($product['product_id']), 1);
+        $response = array('status' => true);
+        $statusCode = 200;
+
+        if ($order_id = $this->data('order_id')) {
+            $order = new WC_Order($order_id);
+            $products = $order->get_items();
+            $response['tax'] = 0;
+            foreach ($products as $id => $product) {
+                $response['products'][] = array(
+                    'id'                => $product['product_id'],
+                    'name'              => $product['name'],
+                    'qty'               => $product['qty'],
+                    'image'             => wp_get_attachment_url(get_post_thumbnail_id($product['product_id'])),
+                    'price'             => $product['line_total'],
+                    'price_with_tax'    => $product['line_subtotal'],
+                    'tax'               => $product['line_tax'],
+                );
+                $response['tax'] += $product['line_tax'];
             }
-
-            $order->set_address( $this->get_billing_details(), 'billing' );
-            $order->set_address( $this->get_shipping_details(), 'shipping' );
-            $order->calculate_totals();
-
-            $available_gateways = WC()->payment_gateways->get_available_payment_gateways();
-            $current_gateway = 'braintree_credit_card';
-
-            update_post_meta( $order->id, '_payment_method', $current_gateway );
-            update_post_meta( $order->id, '_payment_method_title', $current_gateway );
-
-            WC()->session->order_awaiting_payment = $order->id;
-            $result = $available_gateways[$current_gateway]->process_payment( $order->id );
-
-        } else {
-            if (!empty($products)) {
-                foreach ($products as $product) {
-                    $_tax = new WC_Tax();
-                    $rates = $_tax->get_rates($product['data']->get_tax_class());
-                    $response['products'][] = array(
-                        'id'        => $product['product_id'],
-                        'name'      => $product['data']->post->post_name,
-                        'image'     => wp_get_attachment_url(get_post_thumbnail_id($product['product_id'])),
-                        'price'     => $product['data']->price,
-                    );
-                }
-                $response['shipping'] = $this->get_delivery();
-                $response['tax'] = !empty($rates) ? $rates[0]: 0;
-            } else {
-                $response['status'] = false;
-                $response['errors'][] = __('No products.');
-                $statusCode = 500;
-            }
+            $response['order_id'] = $this->get_transaction_id();
+            $response['shipping'] = $this->get_delivery();
+            $response['shop_url'] = get_permalink( woocommerce_get_page_id( 'shop' ));
 
         }
         $this->response($response, $statusCode);
@@ -551,6 +534,11 @@ class WP_Checkout_handler
     {
         $_SESSION['checkout_as_guest'][$key]= $data;
     }
+
+    function unset_guest_data()
+    {
+        unset($_SESSION['checkout_as_guest']);
+    }
     
     function get_current_promo_id()
     {
@@ -560,6 +548,15 @@ class WP_Checkout_handler
     function set_current_promo_id($promo_id)
     {
         $_SESSION['current_promo_id'] = $promo_id;
+    }
+    function get_transaction_id()
+    {
+        if ($data = $this->guest_data()) {
+            return $data['_braintree_transaction_id'];
+        } else {
+            global $current_user;
+            return get_user_meta( $current_user->ID, '_braintree_transaction_id', true );
+        }
     }
 
 }

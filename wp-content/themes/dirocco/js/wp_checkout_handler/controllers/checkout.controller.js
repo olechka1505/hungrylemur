@@ -96,8 +96,8 @@ checkoutApp.controller('CheckoutPaymentCtrl',['$scope','$http', '$location', '$s
         $scope.errors.month = typeof($scope.paymentData.month) == 'undefined' || !$scope.paymentData.month.length;
         $scope.errors.year = typeof($scope.paymentData.year) == 'undefined' || !$scope.paymentData.year.length;
         $scope.errors.cvc = typeof($scope.paymentData.cvc) == 'undefined' || !$scope.paymentData.cvc.length;
-        
-        
+
+
         if (!$scope.errors.number && !$scope.errors.month && !$scope.errors.year && !$scope.errors.cvc) {
             var client = new braintree.api.Client({clientToken: $scope.clientToken});
             client.tokenizeCard({
@@ -108,32 +108,20 @@ checkoutApp.controller('CheckoutPaymentCtrl',['$scope','$http', '$location', '$s
             }, function (err, nonce, card) {
                 var promise = CheckoutService.request('payment', {nonce: nonce});
                 promise.then(function(response){
-                    console.log('response', response);
+                    if (response.status !== 500) {
+                        $state.go('complete', {order_id: response.data.order_id});
+                    }
                 })
-            //console.log(err)
-            //console.log(nonce)
-            //console.log(card)
             });
-            
-            //braintree.setup($scope.clientToken, "custom", {id: "checkout-payment"});
         }
-        
-        
     }
     
 }]);
 
-checkoutApp.controller('CheckoutConfirmCtrl',['$scope','$http', '$location', '$state', 'checkoutConfirmData', 'CheckoutService', function($scope, $http, $location, $state, checkoutConfirmData, CheckoutService) {
-    $scope.confirmData = checkoutConfirmData.data;
+checkoutApp.controller('CheckoutCompleteCtrl',['$scope','$http', '$location', '$state', 'checkoutCompleteData', 'CheckoutService', function($scope, $http, $location, $state, checkoutCompleteData, CheckoutService) {
+    $scope.completeData = checkoutCompleteData.data;
 
-    $scope.confirm = function() {
-        var promise = CheckoutService.request('confirm', {confirmData: $scope.confirmData});
-        promise.then(function(response){
-            if (response.data.status) {
-                //$state.go('billing');
-            }
-        })
-    }
+
 }]);
 
 checkoutApp.controller('CheckoutGuestCtrl',['$scope','$http', '$location', '$state', 'CheckoutService', function($scope, $http, $location, $state, CheckoutService) {
