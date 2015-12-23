@@ -79,6 +79,9 @@ class WP_Checkout_handler
     {
         // if user is not logged in
         $this->check_permissions();
+        $response['status'] = true;
+        $statusCode = 200;
+
         $response = array(
             'status'  => true,
             'invalid' => array(
@@ -146,12 +149,16 @@ class WP_Checkout_handler
                     update_user_meta( $current_user->ID, "shipping_email", $current_user->user_email );
                 }
             }
+        } else {
+            $response['status'] = false;
+            $response['errors'][] = __('Fill all fields please.');
+            $statusCode = 500;
         }
         // get billing details
         $response['billing'] = $this->get_billing_details();
         // get shipping details
         $response['shipping'] = $this->get_shipping_details();
-        $this->response($response);
+        $this->response($response, $statusCode);
     }
 
     function login()
