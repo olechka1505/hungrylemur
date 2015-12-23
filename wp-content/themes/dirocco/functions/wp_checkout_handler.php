@@ -78,7 +78,22 @@ class WP_Checkout_handler
     function billing()
     {
         // if user is not logged in
+//        unset($_SESSION);
         $this->check_permissions();
+
+        $_billing = $_shipping = array(
+            'first_name' => '',
+            'last_name' => '',
+            'company' => '',
+            'address_1' => '',
+            'postcode' => '',
+            'phone' => '',
+            'suite' => '',
+            'city' => '',
+            'state' => '',
+            'country' => 'US',
+        );
+
         $response['status'] = true;
         $statusCode = 200;
 
@@ -93,6 +108,7 @@ class WP_Checkout_handler
         $billing = $this->data('billingData');
         $shipping = $this->data('shippingData');
         if ($billing) {
+            $billing = array_replace_recursive($_billing, $billing);
             // validation billing
             foreach ($billing as $key => $item) {
                 if (empty($item)) {
@@ -111,6 +127,7 @@ class WP_Checkout_handler
             }
 
             $shipping = $billing['asShippingAddress'] ? $billing: $shipping;
+            $shipping = array_replace_recursive($_shipping, $shipping);
             if ($response['status']) {
                 if ($guest_data = $this->guest_data()) {
                     $billing['country'] = 'US';
@@ -149,10 +166,6 @@ class WP_Checkout_handler
                     update_user_meta( $current_user->ID, "shipping_email", $current_user->user_email );
                 }
             }
-        } else {
-            $response['status'] = false;
-            $response['errors'][] = __('Fill all fields please.');
-            $statusCode = 500;
         }
         // get billing details
         $response['billing'] = $this->get_billing_details();
