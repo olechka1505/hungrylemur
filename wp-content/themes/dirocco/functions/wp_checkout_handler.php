@@ -107,6 +107,11 @@ class WP_Checkout_handler
         global $current_user;
         $billing = $this->data('billingData');
         $shipping = $this->data('shippingData');
+
+        $guest = $this->guest_data();
+        $billing['country'] = $shipping['country'] = 'US';
+        $billing['email'] = $shipping['email'] = is_user_logged_in() ? $current_user->user_email : $guest['email'];
+
         if ($billing) {
             $billing = array_replace_recursive($_billing, $billing);
             // validation billing
@@ -403,7 +408,7 @@ class WP_Checkout_handler
     function get_billing_details()
     {
         global $current_user;
-        if ($data = $this->guest_data()) {
+        if ($data = $this->guest_data() && !is_user_logged_in()) {
             $response['billing'] = $data['billing'];
         } else {
             $response['billing']['first_name'] = get_user_meta( $current_user->ID, 'billing_first_name', true );
@@ -524,7 +529,7 @@ class WP_Checkout_handler
 
     function guest_data()
     {
-        return isset($_SESSION['checkout_as_guest']) ? $_SESSION['checkout_as_guest']: false;
+        return isset($_SESSION['checkout_as_guest']) && !is_user_logged_in() ? $_SESSION['checkout_as_guest']: false;
     }
 
     function get_delivery()
