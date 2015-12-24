@@ -36,6 +36,17 @@ checkoutApp.controller('CheckoutDetailsCtrl',['$scope','$http', '$location', '$s
     $scope.detailsData = checkoutDetailsData.data;
     $scope.deliveryData = {};
     $scope.process = false;
+    $scope.paymentData = {};
+    $scope.years = [2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025,2026,2027,2028,2029,2030];
+    $scope.month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+    $scope.errors = {
+        number: false,
+        month: false,
+        year: false,
+        cvc: false,
+    };
+    $scope.clientToken = clientToken;
+    delete (clientToken);
 
     $scope.detailsSave = function() {
         $scope.process = true;
@@ -51,6 +62,42 @@ checkoutApp.controller('CheckoutDetailsCtrl',['$scope','$http', '$location', '$s
         $rootScope.type = type;
         $state.go('billing');
     }
+    
+    $scope.promo = function(){
+        var promise = CheckoutService.request('promo', {promo: $scope.paymentData.promo});
+        promise.then(function(response){
+            if (response.data.status) {
+                //$state.go('payment');
+            }
+        })
+    },
+    
+    $scope.payment = function() {
+        $scope.errors.number = typeof($scope.paymentData.number) == 'undefined' || !$scope.paymentData.number.length;
+        $scope.errors.month = typeof($scope.paymentData.month) == 'undefined' || !$scope.paymentData.month.length;
+        $scope.errors.year = typeof($scope.paymentData.year) == 'undefined' || !$scope.paymentData.year.length;
+        $scope.errors.cvc = typeof($scope.paymentData.cvc) == 'undefined' || !$scope.paymentData.cvc.length;
+
+        if (!$scope.errors.number && !$scope.errors.month && !$scope.errors.year && !$scope.errors.cvc) {
+            $scope.process = true;
+            var client = new braintree.api.Client({clientToken: $scope.clientToken});
+            client.tokenizeCard({
+              number: $scope.paymentData.number,
+              expirationMonth: $scope.paymentData.month,
+              expirationYear: $scope.paymentData.year,
+              cvv: $scope.paymentData.cvc,
+            }, function (err, nonce, card) {
+                var promise = CheckoutService.request('payment', {nonce: nonce, deliveryData: $scope.deliveryData});
+                promise.then(function(response){
+                    if (response.status !== 500) {
+                        $state.go('complete', {order_id: response.data.order_id});
+                    } else {
+                        $scope.process = false;
+                    }
+                })
+            });
+        }
+    }
 
 }]);
 
@@ -65,58 +112,6 @@ checkoutApp.controller('CheckoutLoginCtrl',['$scope','$http', '$location', '$sta
             }
         })
     }
-}]);
-
-checkoutApp.controller('CheckoutPaymentCtrl',['$scope','$http', '$location', '$state', 'CheckoutService', function($scope, $http, $location, $state, CheckoutService) {
-    $scope.paymentData = {};
-    $scope.years = [2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025,2026,2027,2028,2029,2030];
-    $scope.month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
-    $scope.process = false;
-    $scope.errors = {
-        number: false,
-        month: false,
-        year: false,
-        cvc: false,
-    };
-    $scope.clientToken = clientToken;
-    delete (clientToken);
-    
-    $scope.promo = function(){
-        var promise = CheckoutService.request('promo', {promo: $scope.paymentData.promo});
-        promise.then(function(response){
-            if (response.data.status) {
-                //$state.go('payment');
-            }
-        })
-    },
-    
-    $scope.payment = function() {
-        $scope.process = true;
-        
-        $scope.errors.number = typeof($scope.paymentData.number) == 'undefined' || !$scope.paymentData.number.length;
-        $scope.errors.month = typeof($scope.paymentData.month) == 'undefined' || !$scope.paymentData.month.length;
-        $scope.errors.year = typeof($scope.paymentData.year) == 'undefined' || !$scope.paymentData.year.length;
-        $scope.errors.cvc = typeof($scope.paymentData.cvc) == 'undefined' || !$scope.paymentData.cvc.length;
-
-
-        if (!$scope.errors.number && !$scope.errors.month && !$scope.errors.year && !$scope.errors.cvc) {
-            var client = new braintree.api.Client({clientToken: $scope.clientToken});
-            client.tokenizeCard({
-              number: $scope.paymentData.number,
-              expirationMonth: $scope.paymentData.month,
-              expirationYear: $scope.paymentData.year,
-              cvv: $scope.paymentData.cvc,
-            }, function (err, nonce, card) {
-                var promise = CheckoutService.request('payment', {nonce: nonce});
-                promise.then(function(response){
-                    if (response.status !== 500) {
-                        $state.go('complete', {order_id: response.data.order_id});
-                    }
-                })
-            });
-        }
-    }
-    
 }]);
 
 checkoutApp.controller('CheckoutCompleteCtrl',['$scope','$http', '$location', '$state', 'checkoutCompleteData', 'CheckoutService', function($scope, $http, $location, $state, checkoutCompleteData, CheckoutService) {

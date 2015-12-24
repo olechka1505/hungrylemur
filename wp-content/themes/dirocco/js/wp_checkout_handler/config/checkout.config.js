@@ -45,11 +45,6 @@ checkoutApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             templateUrl: "/wp-content/themes/dirocco/woocommerce/checkout/templates/guest.php",
             controller:'CheckoutGuestCtrl',
         })
-        .state('payment', {
-            url: "/payment",
-            templateUrl: "/wp-content/themes/dirocco/woocommerce/checkout/templates/payment.php",
-            controller:'CheckoutPaymentCtrl',
-        })
         .state('forgot', {
             url: "/forgot",
             templateUrl: "/wp-content/themes/dirocco/woocommerce/checkout/templates/forgot.php",

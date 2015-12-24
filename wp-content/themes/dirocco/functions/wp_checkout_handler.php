@@ -58,21 +58,10 @@ class WP_Checkout_handler
     {
         // if user is not logged in
         $this->check_permissions();
-        global $current_user;
-        if ($delivery = $this->data('deliveryData')) {
-            if ($this->guest_data()) {
-                $this->set_guest_data('checkout_delivery', $delivery);
-                $response['status'] = true;
-            } else {
-                update_user_meta( $current_user->ID, "checkout_delivery", $delivery ) || add_user_meta( $current_user->ID, "checkout_delivery", $delivery, true );
-                $response['status'] = true;
-            }
-        } else {
-            // get billing details
-            $response['billing'] = $this->get_billing_details();
-            // get shipping details
-            $response['shipping'] = $this->get_shipping_details();
-        }
+        // get billing details
+        $response['billing'] = $this->get_billing_details();
+        // get shipping details
+        $response['shipping'] = $this->get_shipping_details();
         $this->response($response);
     }
 
@@ -218,12 +207,19 @@ class WP_Checkout_handler
     function payment()
     {
         global $current_user, $woocommerce;
+        $this->check_permissions();
         $response = array('status' => true);
-        
         $statusCode = 200;
         if ($nonce = $this->data('nonce')) {
+            if ($delivery = $this->data('deliveryData')) {
+                if ($this->guest_data()) {
+                    $this->set_guest_data('checkout_delivery', $delivery);
+                } else {
+                    update_user_meta( $current_user->ID, "checkout_delivery", $delivery ) || add_user_meta( $current_user->ID, "checkout_delivery", $delivery, true );
+                }
+            }
+            
             $billing = $this->get_billing_details();
-
             $braintree_user_id = $this->get_braintree_user_id();
             try {
                 $bt_customer = Braintree_Customer::find($braintree_user_id);
