@@ -4,7 +4,14 @@ checkoutApp.controller('CheckoutBillingCtrl',['$scope','$http', '$location', '$s
     $scope.states = states;
     $scope.process = false;
     $scope.billingData.asShippingAddress = typeof($rootScope.type) !== 'undefined' ?  $rootScope.type != 'shipping': true;
-    
+
+    $rootScope.breadcrumbs = [
+        {type: 'link', title: 'HOME', url: home_url},
+        {type: 'separator'},
+        {type: 'link', title: 'CHECKOUT', url: checkout_url},
+        {type: 'separator'},
+        {type: 'span', title: 'BILLING'},
+    ];
     $scope.errors = {
         billing: [],
         shipping: [],
@@ -48,6 +55,14 @@ checkoutApp.controller('CheckoutDetailsCtrl',['$scope','$http', '$location', '$s
     $scope.clientToken = clientToken;
     delete (clientToken);
 
+    $rootScope.breadcrumbs = [
+        {type: 'link', title: 'HOME', url: home_url},
+        {type: 'separator'},
+        {type: 'link', title: 'CHECKOUT', url: checkout_url},
+        {type: 'separator'},
+        {type: 'span', title: 'PAYMENT DETAILS'},
+    ];
+
     $scope.detailsSave = function() {
         $scope.process = true;
         var promise = CheckoutService.request('details', {deliveryData: $scope.deliveryData});
@@ -90,7 +105,7 @@ checkoutApp.controller('CheckoutDetailsCtrl',['$scope','$http', '$location', '$s
                 var promise = CheckoutService.request('payment', {nonce: nonce, deliveryData: $scope.deliveryData});
                 promise.then(function(response){
                     if (response.status !== 500) {
-                        $state.go('complete', {order_id: response.data.order_id});
+                        $state.go('confirmOrder');
                     } else {
                         $scope.process = false;
                     }
@@ -101,9 +116,13 @@ checkoutApp.controller('CheckoutDetailsCtrl',['$scope','$http', '$location', '$s
 
 }]);
 
-checkoutApp.controller('CheckoutLoginCtrl',['$scope','$http', '$location', '$state', 'CheckoutService', function($scope, $http, $location, $state, CheckoutService) {
+checkoutApp.controller('CheckoutLoginCtrl',['$scope','$http', '$location', '$state', '$rootScope', 'CheckoutService', function($scope, $http, $location, $state, $rootScope, CheckoutService) {
     $scope.loginData = {};
-    
+    $rootScope.breadcrumbs = [
+        {type: 'link', title: 'HOME', url: home_url},
+        {type: 'separator'},
+        {type: 'span', title: 'CHECKOUT'},
+    ];
     $scope.login = function() {
         var promise = CheckoutService.request('login', {loginData: $scope.loginData});
         promise.then(function(response){
@@ -114,15 +133,26 @@ checkoutApp.controller('CheckoutLoginCtrl',['$scope','$http', '$location', '$sta
     }
 }]);
 
-checkoutApp.controller('CheckoutCompleteCtrl',['$scope','$http', '$location', '$state', 'checkoutCompleteData', 'CheckoutService', function($scope, $http, $location, $state, checkoutCompleteData, CheckoutService) {
+checkoutApp.controller('CheckoutCompleteCtrl',['$scope','$http', '$location', '$state', '$rootScope', 'checkoutCompleteData', 'CheckoutService', function($scope, $http, $location, $state, $rootScope, checkoutCompleteData, CheckoutService) {
     $scope.completeData = checkoutCompleteData.data;
-
-
+    $rootScope.breadcrumbs = [
+        {type: 'link', title: 'HOME', url: home_url},
+        {type: 'separator'},
+        {type: 'link', title: 'CHECKOUT', url: checkout_url},
+        {type: 'separator'},
+        {type: 'span', title: 'VIEW ORDER'},
+    ];
 }]);
 
-checkoutApp.controller('CheckoutGuestCtrl',['$scope','$http', '$location', '$state', 'CheckoutService', function($scope, $http, $location, $state, CheckoutService) {
+checkoutApp.controller('CheckoutGuestCtrl',['$scope','$http', '$location', '$state', '$rootScope', 'CheckoutService', function($scope, $http, $location, $state, $rootScope, CheckoutService) {
     $scope.guestData = {};
-
+    $rootScope.breadcrumbs = [
+        {type: 'link', title: 'HOME', url: home_url},
+        {type: 'separator'},
+        {type: 'link', title: 'CHECKOUT', url: checkout_url},
+        {type: 'separator'},
+        {type: 'span', title: 'GUEST'},
+    ];
     $scope.guest = function() {
         var promise = CheckoutService.request('guest', {guestData: $scope.guestData});
         promise.then(function(response){
@@ -133,9 +163,13 @@ checkoutApp.controller('CheckoutGuestCtrl',['$scope','$http', '$location', '$sta
     }
 }]);
 
-checkoutApp.controller('CheckoutSignupCtrl',['$scope','$http', '$location', '$state', 'CheckoutService', function($scope, $http, $location, $state, CheckoutService) {
+checkoutApp.controller('CheckoutSignupCtrl',['$scope','$http', '$location', '$state', '$rootScope', 'CheckoutService', function($scope, $http, $location, $state, $rootScope, CheckoutService) {
     $scope.signupData = {};
-    
+    $rootScope.breadcrumbs = [
+        {type: 'link', title: 'HOME', url: home_url},
+        {type: 'separator'},
+        {type: 'span', title: 'SIGN UP'},
+    ];
     $scope.signup = function() {
         var promise = CheckoutService.request('signup', {signupData: $scope.signupData});
         promise.then(function(response){
@@ -146,6 +180,17 @@ checkoutApp.controller('CheckoutSignupCtrl',['$scope','$http', '$location', '$st
     }
 }]);
 
+checkoutApp.controller('CheckoutConfirmOrderCtrl',['$scope','$http', '$location', '$state', '$rootScope', 'CheckoutService', 'checkoutConfirmOrderData', function($scope, $http, $location, $state, $rootScope, CheckoutService, checkoutConfirmOrderData) {
+	$scope.confirmData = checkoutConfirmOrderData.data;
+    $rootScope.breadcrumbs = [
+        {type: 'link', title: 'HOME', url: home_url},
+        {type: 'separator'},
+        {type: 'link', title: 'CHECKOUT', url: checkout_url},
+        {type: 'separator'},
+        {type: 'span', title: 'CONFIRM ORDER'},
+    ];
+}]);
+
 checkoutApp.controller('CheckoutForgotCtrl',['$scope','$http', '$location', '$state', function($scope, $http, $location, $state) {
-	
+
 }]);

@@ -21,11 +21,6 @@ class WP_Checkout_handler
         $private_key = $environment == 'sandbox' ? $this->braintree_config['sandbox_private_key']: $this->braintree_config['private_key'];
         $merchant_id = $environment == 'sandbox' ? $this->braintree_config['sandbox_merchant_id']: $this->braintree_config['merchant_id'];
         
-        //Braintree_Configuration::environment('sandbox');
-        //Braintree_Configuration::merchantId('38ghysq4hy6wvmhg');
-        //Braintree_Configuration::publicKey('6gp2br32grcb3g8t');
-        //Braintree_Configuration::privateKey('5b376992e5287b987b0a191b2184e4c4');
-        
         Braintree_Configuration::environment($environment);
         Braintree_Configuration::merchantId($merchant_id);
         Braintree_Configuration::publicKey($public_key);
@@ -52,6 +47,8 @@ class WP_Checkout_handler
         add_action($this->ajax_full_action_nopriv('promo'), array($this, 'promo'));
         add_action($this->ajax_full_action('complete'), array($this, 'complete'));
         add_action($this->ajax_full_action_nopriv('complete'), array($this, 'complete'));
+        add_action($this->ajax_full_action('confirmOrder'), array($this, 'confirmOrder'));
+        add_action($this->ajax_full_action_nopriv('confirmOrder'), array($this, 'confirmOrder'));
     }
 
     function details()
@@ -63,6 +60,57 @@ class WP_Checkout_handler
         // get shipping details
         $response['shipping'] = $this->get_shipping_details();
         $this->response($response);
+    }
+
+
+    function confirmOrder()
+    {
+        global $woocommerce;
+        // if user is not logged in
+        $this->check_permissions();
+        $response = array('status' => true);
+        $statusCode = 200;
+        $response['shipping'] = $this->get_shipping_details();
+        $transaction = WC()->session->last_transaction;
+        if ($transaction) {
+            $response['card'] = array(
+                'type' => $transaction->creditCard['cardType'],
+                'bin' => $transaction->creditCard['bin'],
+                'last4' => $transaction->creditCard['last4'],
+            );
+        }
+        if ($order_id = WC()->session->last_order_id) {
+            $order = new WC_Order($order_id);
+            $products = $order->get_items();
+            $response['tax'] = 0;
+            foreach ($products as $id => $product) {
+                $terms = get_the_terms($product['product_id'], 'product_cat');
+                $product_cat = array();
+                foreach ($terms as $term) {
+                    $product_cat[] = $term->name;
+                }
+                $wc_product = new WC_Product($product['product_id']);
+                $response['products'][] = array(
+                    'id'                => $product['product_id'],
+                    'name'              => $product['name'],
+                    'qty'               => $product['qty'],
+                    'cat'               => implode(', ', $product_cat),
+                    'image'             => wp_get_attachment_url(get_post_thumbnail_id($product['product_id'])),
+                    'price'             => $wc_product->price,
+                    'price_with_tax'    => $product['line_subtotal'],
+                    'tax'               => $product['line_tax'],
+                );
+                $response['tax'] += $product['line_tax'];
+            }
+            $response['delivery'] = $this->get_delivery();
+            $response['subtotal'] = $woocommerce->cart->get_cart_subtotal();
+            $response['total'] = $woocommerce->cart->total;
+            if ($response['delivery']['expedited']) {
+                $response['total'] += 40;
+            }
+            WC()->session->completed_order = $response;
+        }
+        $this->response($response, $statusCode);
     }
 
     function billing()
@@ -106,6 +154,9 @@ class WP_Checkout_handler
             $billing = array_replace_recursive($_billing, $billing);
             // validation billing
             foreach ($billing as $key => $item) {
+                if ($key == 'company' || $key == 'suite') {
+                    continue;
+                }
                 if (empty($item)) {
                     $response['status'] = false;
                     $response['invalid']['billing'][] = $key;
@@ -114,6 +165,9 @@ class WP_Checkout_handler
             if (!$billing['asShippingAddress']) {
                 // validation shipping
                 foreach ($shipping as $key => $item) {
+                    if ($key == 'company' || $key == 'suite') {
+                        continue;
+                    }
                     if (empty($item)) {
                         $response['status'] = false;
                         $response['invalid']['shipping'][] = $key;
@@ -251,14 +305,19 @@ class WP_Checkout_handler
                 }
             }
             $delivery = $this->get_delivery();
-            $total = (isset($delivery['expedited']) && $delivery['expedited']) ?  $woocommerce->cart->total + 40: $woocommerce->cart->total;
+            $total = $woocommerce->cart->total;
+            if (isset($delivery['expedited']) && $delivery['expedited']) {
+                $total += 40;
+            }
             // create transaction
+            $products = $woocommerce->cart->get_cart();
             $result = Braintree_Transaction::sale([
                 'amount' => $total,
                 'paymentMethodNonce' => $nonce,
                 'customerId' => $braintree_user_id,
                 'options' => [
                     'storeInVaultOnSuccess' => true,
+                    //'submitForSettlement' => true,
                 ]
             ]);
 
@@ -267,26 +326,27 @@ class WP_Checkout_handler
                 $products = $woocommerce->cart->get_cart();
                 $order = wc_create_order();
                 foreach ($products as $product) {
-                    $order->add_product(get_product($product['product_id']), 1);
+                    $order->add_product(get_product($product['product_id']), $product['quantity']);
                 }
 
                 $order->set_address( $this->get_billing_details(), 'billing' );
                 $order->set_address( $this->get_shipping_details(), 'shipping' );
                 $order->calculate_totals();
 
-                $available_gateways = WC()->payment_gateways->get_available_payment_gateways();
                 $current_gateway = 'braintree_credit_card';
-
                 update_post_meta( $order->id, '_payment_method', $current_gateway );
                 update_post_meta( $order->id, '_payment_method_title', $current_gateway );
+
                 if ($data = $this->guest_data()) {
                     $this->set_guest_data('_braintree_transaction_id', $result->transaction->id);
                 } else {
                     update_user_meta( $current_user->ID, '_braintree_transaction_id', $result->transaction->id ) || update_user_meta( $current_user->ID, '_braintree_transaction_id', $result->transaction->id, true );
                 }
 
-                WC()->session->order_awaiting_payment = $order->id;
-                $order->update_status('completed');
+                WC()->session->last_order_id = $order->id;
+                WC()->session->last_transaction = $result->transaction;
+
+                $order->update_status('processing');
                 $response['status'] = true;
                 $response['order_id'] = $order->id;
                 $statusCode = 200;
@@ -303,30 +363,16 @@ class WP_Checkout_handler
     function complete()
     {
         global $woocommerce;
-        $response = array('status' => true);
+        $response = WC()->session->completed_order;
+        $response['shop_url'] = get_permalink( woocommerce_get_page_id( 'shop' ) );
+        $response['order_id'] = WC()->session->last_transaction->id;
+
+        $woocommerce->cart->empty_cart();
+        $order = new WC_Order(WC()->session->last_order_id);
+        $order->update_status('completed');
+        unset(WC()->session->last_transaction);
+        unset(WC()->session->last_order_id);
         $statusCode = 200;
-
-        if ($order_id = $this->data('order_id')) {
-            $order = new WC_Order($order_id);
-            $products = $order->get_items();
-            $response['tax'] = 0;
-            foreach ($products as $id => $product) {
-                $response['products'][] = array(
-                    'id'                => $product['product_id'],
-                    'name'              => $product['name'],
-                    'qty'               => $product['qty'],
-                    'image'             => wp_get_attachment_url(get_post_thumbnail_id($product['product_id'])),
-                    'price'             => $product['line_total'],
-                    'price_with_tax'    => $product['line_subtotal'],
-                    'tax'               => $product['line_tax'],
-                );
-                $response['tax'] += $product['line_tax'];
-            }
-            $response['order_id'] = $this->get_transaction_id();
-            $response['shipping'] = $this->get_delivery();
-            $response['shop_url'] = get_permalink( woocommerce_get_page_id( 'shop' ));
-
-        }
         $this->response($response, $statusCode);
     }
 
@@ -465,6 +511,7 @@ class WP_Checkout_handler
 
     function add_scripts()
     {
+        global $woocommerce;
         // load scripts
         wp_enqueue_script('angular.core', get_template_directory_uri() . '/js/wp_checkout_handler/core/angular.min.js', array('jquery'));
         wp_enqueue_script('angular.choosen', get_template_directory_uri() . '/js/wp_checkout_handler/core/angular-chosen.min.js', array('angular.core'));
@@ -484,6 +531,8 @@ class WP_Checkout_handler
         wp_localize_script('angular.service.checkout', 'ajaxPrefix', $this->ajaxPrefix);
         wp_localize_script('angular.controller.checkout', 'states', $states);
         wp_localize_script('angular.controller.checkout', 'clientToken', $this->clientToken);
+        wp_localize_script('angular.controller.checkout', 'home_url', home_url());
+        wp_localize_script('angular.controller.checkout', 'checkout_url', $woocommerce->cart->get_checkout_url());
     }
 
     public function response($data, $status = 200)

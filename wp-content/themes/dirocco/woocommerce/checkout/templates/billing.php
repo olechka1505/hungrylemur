@@ -14,7 +14,10 @@
             <input ng-class="{error: is_invalid('address_1', 'billing')}" ng-model="billingData.address_1" class="form-control" type="text" placeholder="Street Address"/>
         </div>
         <div class="form-group">
-            <input ng-class="{error: is_invalid('suite', 'billing')}" ng-model="billingData.suite" class="form-control" type="text" placeholder="Apt/Suite"/>
+            <input ng-class="{error: is_invalid('suite', 'billing')}" ng-model="billingData.suite" class="form-control" type="text" placeholder="Apt/Unit"/>
+        </div>
+        <div class="form-group">
+            <input ng-class="{error: is_invalid('city', 'billing')}" ng-model="billingData.city" class="form-control" type="text" placeholder="City"/>
         </div>
         <div class="form-group">
             <select
@@ -24,9 +27,7 @@
                 <option value="{{key}}" ng-repeat="(key, value) in states">{{value}}</option>
             </select>
         </div>
-        <div class="form-group">
-            <input ng-class="{error: is_invalid('city', 'billing')}" ng-model="billingData.city" class="form-control" type="text" placeholder="City"/>
-        </div>
+
         <div class="form-group clearfix">
             <div class="col-md-6 col-xs-12 no-padding">
                 <input ng-class="{error: is_invalid('postcode', 'billing')}" ng-model="billingData.postcode" class="form-control" type="text" placeholder="Zip Code"/>
@@ -44,7 +45,7 @@
             </label>
         </div>
 
-        <div class="form-group clearfix">
+        <div class="form-group clearfix text-right">
             <input class="btn btn-large btn-checkout" type="submit" value="CONTINUE"/>
         </div>
     </form>
@@ -64,7 +65,10 @@
             <input ng-class="{error: is_invalid('address_1', 'shipping')}" ng-model="shippingData.address_1" class="form-control" type="text" placeholder="Street Address"/>
         </div>
         <div class="form-group">
-            <input ng-class="{error: is_invalid('suite', 'shipping')}" ng-model="shippingData.suite" class="form-control" type="text" placeholder="Apt/Suite"/>
+            <input ng-class="{error: is_invalid('suite', 'shipping')}" ng-model="shippingData.suite" class="form-control" type="text" placeholder="Apt/Unit"/>
+        </div>
+        <div class="form-group">
+            <input ng-class="{error: is_invalid('city', 'shipping')}" ng-model="shippingData.city" class="form-control" type="text" placeholder="City"/>
         </div>
         <div class="form-group">
             <select
@@ -73,9 +77,6 @@
                 <option value="">State</option>
                 <option value="{{key}}" ng-repeat="(key, value) in states">{{value}}</option>
             </select>
-        </div>
-        <div class="form-group">
-            <input ng-class="{error: is_invalid('city', 'shipping')}" ng-model="shippingData.city" class="form-control" type="text" placeholder="City"/>
         </div>
         <div class="form-group clearfix">
             <div class="col-md-6 col-xs-12 no-padding">
@@ -86,6 +87,4 @@
             <input ng-class="{error: is_invalid('phone', 'shipping')}" ng-model="shippingData.phone" class="form-control" type="text" placeholder="Phone Number"/>
         </div>
     </form>
-
-
 </div>

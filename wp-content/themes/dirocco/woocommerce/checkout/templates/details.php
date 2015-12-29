@@ -3,8 +3,9 @@
         <div class="col-xs-11 no-padding">
             <h3 class="checkout-form-title text-left">BILLING ADDRESS</h3>
             <p>{{detailsData.billing.first_name}} {{detailsData.billing.last_name}}</p>
-            <p>{{detailsData.billing.suite}}, {{detailsData.billing.company}}</p>
-            <p>{{detailsData.billing.address_1}}, {{detailsData.billing.postcode}}</p>
+            <p ng-if="detailsData.billing.company">{{detailsData.billing.company}}</p>
+            <p><span>{{detailsData.billing.address_1}}</span><span ng-if="detailsData.billing.suite">, {{detailsData.billing.suite}}</span></p>
+            <p>{{detailsData.billing.city}}, {{detailsData.billing.state}}, {{detailsData.billing.postcode}}</p>
         </div>
         <div class="col-xs-1 no-padding">
             <a ng-click="edit('billing')" class="btn-edit"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
@@ -14,8 +15,9 @@
         <div class="col-xs-11 no-padding">
             <h3 class="checkout-form-title text-left">SHIPPING ADDRESS</h3>
             <p>{{detailsData.shipping.first_name}} {{detailsData.shipping.last_name}}</p>
-            <p>{{detailsData.shipping.suite}}, {{detailsData.shipping.company}}</p>
-            <p>{{detailsData.shipping.address_1}}, {{detailsData.shipping.postcode}}</p>
+            <p ng-if="detailsData.shipping.company">{{detailsData.shipping.company}}</p>
+            <p><span>{{detailsData.shipping.address_1}}</span><span ng-if="detailsData.shipping.suite">, {{detailsData.shipping.suite}}</span></p>
+            <p>{{detailsData.shipping.city}}, {{detailsData.shipping.state}}, {{detailsData.shipping.postcode}}</p>
         </div>
         <div class="col-xs-1 no-padding">
             <a ng-click="edit('shipping')" class="btn-edit"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
