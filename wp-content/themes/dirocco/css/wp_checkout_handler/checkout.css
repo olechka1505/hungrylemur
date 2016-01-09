@@ -39,4 +39,6 @@
 .checkout-confirm-table tr td{ width:25%;border:none; font-family:WhitneyLight, WhitneyBook; text-transform: uppercase; }
 .checkout-details .btn-edit{ font-size:16px;margin-top:32px;display:none; }
 .checkout-details:hover .btn-edit{ display:block; }
+.checkout-create-account-title{margin: 0 0 10px 0;}
 .checkout-title-separator{ margin:25px 0; }
+.margin-top-5 {margin-top: 5%;}

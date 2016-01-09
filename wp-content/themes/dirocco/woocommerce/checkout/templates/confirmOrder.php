@@ -43,7 +43,18 @@
                 <td class="text-right">{{product.price | currency}}</td>
             </tr>
         </table>
-        <div class="col-md-4 col-xs-12 text-right pull-right">
+        <div class="col-md-8 col-xs-12 margin-top-5">
+            <div class="col-md-8 col-xs-12 no-padding checkout-details checkout-create-account">
+                <div class="checkout-create-account-title text-center">CREATE AN ACCOUNT</div>
+                <div class="form-group">
+                    <input ng-model="createAccount.login" class="form-control" type="text" placeholder="Email address"/>
+                </div>
+                <div class="form-group">
+                    <input ng-model="createAccount.password" class="form-control" type="password" placeholder="Password"/>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-xs-12 text-right pull-right margin-top-5">
             <div ng-if="confirmData.subtotal" class="text-right"><div ng-bind-html="'SUBTOTAL: ' + confirmData.subtotal"></div>
             <div ng-if="confirmData.delivery.standard" class="text-right">SHIPPING: FREE</div>
             <div ng-if="confirmData.delivery.expedited" class="text-right">SHIPPING: +$40</div>
@@ -52,7 +63,7 @@
 
             <div class="separator"></div>
 				<a ui-sref="details" class="btn btn-checkout">GO BACK</a>
-				<a ui-sref="complete" class="btn btn-checkout">SUBMIT ORDER</a>
+				<button ng-click="confirmOrder()" class="btn btn-checkout">SUBMIT ORDER</button>
         </div>
     </div>
 

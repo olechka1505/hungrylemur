@@ -135,6 +135,8 @@ checkoutApp.controller('CheckoutLoginCtrl',['$scope','$http', '$location', '$sta
 
 checkoutApp.controller('CheckoutCompleteCtrl',['$scope','$http', '$location', '$state', '$rootScope', 'checkoutCompleteData', 'CheckoutService', function($scope, $http, $location, $state, $rootScope, checkoutCompleteData, CheckoutService) {
     $scope.completeData = checkoutCompleteData.data;
+
+    console.log($scope.completeData);
     $rootScope.breadcrumbs = [
         {type: 'link', title: 'HOME', url: home_url},
         {type: 'separator'},
@@ -182,6 +184,10 @@ checkoutApp.controller('CheckoutSignupCtrl',['$scope','$http', '$location', '$st
 
 checkoutApp.controller('CheckoutConfirmOrderCtrl',['$scope','$http', '$location', '$state', '$rootScope', 'CheckoutService', 'checkoutConfirmOrderData', function($scope, $http, $location, $state, $rootScope, CheckoutService, checkoutConfirmOrderData) {
 	$scope.confirmData = checkoutConfirmOrderData.data;
+    $scope.createAccount = {
+        action: 'createAccount',
+    };
+
     $rootScope.breadcrumbs = [
         {type: 'link', title: 'HOME', url: home_url},
         {type: 'separator'},
@@ -189,6 +195,16 @@ checkoutApp.controller('CheckoutConfirmOrderCtrl',['$scope','$http', '$location'
         {type: 'separator'},
         {type: 'span', title: 'CONFIRM ORDER'},
     ];
+
+    $scope.confirmOrder = function(){
+        var promise = CheckoutService.request('confirmOrder', {createAccount: $scope.createAccount});
+        promise.then(function(response){
+            if (response.data.status) {
+                $state.go('complete');
+            }
+        })
+    };
+
 }]);
 
 checkoutApp.controller('CheckoutForgotCtrl',['$scope','$http', '$location', '$state', function($scope, $http, $location, $state) {

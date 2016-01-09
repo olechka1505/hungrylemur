@@ -66,51 +66,136 @@ class WP_Checkout_handler
     function confirmOrder()
     {
         global $woocommerce;
-        // if user is not logged in
-        $this->check_permissions();
-        $response = array('status' => true);
-        $statusCode = 200;
-        $response['shipping'] = $this->get_shipping_details();
-        $paymentMethod = WC()->session->paymentMethod;
-        if ($paymentMethod) {
-            $response['card'] = array(
-                'type'  => $paymentMethod->cardType,
-                'bin'   => $paymentMethod->bin,
-                'last4' => $paymentMethod->last4,
-            );
-        }
-        if ($order_id = WC()->session->last_order_id) {
-            $order = new WC_Order($order_id);
-            $order->calculate_taxes();
-            $products = $order->get_items();
-            $response['tax'] = 0;
-            foreach ($products as $id => $product) {
-                $terms = get_the_terms($product['product_id'], 'product_cat');
-                $product_cat = array();
-                foreach ($terms as $term) {
-                    $product_cat[] = $term->name;
+        if ($createAccount = $this->data('createAccount')) {
+            $response['status'] = true;
+
+            if (isset($createAccount['login']) && !isset($createAccount['password'])) {
+                $response['status'] = false;
+                $response['errors'][] = __("Password can't be blank.");
+                $statusCode = 500;
+            }
+
+            if (!isset($createAccount['login']) && isset($createAccount['password'])) {
+                $response['status'] = false;
+                $response['errors'][] = __("Email can't be blank.");
+                $statusCode = 500;
+            }
+
+            if (isset($createAccount['login']) && isset($createAccount['password'])) {
+                // Validation
+                if (!empty($createAccount['login']) && empty($createAccount['password'])) {
+                    $response['status'] = false;
+                    $response['errors'][] = __("Password can't be blank.");
+                    $statusCode = 500;
                 }
-                $wc_product = new WC_Product($product['product_id']);
-                $response['products'][] = array(
-                    'id'                => $product['product_id'],
-                    'name'              => $product['name'],
-                    'qty'               => $product['qty'],
-                    'cat'               => implode(', ', $product_cat),
-                    'image'             => wp_get_attachment_url(get_post_thumbnail_id($product['product_id'])),
-                    'price'             => $wc_product->price,
-                    'price_with_tax'    => $product['line_subtotal'],
-                    'tax'               => $product['line_tax'],
+
+                if (!is_email($createAccount['login'])) {
+                    $response['status'] = false;
+                    $response['errors'][] = __('Invalid email address.');
+                    $statusCode = 500;
+                }
+
+                if ($user_id = username_exists($createAccount['login']) || email_exists($createAccount['login'])) {
+                    $response['status'] = false;
+                    $response['errors'][] = __('This user is already exist.');
+                    $statusCode = 500;
+                }
+
+                // create user and logged in
+                if ($response['status']) {
+                    $user_id = wp_create_user( $createAccount['login'], $createAccount['password'], $createAccount['login'] );
+//                    $user = wp_signon(array(
+//                        'user_login'    => $createAccount['login'],
+//                        'user_password' => $createAccount['password'],
+//                    ), false);
+//                    if (is_wp_error($user)) {
+                    if (is_wp_error($user_id)) {
+                        $response['status'] = false;
+                        $response['errors'][] = __('User wan not created.');
+                        $statusCode = 500;
+                    } else {
+                        $response['status'] = true;
+                        $statusCode = 200;
+                    }
+                }
+            }
+            // create transaction
+            if ($response['status']) {
+                $order = WC()->session->last_order;
+                $braintree_user_id = $this->get_braintree_user_id();
+                $result = Braintree_Transaction::sale(
+                    [
+                        'customerId' => $braintree_user_id,
+                        'amount' => money_format('%i', $order['total_with_tax'])
+                    ]
                 );
-                $response['tax'] += $product['line_tax'];
+                if ($result->success) {
+                    $response['shop_url'] = get_permalink( woocommerce_get_page_id( 'shop' ) );
+                    $response['order_id'] = $result->transaction->id;
+                    $woocommerce->cart->empty_cart();
+                    $order = new WC_Order(WC()->session->last_order_id);
+                    $order->update_status('completed');
+                    $response['last_order'] = WC()->session->last_orde;
+                    unset(WC()->session->last_transaction);
+                    unset(WC()->session->paymentMethod);
+                    unset(WC()->session->last_order_id);
+                    unset(WC()->session->last_order);
+                    WC()->session->last_complete = $response;
+                    $statusCode = 200;
+                } else {
+                    $response['status'] = false;
+                    $response['errors'][] = $result->message;
+                    $statusCode = 500;
+                }
             }
-            $response['delivery'] = $this->get_delivery();
-            $response['subtotal'] = $woocommerce->cart->get_cart_subtotal();
-            $response['total'] = $woocommerce->cart->total;
-            $response['total_with_tax'] = floatval($woocommerce->cart->total) + floatval($response['tax']);
-            if ($response['delivery']['expedited']) {
-                $response['total'] += 40;
+
+        } else {
+            // if user is not logged in
+            $this->check_permissions();
+            $response = array('status' => true);
+            $statusCode = 200;
+            $response['shipping'] = $this->get_shipping_details();
+            $paymentMethod = WC()->session->paymentMethod;
+            if ($paymentMethod) {
+                $response['card'] = array(
+                    'type'  => $paymentMethod->cardType,
+                    'bin'   => $paymentMethod->bin,
+                    'last4' => $paymentMethod->last4,
+                );
             }
-            WC()->session->last_order = $response;
+            if ($order_id = WC()->session->last_order_id) {
+                $order = new WC_Order($order_id);
+                $order->calculate_taxes();
+                $products = $order->get_items();
+                $response['tax'] = 0;
+                foreach ($products as $id => $product) {
+                    $terms = get_the_terms($product['product_id'], 'product_cat');
+                    $product_cat = array();
+                    foreach ($terms as $term) {
+                        $product_cat[] = $term->name;
+                    }
+                    $wc_product = new WC_Product($product['product_id']);
+                    $response['products'][] = array(
+                        'id'                => $product['product_id'],
+                        'name'              => $product['name'],
+                        'qty'               => $product['qty'],
+                        'cat'               => implode(', ', $product_cat),
+                        'image'             => wp_get_attachment_url(get_post_thumbnail_id($product['product_id'])),
+                        'price'             => $wc_product->price,
+                        'price_with_tax'    => $product['line_subtotal'],
+                        'tax'               => $product['line_tax'],
+                    );
+                    $response['tax'] += $product['line_tax'];
+                }
+                $response['delivery'] = $this->get_delivery();
+                $response['subtotal'] = $woocommerce->cart->get_cart_subtotal();
+                $response['total'] = $woocommerce->cart->total;
+                $response['total_with_tax'] = floatval($woocommerce->cart->total) + floatval($response['tax']);
+                if ($response['delivery']['expedited']) {
+                    $response['total'] += 40;
+                }
+                WC()->session->last_order = $response;
+            }
         }
         $this->response($response, $statusCode);
     }
@@ -361,32 +446,8 @@ class WP_Checkout_handler
 
     function complete()
     {
-        global $woocommerce;
-        $order = WC()->session->last_order;
-        $braintree_user_id = $this->get_braintree_user_id();
-        $result = Braintree_Transaction::sale(
-            [
-                'customerId' => $braintree_user_id,
-                'amount' => money_format('%i', $order['total_with_tax'])
-            ]
-        );
-
-        if ($result->success) {
-            $response['shop_url'] = get_permalink( woocommerce_get_page_id( 'shop' ) );
-            $response['order_id'] = $result->transaction->id;
-            $woocommerce->cart->empty_cart();
-            $order = new WC_Order(WC()->session->last_order_id);
-            $order->update_status('completed');
-            unset(WC()->session->last_transaction);
-            unset(WC()->session->paymentMethod);
-            unset(WC()->session->last_order_id);
-            unset(WC()->session->last_order);
-            $statusCode = 200;
-        } else {
-            $response['status'] = false;
-            $response['errors'][] = $result->message;
-            $statusCode = 500;
-        }
+        $response = WC()->session->last_complete;
+        $statusCode = 200;
         $this->response($response, $statusCode);
     }
 
