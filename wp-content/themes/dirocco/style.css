@@ -20,6 +20,23 @@ Tags: FOR_WP_THEME_SEARCH_IF_PUBLISHED
 #checkout_login .form-row { width: 100%; }
 #checkout_login .lost_password { text-align: right; }
 #checkout_login .lost_password  a { color: black; }
+#expedited-shipping { display: none; }
+
+/* my-account/edit-address */
+.woocommerce-account .addresses .title h3 { border-bottom: solid 2px #dad9d9; }
+.woocommerce-account .addresses address { margin: 0; padding: 20px 0; border: none; }
+.woocommerce-account .addresses .title .edit { margin-top: 20px; padding-top: 12px; }
+
+/* homepage */
+/* featured post image */
+.home-video-thumb img { 
+	width: 100%; /*For Mozilla*/
+	-webkit-filter: grayscale(100%);
+	filter: grayscale(100%);
+}
+
+/* Cart */
+div.cart-quantity { display: none; }
 
 /* Gray scale image hover effect on homepage, stories/journal */
 /* text hover */
@@ -859,10 +876,13 @@ p {
 .breadcrumbs .breadcrumbs-wrap .separator{
     font-weight:500;
     color:#888888;
-	float: left;
+	float: none;
 }
 
 .breadcrumbs ul li {
+	display: inline;
+	padding-right: 1%;
+    float: none;
     list-style: none;
 	padding-left: 0;
 	margin-bottom: 0;
@@ -2075,26 +2095,28 @@ ol.commentlist li .reply {
 /* LUIS footer */
 /* Trying to fix the homepage footer */
 /*Changed by Helen 8.12.15*/
+.sidebar-footer .footer-widget-col { float: left; width: 30%; }
 div#newsletter_widget-2 {    float: left;    width: 25%;}
-div#mc4wp_widget-2 {    float: left!important;    width: 25%;}
-div#nav_menu-4 {    float: left;    width: 15%;    margin-left: 3%;}
-div#nav_menu-4 li{    padding:0!important;    font-family: 'WhitneyLight','WhitneyBook' !important;    font-size: 12px !important;}
-div#nav_menu-5 li {    padding: 0!important;    font-family: 'WhitneyLight','WhitneyBook' !important;    font-size: 12px !important;}
-div#nav_menu-5 {    float: left;    width: 15%;    margin-left: 3;}
-div#nav_menu-6 li {    padding: 0!important;    font-family: 'WhitneyLight','WhitneyBook' !important;    font-size: 12px !important;}
-div#nav_menu-6 {    float: left;    width: 15%;    margin-left: 3%;}
-div#nav_menu-7 li {    padding: 0!important;    font-family: 'WhitneyLight','WhitneyBook' !important;    font-size: 12px !important;}
-div#nav_menu-7 {    float: left;    width: 15%;    margin-left: 3%;}
-div#nav_menu-8 li {    padding: 0!important;    font-family: 'WhitneyLight','WhitneyBook' !important;    font-size: 12px !important;}
-div#nav_menu-8 {    float: left;    width: 15%;    margin-left: 3%; }
+div#mc4wp_widget-2 {    float: left;    width: 16%;}
+div#nav_menu-4 {    float: left;    width: 16%;    margin-left: 1%;}
+div#nav_menu-4 li{    padding:0;    font-family: 'WhitneyLight','WhitneyBook';    font-size: 12px;}
+div#nav_menu-5 li {    padding: 0;    font-family: 'WhitneyLight','WhitneyBook';    font-size: 12px;}
+div#nav_menu-5 {    float: left;    width: 16%;    margin-left: 1;}
+div#nav_menu-6 li {    padding: 0;    font-family: 'WhitneyLight','WhitneyBook';    font-size: 12px;}
+div#nav_menu-6 {    float: left;    width: 16%;    margin-left: 1%;}
+div#nav_menu-7 li {    padding: 0;    font-family: 'WhitneyLight','WhitneyBook';    font-size: 12px;}
+div#nav_menu-7 {    float: left;    width: 16%;    margin-left: 1%;}
+div#nav_menu-8 li {    padding: 0;    font-family: 'WhitneyLight','WhitneyBook';    font-size: 12px;}
+div#nav_menu-8 {    float: left;    width: 16%;    margin-left: 1%; }
 
-div#mc4wp-form-1 input[type="submit"] {
-    width: 125px;
+.mc4wp-form-fields input[type="submit"] {
+    width: 175px;
     font-size: 13px;
     line-height: 18px;
     margin-top: 15px;
 }
 
+.page-template-page-account .woocommerce { margin-right: 1%; margin-left: 1%; }
 
 /* ------------------------------------------------------------------------- *
  *  7. Image Sliders Styles
@@ -3651,7 +3673,7 @@ button:hover {
 
 .woocommerce .woocommerce-message, 
 .woocommerce-page .woocommerce-message {
-    border-top: 3px solid;
+    border-top: 1px solid;
 }
 
 .woocommerce table.shop_table, 
@@ -3699,6 +3721,7 @@ button:hover {
 
 .woocommerce table.shop_table.cart td {
     padding: 25px;
+    max-width: 100px;
 }
 
 .woocommerce table.cart img, .woocommerce #content table.cart img, .woocommerce-page table.cart img, .woocommerce-page #content table.cart img {
@@ -3709,6 +3732,7 @@ button:hover {
 
 .woocommerce form table.shop_table tbody tr.cart_item td.product-quantity {
 	padding: 5px;
+	width: 50px; 
 }
 
 .woocommerce table.cart td.actions .coupon .input-text, 
@@ -3849,13 +3873,15 @@ button:hover {
 	font-size: 11px;
 }
 
+
 .woocommerce .products li .price .amount,
 .woocommerce p,
 .woocommerce .woocommerce-tabs p,
 .woocommerce .shop_table tbody tr.cart_item td.product-name dl.variation,
 .woocommerce .summary .product_meta span,
 .woocommerce .summary table td.value a {
-	color: #111111;
+	font-family: 'WhitneyLight','WhitneyBook';
+	color: #777777;
     font-weight: normal;
     letter-spacing: 2px;
 }
@@ -3913,6 +3939,14 @@ button:hover {
 /* ------------------------------------------------------------------------- */
 form.register.main-register { max-width: 300px; margin: 0 auto; }
 
+.form-control  {  
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 278px;
+  background: url(images/down-arrow.svg) no-repeat 254px 12px;
+  border-radius: 0px !important;
+}
 /* ------------------------------------------------------------------------- *
  *  12. Features Section
 /* ------------------------------------------------------------------------- */

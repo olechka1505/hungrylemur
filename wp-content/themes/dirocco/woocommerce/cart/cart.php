@@ -15,6 +15,24 @@ wc_print_notices();
 
 do_action( 'woocommerce_before_cart' ); ?>
 
+<script>
+<!--
+function toggle_quantity() {
+       var change = document.getElementById('cart-change');
+	   var update = document.getElementById('cart-update');
+	   
+	   if (change.style.display == 'none')
+       {
+          change.style.display = 'block';
+		  update.style.display = 'none';
+		}
+       else {
+          change.style.display = 'none';
+		  update.style.display = 'block';
+		}
+    }
+//-->
+</script>
 <form action="<?php echo esc_url( WC()->cart->get_cart_url() ); ?>" method="post">
 
 <?php do_action( 'woocommerce_before_cart_table' ); ?>
@@ -28,6 +46,7 @@ do_action( 'woocommerce_before_cart' ); ?>
 			$_product     = apply_filters( 'woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_key );
 			$product_id   = apply_filters( 'woocommerce_cart_item_product_id', $cart_item['product_id'], $cart_item, $cart_item_key );
 
+			
 			if ( $_product && $_product->exists() && $cart_item['quantity'] > 0 && apply_filters( 'woocommerce_cart_item_visible', true, $cart_item, $cart_item_key ) ) {
 				?>
 				<tr class="<?php echo esc_attr( apply_filters( 'woocommerce_cart_item_class', 'cart_item', $cart_item, $cart_item_key ) ); ?>">
@@ -77,7 +96,37 @@ do_action( 'woocommerce_before_cart' ); ?>
 							echo apply_filters( 'woocommerce_cart_item_price', WC()->cart->get_product_price( $_product ), $cart_item, $cart_item_key );
 						?>
 					</td>
-					
+					<td class="product-quantity">
+						<?php
+							if ( $_product->is_sold_individually() ) {
+								$product_quantity = sprintf( '1 <input type="hidden" name="cart[%s][qty]" value="1" />', $cart_item_key );
+							} else {
+								$product_quantity = woocommerce_quantity_input( array(
+									'input_name'  => "cart[{$cart_item_key}][qty]",
+									'input_value' => $cart_item['quantity'],
+									'max_value'   => $_product->backorders_allowed() ? '' : $_product->get_stock_quantity(),
+									'min_value'   => '0'
+								), $_product, false );
+							}
+
+							echo apply_filters( 'woocommerce_cart_item_quantity', $product_quantity, $cart_item_key, $cart_item );							
+						?>
+						
+						<div class="cart-quantity">
+							<a id="cart-change" href="javascript:void(0)" onclick="toggle_quantity();">Change</a>						
+							<input id="cart-update" type="submit" style="display: none;" class="cart-update" name="update_cart" value="<?php esc_attr_e( 'Update', 'woocommerce' ); ?>" />
+						</div>
+						<?php do_action( 'woocommerce_cart_actions' ); ?>
+
+						<?php wp_nonce_field( 'woocommerce-cart' );?>
+					</td>
+<?php	 /*
+					<td class="product-subtotal">
+						<?php
+							echo apply_filters( 'woocommerce_cart_item_subtotal', WC()->cart->get_product_subtotal( $_product, $cart_item['quantity'] ), $cart_item, $cart_item_key );
+						?>
+					</td>					
+*/ ?>					
 					<td class="product-remove">
 						<?php
 							echo apply_filters( 'woocommerce_cart_item_remove_link', sprintf(
@@ -89,19 +138,37 @@ do_action( 'woocommerce_before_cart' ); ?>
 							), $cart_item_key );
 						?>
 					</td>
-				</tr>
+				</tr>			
+				
 				<?php
 			}
 		}
 
 		do_action( 'woocommerce_cart_contents' );
 		?>
+		<tr>
+			<td colspan="6" class="actions">
+				
+				<?php /* if ( WC()->cart->coupons_enabled() ) { ?>
+					<div class="coupon">
 
+						<label for="coupon_code"><?php _e( 'Coupon', 'woocommerce' ); ?>:</label> <input type="text" name="coupon_code" class="input-text" id="coupon_code" value="" placeholder="<?php esc_attr_e( 'Coupon code', 'woocommerce' ); ?>" /> <input type="submit" class="button" name="apply_coupon" value="<?php esc_attr_e( 'Apply Coupon', 'woocommerce' ); ?>" />
+
+						<?php do_action( 'woocommerce_cart_coupon' ); ?>
+					</div>
+				<?php } */?>
+
+				<?php do_action( 'woocommerce_cart_actions' ); ?>
+
+				<?php wp_nonce_field( 'woocommerce-cart' ); ?>
+			</td>
+		</tr>	
 		<?php do_action( 'woocommerce_after_cart_contents' ); ?>
 	</tbody>
 </table>
 
 <?php do_action( 'woocommerce_after_cart_table' ); ?>
+
 
 </form>
 

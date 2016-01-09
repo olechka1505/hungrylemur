@@ -71,16 +71,17 @@ class WP_Checkout_handler
         $response = array('status' => true);
         $statusCode = 200;
         $response['shipping'] = $this->get_shipping_details();
-        $transaction = WC()->session->last_transaction;
-        if ($transaction) {
+        $paymentMethod = WC()->session->paymentMethod;
+        if ($paymentMethod) {
             $response['card'] = array(
-                'type' => $transaction->creditCard['cardType'],
-                'bin' => $transaction->creditCard['bin'],
-                'last4' => $transaction->creditCard['last4'],
+                'type'  => $paymentMethod->cardType,
+                'bin'   => $paymentMethod->bin,
+                'last4' => $paymentMethod->last4,
             );
         }
         if ($order_id = WC()->session->last_order_id) {
             $order = new WC_Order($order_id);
+            $order->calculate_taxes();
             $products = $order->get_items();
             $response['tax'] = 0;
             foreach ($products as $id => $product) {
@@ -105,10 +106,11 @@ class WP_Checkout_handler
             $response['delivery'] = $this->get_delivery();
             $response['subtotal'] = $woocommerce->cart->get_cart_subtotal();
             $response['total'] = $woocommerce->cart->total;
+            $response['total_with_tax'] = floatval($woocommerce->cart->total) + floatval($response['tax']);
             if ($response['delivery']['expedited']) {
                 $response['total'] += 40;
             }
-            WC()->session->completed_order = $response;
+            WC()->session->last_order = $response;
         }
         $this->response($response, $statusCode);
     }
@@ -309,19 +311,17 @@ class WP_Checkout_handler
             if (isset($delivery['expedited']) && $delivery['expedited']) {
                 $total += 40;
             }
-            // create transaction
-            $products = $woocommerce->cart->get_cart();
-            $result = Braintree_Transaction::sale([
-                'amount' => $total,
-                'paymentMethodNonce' => $nonce,
+
+            // charge credit card
+            $result = Braintree_PaymentMethod::create([
                 'customerId' => $braintree_user_id,
-                'options' => [
-                    'storeInVaultOnSuccess' => true,
-                    //'submitForSettlement' => true,
-                ]
+                'paymentMethodNonce' => $nonce
             ]);
 
             if ($result->success) {
+                // save payment methodin session
+                WC()->session->paymentMethod = $result->paymentMethod;
+
                 // create order
                 $products = $woocommerce->cart->get_cart();
                 $order = wc_create_order();
@@ -344,7 +344,6 @@ class WP_Checkout_handler
                 }
 
                 WC()->session->last_order_id = $order->id;
-                WC()->session->last_transaction = $result->transaction;
 
                 $order->update_status('processing');
                 $response['status'] = true;
@@ -363,16 +362,31 @@ class WP_Checkout_handler
     function complete()
     {
         global $woocommerce;
-        $response = WC()->session->completed_order;
-        $response['shop_url'] = get_permalink( woocommerce_get_page_id( 'shop' ) );
-        $response['order_id'] = WC()->session->last_transaction->id;
+        $order = WC()->session->last_order;
+        $braintree_user_id = $this->get_braintree_user_id();
+        $result = Braintree_Transaction::sale(
+            [
+                'customerId' => $braintree_user_id,
+                'amount' => money_format('%i', $order['total_with_tax'])
+            ]
+        );
 
-        $woocommerce->cart->empty_cart();
-        $order = new WC_Order(WC()->session->last_order_id);
-        $order->update_status('completed');
-        unset(WC()->session->last_transaction);
-        unset(WC()->session->last_order_id);
-        $statusCode = 200;
+        if ($result->success) {
+            $response['shop_url'] = get_permalink( woocommerce_get_page_id( 'shop' ) );
+            $response['order_id'] = $result->transaction->id;
+            $woocommerce->cart->empty_cart();
+            $order = new WC_Order(WC()->session->last_order_id);
+            $order->update_status('completed');
+            unset(WC()->session->last_transaction);
+            unset(WC()->session->paymentMethod);
+            unset(WC()->session->last_order_id);
+            unset(WC()->session->last_order);
+            $statusCode = 200;
+        } else {
+            $response['status'] = false;
+            $response['errors'][] = $result->message;
+            $statusCode = 500;
+        }
         $this->response($response, $statusCode);
     }
 

@@ -116,7 +116,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<!-- End of Product Title and Subtitle -->
 		
 		<!-- Product Image 2 -->		<?php $product_image2 = get_post_meta( get_the_ID(), 'wpcf-product-image2', true );?>		<?php if (!empty($product_image2)) { ?>		 	<div class="product-image-upload">				<img src="<?php echo  $product_image2 ?>" >			</div>		<?php } ?>		
-		<!-- Product Image 3 -->		<?php $product_image3 = get_post_meta( get_the_ID(), 'wpcf-product-image3', true );?>		<?php if (!empty($product_image3)) { ?>		 	<div class="product-image-upload">				<img src="<?php echo  $product_image3 ?>" >			</div>		<?php } ?>
+		<!-- Product Image 3 -->		<?php $product_image3 = get_post_meta( get_the_ID(), 'wpcf-product-image-3', true );?>		<?php if (!empty($product_image3)) { ?>		 	<div class="product-image-upload">				<img src="<?php echo  $product_image3 ?>" >			</div>		<?php } ?>
 		<!-- Product Image 4 -->		<?php $product_image4 = get_post_meta( get_the_ID(), 'wpcf-product-image-4', true );?>		<?php if (!empty($product_image4)) { ?>		 	<div class="product-image-upload">				<img src="<?php echo  $product_image4 ?>" >			</div>		<?php } ?>
 		<!-- Product Image 5 -->		<?php $product_image5 = get_post_meta( get_the_ID(), 'wpcf-product-image-5', true );?>		<?php if (!empty($product_image5)) { ?>		 	<div class="product-image-upload">				<img src="<?php echo  $product_image5 ?>" >			</div>		<?php } ?>
 

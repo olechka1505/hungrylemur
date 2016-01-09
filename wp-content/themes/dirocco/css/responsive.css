@@ -280,13 +280,15 @@
 	#article .dynamic-text-left span { font-size: 14px; }
 	
 	/* Footer */
-	div#newsletter_widget-2 { float: left;		width: 80%;	}	
-	div#mc4wp_widget-2 { float: left!important;		width: 80%;	}	
-	div#nav_menu-4 { float: left;		width: 22%;		margin-left:0;	}	
-	div#nav_menu-5 { float: left;		width: 22%;		margin-left:0;	}	
-	div#nav_menu-6 { float: left;		width: 22%;		margin-left:0;	}	
-	div#nav_menu-7 { float: left;		width: 22%;		margin-left:0;	}	
-	div#nav_menu-8 { float: left;		width: 22%;		margin-left:0;	}
+	.sidebar-footer .footer-widget-col { width: 100%; }
+	div#newsletter_widget-2 { float: left;		width: 100%;	}	
+	div#mc4wp_widget-2 { float: left;		width: 100%;	}	
+	div#nav_menu-4 { float: left;		width: 20%;		margin-left:0;	}	
+	div#nav_menu-5 { float: left;		width: 20%;		margin-left:0;	}	
+	div#nav_menu-6 { float: left;		width: 20%;		margin-left:0;	}	
+	div#nav_menu-7 { float: left;		width: 20%;		margin-left:0;	}	
+	div#nav_menu-8 { float: left;		width: 20%;		margin-left:0;	}
+	.page-template-page-account .woocommerce { padding: 0px 50px; }
 }
 
 @media screen and (max-device-width: 667px) {

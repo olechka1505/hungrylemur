@@ -16,7 +16,7 @@ wc_print_notices(); ?>
 <p class="myaccount_user myaccount-title">
 	<?php
 	printf(
-		__( 'An outline of all of your orders %1$s(not %1$s? <a href="%2$s">Sign out</a>).', 'woocommerce' ) . ' ',
+		__( 'An outline of all of your orders %1$s (not %1$s? <a href="%2$s">Sign out</a>).', 'woocommerce' ) . ' ',
 		$current_user->display_name,
 		wc_get_endpoint_url( 'customer-logout', '', wc_get_page_permalink( 'myaccount' ) )
 	);
@@ -29,6 +29,6 @@ wc_print_notices(); ?>
 
 <?php wc_get_template( 'myaccount/my-orders.php', array( 'order_count' => $order_count ) ); ?>
 
-<?php //wc_get_template( 'myaccount/my-address.php' ); ?>
+<?php wc_get_template( 'myaccount/my-address.php' ); ?>
 
-<?php do_action( 'woocommerce_after_my_account' ); ?>
+<?php // do_action( 'woocommerce_after_my_account' ); ?>

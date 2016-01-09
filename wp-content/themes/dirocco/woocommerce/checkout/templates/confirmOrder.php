@@ -12,13 +12,13 @@
 
         <div class="col-xs-12 no-padding">
             <p ng-if="confirmData.delivery.standard">
-                <label>
+                <label style="font-weight: normal">
                     Standard Shipping (Free)
                 </label><br/>
                 <small>5 Business days.</small>
             </p>
             <p ng-if="confirmData.delivery.expedited">
-                <label>
+                <label style="font-weight: normal">
                     Expedited Shipping (+$40)
                 </label><br/>
                 <small>Orders placed before 1 p.m. ET will be delivered
@@ -29,11 +29,11 @@
         <div class="col-xs-12 checkout-title-separator clearfix no-padding">CREDIT CARD</div>
 
         <div class="col-xs-12 no-padding">
-            <p><strong>{{confirmData.card.type}}: {{confirmData.card.bin + '******' + confirmData.card.last4}}</strong></p>
+            <p>{{confirmData.card.type}}: {{'****' + confirmData.card.last4}}</p>
         </div>
     </div>
 
-    <div class="col-md-7 col-xs-12">
+    <div class="col-md-7 col-xs-12 checkout-product-summary">
         <table class="checkout-confirm-table">
             <tr ng-repeat="product in confirmData.products">
                 <td><img ng-src="{{product.image}}" alt=""></td>
@@ -44,14 +44,15 @@
             </tr>
         </table>
         <div class="col-md-4 col-xs-12 text-right pull-right">
-            <div ng-if="confirmData.subtotal" class="text-right"><strong ng-bind-html="'SUBTOTAL: ' + confirmData.subtotal"></strong></div>
-            <div ng-if="confirmData.delivery.standard" class="text-right"><strong>SHIPPING: FREE</strong></div>
-            <div ng-if="confirmData.delivery.expedited" class="text-right"><strong>SHIPPING: +$40</strong></div>
-            <div class="text-right"><strong>TAX: {{confirmData.tax | currency}}</strong></div>
-            <div ng-if="confirmData.total" class="text-right"><strong>TOTAL: {{confirmData.total | currency}}</strong></div>
+            <div ng-if="confirmData.subtotal" class="text-right"><div ng-bind-html="'SUBTOTAL: ' + confirmData.subtotal"></div>
+            <div ng-if="confirmData.delivery.standard" class="text-right">SHIPPING: FREE</div>
+            <div ng-if="confirmData.delivery.expedited" class="text-right">SHIPPING: +$40</div>
+            <div class="text-right">TAX: {{confirmData.tax | currency}}</div>
+            <div ng-if="confirmData.total" class="text-right">TOTAL: {{confirmData.total + confirmData.tax | currency}}</div>
 
             <div class="separator"></div>
-            <a ui-sref="complete" class="btn btn-checkout">SUBMIT ORDER</a>
+				<a ui-sref="details" class="btn btn-checkout">GO BACK</a>
+				<a ui-sref="complete" class="btn btn-checkout">SUBMIT ORDER</a>
         </div>
     </div>
 

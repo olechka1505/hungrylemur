@@ -2126,12 +2126,7 @@ ul#menu-footer-menu li {
     padding-right: 1%;
 }
 
-.breadcrumbs ul li {
-    display: inline-block!important;
-    padding-right: 1%!important;
-    float: none!important;
-}
-    
+
 .breadcrumbs .breadcrumbs-wrap ul li, .breadcrumbs .breadcrumbs-wrap ul li a {
     font-style:normal !important;
 }

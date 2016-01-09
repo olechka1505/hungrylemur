@@ -238,6 +238,9 @@ function custom_override_billing_fields( $fields ) {
   unset($fields['billing_country']);
   unset($fields['billing_email']);
   /*unset($fields['billing_city']);*/
+  unset($fields['billing_postcode']['label']);
+  unset($fields['billing_city']['label']);
+  unset($fields['billing_state']['label']);
   
   $fields['billing_first_name']['placeholder'] = 'First name';
   $fields['billing_last_name']['placeholder'] = 'Last name';
@@ -255,7 +258,10 @@ function custom_override_shipping_fields( $fields ) {
   unset($fields['shipping_country']);
   unset($fields['shipping_email']);
   /*unset($fields['shipping_city']);*/
-  
+  unset($fields['shipping_postcode']['label']);
+  unset($fields['shipping_city']['label']);
+  unset($fields['shipping_state']['label']);
+   
   $fields['shipping_first_name']['placeholder'] = 'First name';
   $fields['shipping_last_name']['placeholder'] = 'Last name';
   $fields['shipping_company']['placeholder'] = 'Company';
