@@ -72,19 +72,17 @@
                 <input data-braintree-name="cvv" ng-class="{'error-field': errors.cvc}"  type="text" maxlength="4" ng-model="paymentData.cvc" class="form-control" placeholder="CVC">
             </div>
         </div>
-		<!--
+
         <div class="col-md-4 col-xs-12 no-padding">
-            <div class="form-group col-xs-12 no-padding-left">
-                <label>Have a Promo Code?</label>
-            </div>
             <div class="form-group col-md-6 col-xs-12 no-padding-left">
                 <input type="text" ng-model="paymentData.promo" class="form-control" placeholder="Promo Code">
             </div>
             <div class="form-group col-md-6 col-xs-12 no-padding-left">
-                <input type="button" ng-click="promo()" class="btn btn-checkout" value="APPLY">
+                <input ng-if="!isPromo" type="button" ng-click="promo()" class="btn btn-checkout" value="APPLY">
+                <i ng-if="isPromo" class="fa fa-check coupons-added"></i>
             </div>
         </div>
-		-->
+
         <div class="separator"></div>
         <div class="separator"></div>
 

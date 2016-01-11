@@ -49,6 +49,13 @@ class WP_Checkout_handler
         add_action($this->ajax_full_action_nopriv('complete'), array($this, 'complete'));
         add_action($this->ajax_full_action('confirmOrder'), array($this, 'confirmOrder'));
         add_action($this->ajax_full_action_nopriv('confirmOrder'), array($this, 'confirmOrder'));
+
+        // Filters
+        add_filter( 'woocommerce_coupon_message', array($this, 'filter_woocommerce_coupon_message', 10, 3));
+    }
+
+    function filter_woocommerce_coupon_message( $msg, $msg_code, $instance ) {
+        return false;
     }
 
     function details()
@@ -69,23 +76,19 @@ class WP_Checkout_handler
         if ($createAccount = $this->data('createAccount')) {
             $response['status'] = true;
 
-            if (isset($createAccount['login']) && !isset($createAccount['password'])) {
-                $response['status'] = false;
-                $response['errors'][] = __("Password can't be blank.");
-                $statusCode = 500;
-            }
-
-            if (!isset($createAccount['login']) && isset($createAccount['password'])) {
-                $response['status'] = false;
-                $response['errors'][] = __("Email can't be blank.");
-                $statusCode = 500;
-            }
-
-            if (isset($createAccount['login']) && isset($createAccount['password'])) {
+            if (empty($createAccount['login']) && empty($createAccount['password'])) {
+                $response['status'] = true;
+            } else {
                 // Validation
                 if (!empty($createAccount['login']) && empty($createAccount['password'])) {
                     $response['status'] = false;
                     $response['errors'][] = __("Password can't be blank.");
+                    $statusCode = 500;
+                }
+
+                if (empty($createAccount['login']) && !empty($createAccount['password'])) {
+                    $response['status'] = false;
+                    $response['errors'][] = __("Email can't be blank.");
                     $statusCode = 500;
                 }
 
@@ -97,18 +100,13 @@ class WP_Checkout_handler
 
                 if ($user_id = username_exists($createAccount['login']) || email_exists($createAccount['login'])) {
                     $response['status'] = false;
-                    $response['errors'][] = __('This user is already exist.');
+                    $response['errors'][] = sprintf('This account already exists. Please <a href="%s">sign in</a> here', '/checkout/#/login');
                     $statusCode = 500;
                 }
 
                 // create user and logged in
                 if ($response['status']) {
                     $user_id = wp_create_user( $createAccount['login'], $createAccount['password'], $createAccount['login'] );
-//                    $user = wp_signon(array(
-//                        'user_login'    => $createAccount['login'],
-//                        'user_password' => $createAccount['password'],
-//                    ), false);
-//                    if (is_wp_error($user)) {
                     if (is_wp_error($user_id)) {
                         $response['status'] = false;
                         $response['errors'][] = __('User wan not created.');
@@ -189,8 +187,10 @@ class WP_Checkout_handler
                 }
                 $response['delivery'] = $this->get_delivery();
                 $response['subtotal'] = $woocommerce->cart->get_cart_subtotal();
-                $response['total'] = $woocommerce->cart->total;
-                $response['total_with_tax'] = floatval($woocommerce->cart->total) + floatval($response['tax']);
+                $response['coupons'] = $woocommerce->cart->coupon_discount_amounts;
+                $response['coupons_sum'] = array_sum($response['coupons']);
+                $response['total'] = $woocommerce->cart->cart_contents_total;
+                $response['total_with_tax'] = floatval($woocommerce->cart->cart_contents_total) + floatval($response['tax']);
                 if ($response['delivery']['expedited']) {
                     $response['total'] += 40;
                 }
@@ -335,11 +335,17 @@ class WP_Checkout_handler
         if ($promo = $this->data('promo')) {
             $response = array('status' => false);
             $statusCode = 200;
-            
+            if ($woocommerce->cart->has_discount(sanitize_text_field($promo))) {
+                $woocommerce->cart->remove_coupons(sanitize_text_field($promo));
+                $woocommerce->cart->calculate_totals();
+            }
             if (!$woocommerce->cart->add_discount( sanitize_text_field( $promo ))) {
                 $response['status'] = false;
                 $response['errors'][] = __('Invalid promo code.');
                 $statusCode = 500;
+            } else {
+                $woocommerce->cart->calculate_totals();
+                $response['status'] = true;
             }
         }
         $this->response($response, $statusCode);
@@ -392,7 +398,7 @@ class WP_Checkout_handler
                 }
             }
             $delivery = $this->get_delivery();
-            $total = $woocommerce->cart->total;
+            $total = $woocommerce->cart->cart_contents_total;
             if (isset($delivery['expedited']) && $delivery['expedited']) {
                 $total += 40;
             }
@@ -499,7 +505,7 @@ class WP_Checkout_handler
             
             if ($user_id = username_exists($signup['login']) || email_exists($signup['login'])) {
                 $response['status'] = false;
-                $response['errors'][] = __('This user is already exist.');
+                $response['errors'][] = sprintf('This account already exists. <a href="%s">Please sign in here</a>', '/checkout/#/login');
                 $statusCode = 500;
             }
             if ($signup['confirmPassword'] != $signup['password']) {

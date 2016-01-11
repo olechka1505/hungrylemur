@@ -31,6 +31,17 @@
         <div class="col-xs-12 no-padding">
             <p>{{confirmData.card.type}}: {{'****' + confirmData.card.last4}}</p>
         </div>
+
+        <div class="col-xs-12 checkout-title-separator clearfix no-padding">CREATE ACCOUNT</div>
+
+        <div class="col-md-8 col-xs-12 no-padding checkout-details checkout-create-account">
+            <div class="form-group">
+                <input ng-model="createAccount.login" class="form-control" type="text" placeholder="Email address"/>
+            </div>
+            <div class="form-group">
+                <input ng-model="createAccount.password" class="form-control" type="password" placeholder="Password"/>
+            </div>
+        </div>
     </div>
 
     <div class="col-md-7 col-xs-12 checkout-product-summary">
@@ -43,22 +54,12 @@
                 <td class="text-right">{{product.price | currency}}</td>
             </tr>
         </table>
-        <div class="col-md-8 col-xs-12 margin-top-5">
-            <div class="col-md-8 col-xs-12 no-padding checkout-details checkout-create-account">
-                <div class="checkout-create-account-title text-center">CREATE AN ACCOUNT</div>
-                <div class="form-group">
-                    <input ng-model="createAccount.login" class="form-control" type="text" placeholder="Email address"/>
-                </div>
-                <div class="form-group">
-                    <input ng-model="createAccount.password" class="form-control" type="password" placeholder="Password"/>
-                </div>
-            </div>
-        </div>
         <div class="col-md-4 col-xs-12 text-right pull-right margin-top-5">
             <div ng-if="confirmData.subtotal" class="text-right"><div ng-bind-html="'SUBTOTAL: ' + confirmData.subtotal"></div>
             <div ng-if="confirmData.delivery.standard" class="text-right">SHIPPING: FREE</div>
             <div ng-if="confirmData.delivery.expedited" class="text-right">SHIPPING: +$40</div>
             <div class="text-right">TAX: {{confirmData.tax | currency}}</div>
+            <div ng-if="confirmData.coupons_sum" class="text-right">COUPONS: -{{confirmData.coupons_sum | currency}}</div>
             <div ng-if="confirmData.total" class="text-right">TOTAL: {{confirmData.total + confirmData.tax | currency}}</div>
 
             <div class="separator"></div>

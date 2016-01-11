@@ -43,6 +43,7 @@ checkoutApp.controller('CheckoutDetailsCtrl',['$scope','$http', '$location', '$s
     $scope.detailsData = checkoutDetailsData.data;
     $scope.deliveryData = {};
     $scope.process = false;
+    $scope.isPromo = false;
     $scope.paymentData = {};
     $scope.years = [2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025,2026,2027,2028,2029,2030];
     $scope.month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
@@ -82,7 +83,7 @@ checkoutApp.controller('CheckoutDetailsCtrl',['$scope','$http', '$location', '$s
         var promise = CheckoutService.request('promo', {promo: $scope.paymentData.promo});
         promise.then(function(response){
             if (response.data.status) {
-                //$state.go('payment');
+                $scope.isPromo = true;
             }
         })
     },
@@ -186,6 +187,8 @@ checkoutApp.controller('CheckoutConfirmOrderCtrl',['$scope','$http', '$location'
 	$scope.confirmData = checkoutConfirmOrderData.data;
     $scope.createAccount = {
         action: 'createAccount',
+        login: '',
+        password: '',
     };
 
     $rootScope.breadcrumbs = [

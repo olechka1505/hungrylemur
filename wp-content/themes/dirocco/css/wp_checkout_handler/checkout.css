@@ -42,3 +42,5 @@
 .checkout-create-account-title{margin: 0 0 10px 0;}
 .checkout-title-separator{ margin:25px 0; }
 .margin-top-5 {margin-top: 5%;}
+.woocommerce-error{display:none;}
+.coupons-added {line-height: 34px;}
