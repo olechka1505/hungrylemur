@@ -3,7 +3,7 @@
 	Plugin Name: Advanced post slider
 	Plugin URI: www.wpcue.com
 	Description: A multipurpose responsive slideshow plugin powered with three built-in design template, lots of easy customizable options and many more to explore.
-	Version: 2.3.4
+	Version: 2.5.0
 	Author: digontoahsan
 	Author URI: www.wpcue.com
 	License: GPL2
@@ -75,7 +75,7 @@
 		if(get_option('advps-db-version') && !get_option('advps-update-notification')){
 			update_option('advps-update-notification','show');
 		}
-		update_option('advps-curr-version','2.3.4');
+		update_option('advps-curr-version','2.5.0');
 	}
 	add_action( 'plugins_loaded', 'advps_update_db' );
 	/* ---------------------------------------------------------------------------------------*/
@@ -107,9 +107,9 @@
 	add_action( "wp_ajax_advpsUpdateSmethod", "advpsUpdateSmethod" );
 	
 	function advpsUpdateLabel(){
-		$nonce = $_POST['checkReq'];
-		$fname = $_POST['f_name'];
-		$fvalue = trim($_POST['f_value']);
+		$nonce = sanitize_text_field(  $_POST['checkReq'] );
+		$fname = sanitize_text_field( $_POST['f_name'] );
+		$fvalue = trim( sanitize_text_field( $_POST['f_value']) );
 		if(! defined( 'ABSPATH' ) || !wp_verify_nonce( $nonce, 'advpsauthrequst' )){
 			echo "Unauthorized request.";
 			exit;
@@ -123,8 +123,8 @@
 	}
 
 	function chkCaetegory(){
-		$nonce = $_POST['checkReq'];
-		$posttype = $_POST['post_type'];
+		$nonce = sanitize_text_field( $_POST['checkReq'] );
+		$posttype = sanitize_text_field( $_POST['post_type'] );
 		if(! defined( 'ABSPATH' ) || !wp_verify_nonce( $nonce, 'advpsauthrequst' )){
 			echo "Unauthorized request.";
 			exit;
@@ -154,7 +154,7 @@
 		exit;
 	}
 	function advpsUpdateOpt(){
-		$nonce = $_POST['checkReq'];
+		$nonce = sanitize_text_field( $_POST['checkReq'] );
 		$optdata = $_POST['optdata'];
 		
 		if(! defined( 'ABSPATH' ) || !wp_verify_nonce( $nonce, 'advpsauthrequst' )){
@@ -199,12 +199,12 @@
 		exit;
 	}
 	function advpsListPost(){
-		$nonce = $_POST['checkReq'];
-		$ptype = $_POST['ptype'];
-		$pmax = $_POST['pmax'];
-		$porderBy = $_POST['porderBy'];
-		$porder = $_POST['porder'];
-		$plist = explode(',',$_POST['plist']);
+		$nonce = sanitize_text_field( $_POST['checkReq'] );
+		$ptype = sanitize_text_field( $_POST['ptype'] );
+		$pmax = sanitize_text_field( $_POST['pmax'] );
+		$porderBy = sanitize_text_field( $_POST['porderBy'] );
+		$porder = sanitize_text_field( $_POST['porder'] );
+		$plist = explode(',', sanitize_text_field( $_POST['plist'] ) ) ;
 		
 		if(! defined( 'ABSPATH' ) || !wp_verify_nonce( $nonce, 'advpsauthrequst' )){
 			echo "Unauthorized request.";
@@ -229,9 +229,9 @@
 		exit;
 	}
 	function advpsUpdateSmethod(){
-		$nonce = $_POST['checkReq'];
-		$selnam = $_POST['selnam'];
-		$selval = $_POST['selval'];
+		$nonce = sanitize_text_field( $_POST['checkReq'] );
+		$selnam = sanitize_text_field( $_POST['selnam'] );
+		$selval = sanitize_text_field( $_POST['selval'] );
 		
 		if(! defined( 'ABSPATH' ) || !wp_verify_nonce( $nonce, 'advpsauthrequst' )){
 			echo "Unauthorized request.";
@@ -553,7 +553,6 @@
 			});
 		});
 	</script>
-<div class="row home-slider">
 <div id="advps_container<?php echo $sldshowID;?>" class="advps-slide-container" style="overflow:hidden;max-width:<?php echo $container['advps_sld_width'];?>px;<?php if(isset($container['advps_centering']) && $container['advps_centering'] == 'yes'){echo 'margin:auto;';}?>">
  
   <div id="<?php echo "advpsslideshow_".$sldshowID;?>">
@@ -583,14 +582,12 @@
 	  ?>
       <?php if( $content['advps_ed_link']=='enable'){?></a><?php }?>
        
-      <div class="advps-excerpt-<?php echo $template?> col-sm-12" style="width:<?php echo $content['advps_overlay_width'];?>%;height:<?php echo  $content['advps_overlay_height'];?>%;<?php if($content['advps_excpt_visibility'] == 'show on hover'){?>display:none;<?php }if($content['advps_excpt_position'] == 'left'){?>top:0; left:0;<?php }elseif($content['advps_excpt_position'] == 'right'){?>top:0; right:0;<?php }elseif($content['advps_excpt_position'] == 'bottom'){?>bottom:0; left:0;<?php }?>">
+      <div class="advps-excerpt-<?php echo $template?>" style="width:<?php echo $content['advps_overlay_width'];?>%;height:<?php echo  $content['advps_overlay_height'];?>%;<?php if($content['advps_excpt_visibility'] == 'show on hover'){?>display:none;<?php }if($content['advps_excpt_position'] == 'left'){?>top:0; left:0;<?php }elseif($content['advps_excpt_position'] == 'right'){?>top:0; right:0;<?php }elseif($content['advps_excpt_position'] == 'bottom'){?>bottom:0; left:0;<?php }?>">
       	<div class="advps-overlay-<?php echo $template?>" style="background-color:<?php echo $content['advps_overlay_color'];?>; -moz-opacity:<?php echo $content['advps_overlay_opacity'];?>;filter:alpha(opacity=<?php echo $content['advps_overlay_opacity']*100;?>);opacity:<?php echo $content['advps_overlay_opacity'];?>;"></div>
-        <div class="advps-excerpt-block-<?php echo $template?>" style="text-align:<?php echo $content['advps_text_align'];?>;color:<?php echo $content['advps_excptFcolor'];?>;-moz-opacity:<?php echo $content['advps_text_opacity'];?>;filter:alpha(opacity=<?php echo $content['advps_text_opacity']*100;?>);opacity:<?php echo $content['advps_text_opacity'];?>;">    
-<a href="<?php the_permalink() ?>"><h3 class="advs-sub-title"><?php the_subtitle(); ?></h3></a>    
-        <<?php echo $content['advps_ttitle_tag'];?> class="advs-title" style="color:<?php echo $content['advps_titleFcolor'];?>"><?php if( $content['advps_ed_link']=='enable'){?><a target="<?php echo $content['advps_link_target'];?>" href="<?php if($content['advps_link_type'] == 'permalink'){the_permalink();}else{echo get_post_meta($post->ID,'advps_custom_link',true);}?>" style="margin:5px 0px 10px 0px;color:<?php echo $content['advps_titleFcolor'];?>" <?php if(isset($content['advps_link_rel']) && $content['advps_link_rel'] != 'none'){?>rel="<?php echo $content['advps_link_rel'];?>"<?php }?>><?php }?><?php the_title();?><?php if( $content['advps_ed_link']=='enable'){?></a><?php }?></<?php echo $content['advps_ttitle_tag'];?>>
-        <?php if($content['advps_exclude_excpt'] == 'no'){the_excerpt();}?>
-			
-		<p class="icon"><a href="<?php the_permalink() ?>"><i class="fa fa-play"></a></i></p>
+        <div class="advps-excerpt-block-<?php echo $template?>" style="text-align:<?php echo $content['advps_text_align'];?>;color:<?php echo $content['advps_excptFcolor'];?>;-moz-opacity:<?php echo $content['advps_text_opacity'];?>;filter:alpha(opacity=<?php echo $content['advps_text_opacity']*100;?>);opacity:<?php echo $content['advps_text_opacity'];?>;">        
+        <<?php echo $content['advps_ttitle_tag'];?> class="advs-title" style="margin:5px 0px 10px 0px;color:<?php echo $content['advps_titleFcolor'];?>"><?php if( $content['advps_ed_link']=='enable'){?><a target="<?php echo $content['advps_link_target'];?>" href="<?php if($content['advps_link_type'] == 'permalink'){the_permalink();}else{echo get_post_meta($post->ID,'advps_custom_link',true);}?>" style="margin:5px 0px 10px 0px;color:<?php echo $content['advps_titleFcolor'];?>" <?php if(isset($content['advps_link_rel']) && $content['advps_link_rel'] != 'none'){?>rel="<?php echo $content['advps_link_rel'];?>"<?php }?>><?php }?><?php the_title();?><?php if( $content['advps_ed_link']=='enable'){?></a><?php }?></<?php echo $content['advps_ttitle_tag'];?>>
+          
+            <?php if($content['advps_exclude_excpt'] == 'no'){the_excerpt();}?>
         </div>
       </div>
     </div>
@@ -651,7 +648,6 @@
 			?>
          <?php if( $content['advps_ed_link']=='enable'){?></a><?php }endif;?>
           <div class="advps-excerpt-<?php echo $template?>" style="position:relative;float:left;max-width:<?php echo $content['advps_cont_width'] - ($container['advps_contpad2']+$container['advps_contpad4']);?>px;z-index:0; color:<?php echo $content['advps_excptFcolor'];?>;">
-<a href="<?php the_permalink() ?>"><h3 class="advs-sub-title"><?php the_subtitle(); ?></h3></a>
             <?php if(in_array('title',$content['advps_content_set'])){?><<?php echo $content['advps_ttitle_tag'];?> class="advs-title" style="color:<?php echo $content['advps_titleFcolor'];?>;margin:5px 0px 10px 0px;"> <?php if( $content['advps_ed_link']=='enable'){?><a target="<?php echo $content['advps_link_target'];?>" href="<?php if($content['advps_link_type'] == 'permalink'){the_permalink();}else{echo get_post_meta($post->ID,'advps_custom_link',true);}?>" style="color:<?php echo $content['advps_titleFcolor'];?>;margin:5px 0px 10px 0px;" <?php if(isset($content['advps_link_rel']) && $content['advps_link_rel'] != 'none'){?>rel="<?php echo $content['advps_link_rel'];?>"<?php }?>><?php }?>
               <?php the_title();?>
               <?php if( $content['advps_ed_link']=='enable'){?></a><?php }?></<?php echo $content['advps_ttitle_tag'];?>><?php }?>
@@ -693,7 +689,6 @@
    <?php }?>
 </div><!-- end advps-slide-container -->
 <!-- / Advanced post slider a multipurpose responsive slideshow plugin -->
-</div>
 <?php   
 		$advps_res = ob_get_contents();
 		ob_end_clean();

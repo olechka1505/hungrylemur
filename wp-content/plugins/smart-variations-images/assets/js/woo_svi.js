@@ -1,299 +1,415 @@
+;
 (function ($, window, document, undefined) {
 
     $.fn.wc_variation_form = function () {
-
-        $.fn.wc_variation_form.find_matching_variations = function (product_variations, settings) {
-            var matching = [];
-
-            for (var i = 0; i < product_variations.length; i++) {
-                var variation = product_variations[i];
-                var variation_id = variation.variation_id;
-
-                if ($.fn.wc_variation_form.variations_match(variation.attributes, settings)) {
-                    matching.push(variation);
-                }
-            }
-
-            return matching;
-        };
-
-        $.fn.wc_variation_form.variations_match = function (attrs1, attrs2) {
-            var match = true;
-
-            for (var attr_name in attrs1) {
-                if (attrs1.hasOwnProperty(attr_name)) {
-                    var val1 = attrs1[ attr_name ];
-                    var val2 = attrs2[ attr_name ];
-
-                    if (val1 !== undefined && val2 !== undefined && val1.length !== 0 && val2.length !== 0 && val1 !== val2) {
-                        match = false;
-                    }
-                }
-            }
-
-            return match;
-        };
+        var $form = this;
+        var $product = $form.closest('.product');
+        var $product_id = parseInt($form.data('product_id'), 10);
+        var $product_variations = $form.data('product_variations');
+        var $use_ajax = $product_variations === false;
+        var $xhr = false;
+        var $reset_variations = $form.find('.reset_variations');
 
         // Unbind any existing events
-        this.unbind('check_variations update_variation_values found_variation');
-        this.find('.reset_variations').unbind('click');
-        this.find('.variations select').unbind('change focusin');
+        $form.unbind('check_variations update_variation_values found_variation');
+        $form.find('.reset_variations').unbind('click');
+        $form.find('.variations select').unbind('change focusin');
+        WOOSVI.STARTS.imgGal(); //START IMAGE GAL
+        WOOSVI.STARTS.prepGal();
+        WOOSVI.STARTS.galleryProduct(); //WOO_SVI SWITCH PRMARY IMAGE
+        // Bind new events to form
+        $form
 
-        WOOSVI.STARTS.imgGal();  //START IMAGE GAL
-        WOOSVI.STARTS.galleryPopulate();  //WOO_SVI SHOW ONLY CORRESPONDING IMAGES
-        WOOSVI.STARTS.galleryProduct();  //WOO_SVI SWITCH PRMARY IMAGE
-        // Bind events
-        $form = this
                 // On clicking the reset variation button
-                .on('click', '.reset_variations', function (event) {
-
-                    $(this).closest('.variations_form').find('.variations select').val('').change();
-
-                    var $sku = $(this).closest('.product').find('.sku'),
-                            $weight = $(this).closest('.product').find('.product_weight'),
-                            $dimensions = $(this).closest('.product').find('.product_dimensions');
-
-                    if ($sku.attr('data-o_sku'))
-                        $sku.text($sku.attr('data-o_sku'));
-
-                    if ($weight.attr('data-o_weight'))
-                        $weight.text($weight.attr('data-o_weight'));
-
-                    if ($dimensions.attr('data-o_dimensions'))
-                        $dimensions.text($dimensions.attr('data-o_dimensions'));
-
-                    $(this).closest('.variations_form').trigger('reset_image');
-
+                .on('click', '.reset_variations', function () {
+                    $form.find('.variations select').val('').change();
+                    $form.trigger('reset_data');
                     return false;
                 })
 
-                // Upon changing an option
-                .on('change', '.variations select', function (event) {
-
-                    $variation_form = $(this).closest('.variations_form');
-
-                    if ($variation_form.find('input.variation_id').length > 0)
-                        $variation_form.find('input.variation_id').val('').change();
-                    else
-                        $variation_form.find('input[name=variation_id]').val('').change();
-
-                    $variation_form
-                            .trigger('woocommerce_variation_select_change')
-                            .trigger('check_variations', ['', false]);
-
-                    $(this).blur();
-
-                    if ($().uniform && $.isFunction($.uniform.update)) {
-                        $.uniform.update();
-                    }
-
-                    // Custom event for when variation selection has been changed
-                    $variation_form.trigger('woocommerce_variation_has_changed');
-
+                // Reload product variations data
+                .on('reload_product_variations', function () {
+                    $product_variations = $form.data('product_variations');
+                    $use_ajax = $product_variations === false;
                 })
 
-                // Upon gaining focus
-                .on('focusin touchstart', '.variations select', function (event) {
-
-                    $variation_form = $(this).closest('.variations_form');
-
-                    // Get attribute name from data-attribute_name, or from input name if it doesn't exist
-                    if (typeof ($(this).data('attribute_name')) != 'undefined')
-                        attribute_name = $(this).data('attribute_name');
-                    else
-                        attribute_name = $(this).attr('name');
-
-                    $variation_form
-                            .trigger('woocommerce_variation_select_focusin')
-                            .trigger('check_variations', [attribute_name, true]);
-
-                })
-
-                // Check variations
-                .on('check_variations', function (event, exclude, focus) {
-
-                    var all_set = true,
-                            any_set = false,
-                            showing_variation = false,
-                            current_settings = {},
-                            $variation_form = $(this),
-                            $reset_variations = $variation_form.find('.reset_variations');
-
-                    $variation_form.find('.variations select').each(function () {
-
-                        // Get attribute name from data-attribute_name, or from input name if it doesn't exist
-                        if (typeof ($(this).data('attribute_name')) != 'undefined')
-                            attribute_name = $(this).data('attribute_name');
-                        else
-                            attribute_name = $(this).attr('name');
-
-
-                        if ($(this).val().length === 0) {
-                            all_set = false;
-                        } else {
-                            any_set = true;
+                // Reset product data
+                .on('reset_data', function () {
+                    var to_reset = {
+                        '.sku': 'o_sku',
+                        '.product_weight': 'o_weight',
+                        '.product_dimensions': 'o_dimensions'
+                    };
+                    $.each(to_reset, function (selector, data_attribute) {
+                        var $el = $product.find(selector);
+                        if ($el.attr('data-' + data_attribute)) {
+                            $el.text($el.attr('data-' + data_attribute));
                         }
-
-                        if (exclude && attribute_name === exclude) {
-
-                            all_set = false;
-                            current_settings[ attribute_name ] = '';
-
-                        } else {
-
-                            // Encode entities
-                            value = $(this).val();
-
-                            // Add to settings array
-                            current_settings[ attribute_name ] = value;
-                        }
-
                     });
-
-                    var product_id = parseInt($variation_form.data('product_id')),
-                            all_variations = $variation_form.data('product_variations');
-
-                    // Fallback to window property if not set - backwards compat
-                    if (!all_variations)
-                        all_variations = window.product_variations.product_id;
-                    if (!all_variations)
-                        all_variations = window.product_variations;
-                    if (!all_variations)
-                        all_variations = window['product_variations_' + product_id ];
-
-                    var matching_variations = $.fn.wc_variation_form.find_matching_variations(all_variations, current_settings);
-
-                    if (all_set) {
-
-                        var variation = matching_variations.shift();
-
-                        if (variation) {
-
-                            // Found - set ID
-
-                            // Get variation input by class, or by input name if class doesn't exist
-                            if ($variation_form.find('input.variation_id').length > 0)
-                                $variation_input = $variation_form.find('input.variation_id');
-                            else
-                                $variation_input = $variation_form.find('input[name=variation_id]');
-
-                            // Set ID
-                            $variation_input
-                                    .val(variation.variation_id)
-                                    .change();
-
-
-
-                            $variation_form.trigger('found_variation', [variation]);
-
-                        } else {
-
-                            // Nothing found - reset fields
-                            $variation_form.find('.variations select').val('');
-
-                            if (!focus)
-                                $variation_form.trigger('reset_image');
-
-                            alert(woo_svijs_params.i18n_no_matching_variations_text);
-
-                        }
-
-                    } else {
-
-                        $variation_form.trigger('update_variation_values', [matching_variations]);
-
-                        if (!exclude) {
-                            $variation_form.find('.single_variation_wrap').slideUp(200).trigger('hide_variation');
-                        }
-
-                    }
-
-                    if (any_set) {
-
-                        if ($reset_variations.css('visibility') === 'hidden')
-                            $reset_variations.css('visibility', 'visible').hide().fadeIn();
-
-                    } else {
-
-                        $reset_variations.css('visibility', 'hidden');
-                        $sku = $(this).closest('.product').find('.sku');
-                        $sku.text($sku.attr('data-o_sku'));
-
-                    }
-
+                    $form.wc_variations_description_update('');
+                    $form.trigger('reset_image');
+                    $form.find('.single_variation_wrap').slideUp(200).trigger('hide_variation');
                 })
 
                 // Reset product image
-                .on('reset_image', function (event) {
+                .on('reset_image', function () {
 
-                    var $product = $(this).closest('.product'),
-                            $product_img = $product.find('div.woosvi_images img:eq(0), div.images img:eq(0)'),
-                            $product_link = $product.find('div.woosvi_images a.zoom:eq(0),div.images a.zoom:eq(0)'),
+
+
+                    var $product_img = $product.find('div.images.woosvi_images img:eq(0), div.images:not(.woosvi_images) img:eq(0)'),
+                            $product_link = $product.find('div.images.woosvi_images a.zoom:eq(0),div.images:not(.woosvi_images) a.zoom:eq(0)'),
                             o_src = $product_img.attr('data-o_src'),
+                            o_srcset = $product_img.attr('data-o_srcset'),
+                            o_sizes = $product_img.attr('data-o_sizes'),
                             o_title = $product_img.attr('data-o_title'),
-                            o_alt = $product_img.attr('data-o_alt'),
+                            o_alt = $product_img.attr('data-o_title'),
                             o_href = $product_link.attr('data-o_href');
 
                     if (o_src !== undefined) {
-                        $product_img
-                                .attr('src', o_src);
+                        $product_img.attr('src', o_src);
                     }
-
+                    if (o_srcset !== undefined) {
+                        $product_img.attr('srcset', o_srcset);
+                    }
+                    if (o_sizes !== undefined) {
+                        $product_img.attr('sizes', o_sizes);
+                    }
                     if (o_href !== undefined) {
-                        $product_link
-                                .attr('href', o_href);
+                        $product_link.attr('href', o_href);
                     }
-
                     if (o_title !== undefined) {
-                        $product_img
-                                .attr('title', o_title);
-                        $product_link
-                                .attr('title', o_title);
+                        $product_img.attr('title', o_title);
+                        $product_link.attr('title', o_title);
                     }
-
                     if (o_alt !== undefined) {
-                        $product_img
-                                .attr('alt', o_alt);
+                        $product_img.attr('alt', o_alt);
                     }
 
-                    WOOSVI.STARTS.galleryPopulate();
-
-                    if ($("div.woosvi_images.woosvilens").length > 0 && o_href !== undefined)
+                    if ($("div.images.woosvi_images.woosvilens").length > 0 && o_href !== undefined)
                         WOOSVI.STARTS.imgGalreset(o_href);
 
                 })
 
+                // On changing an attribute
+                .on('change', '.variations select', function () {
+
+                    $form.find('input[name="variation_id"], input.variation_id').val('').change();
+                    $form.find('.wc-no-matching-variations').remove();
+
+                    if ($use_ajax) {
+                        if ($xhr) {
+                            $xhr.abort();
+                        }
+
+                        var all_attributes_chosen = true;
+                        var some_attributes_chosen = false;
+                        var data = {};
+
+                        $form.find('.variations select').each(function () {
+                            var attribute_name = $(this).data('attribute_name') || $(this).attr('name');
+
+                            if ($(this).val().length === 0) {
+                                all_attributes_chosen = false;
+                            } else {
+                                some_attributes_chosen = true;
+                            }
+
+                            data[ attribute_name ] = $(this).val();
+                        });
+
+                        if (all_attributes_chosen) {
+                            // Get a matchihng variation via ajax
+                            data.product_id = $product_id;
+
+                            $xhr = $.ajax({
+                                url: wc_cart_fragments_params.wc_ajax_url.toString().replace('%%endpoint%%', 'get_variation'),
+                                type: 'POST',
+                                data: data,
+                                success: function (variation) {
+                                    if (variation) {
+                                        $form.find('input[name="variation_id"], input.variation_id')
+                                                .val(variation.variation_id)
+                                                .change();
+                                        $form.trigger('found_variation', [variation]);
+                                    } else {
+                                        $form.trigger('reset_data');
+                                        $form.find('.single_variation_wrap').after('<p class="wc-no-matching-variations woocommerce-info">' + woo_svijs_params.i18n_no_matching_variations_text + '</p>');
+                                        $form.find('.wc-no-matching-variations').slideDown(200);
+                                    }
+                                }
+                            });
+                        } else {
+                            $form.trigger('reset_data');
+                        }
+                        if (some_attributes_chosen) {
+                            if ($reset_variations.css('visibility') === 'hidden') {
+                                $reset_variations.css('visibility', 'visible').hide().fadeIn();
+                            }
+                        } else {
+                            $reset_variations.css('visibility', 'hidden');
+                        }
+                    } else {
+                        $form.trigger('woocommerce_variation_select_change');
+                        $form.trigger('check_variations', ['', false]);
+                        $(this).blur();
+                    }
+
+                    // Custom event for when variation selection has been changed
+                    $form.trigger('woocommerce_variation_has_changed');
+                })
+
+                // Upon gaining focus
+                .on('focusin touchstart', '.variations select', function () {
+                    if (!$use_ajax) {
+                        $form.trigger('woocommerce_variation_select_focusin');
+                        $form.trigger('check_variations', [$(this).data('attribute_name') || $(this).attr('name'), true]);
+                    }
+                })
+
+                // Show single variation details (price, stock, image)
+                .on('found_variation', function (event, variation) {
+                    var $woosvi;
+                    $woosvi = WOOSVI.STARTS.galleryDefault(variation); //WOO_SVI run gallery swap image
+
+                    var $product_img = $product.find('div.images.woosvi_images img:eq(0),div.images:not(.woosvi_images) img:eq(0)'),
+                            $product_link = $product.find('div.images.woosvi_images a:eq(0),div.images:not(.woosvi_images) a.zoom:eq(0)'),
+                            o_src = $product_img.attr('data-o_src'),
+                            o_srcset = $product_img.attr('data-o_srcset'),
+                            o_sizes = $product_img.attr('data-o_sizes'),
+                            o_title = $product_img.attr('data-o_title'),
+                            o_alt = $product_img.attr('data-o_alt'),
+                            o_href = $product_link.attr('data-o_href'),
+                            variation_image = variation.image_src,
+                            variation_link = variation.image_link,
+                            variation_caption = variation.image_caption,
+                            variation_title = variation.image_title;
+
+                    $form.find('.single_variation').html(variation.price_html + variation.availability_html);
+
+                    if (!$woosvi) {
+                        if (variation_image && variation_image.length > 1) {
+                            $product_img
+                                    .attr('src', variation_image)
+                                    .attr('srcset', variation.image_srcset)
+                                    .attr('sizes', variation.image_sizes)
+                                    .attr('alt', variation_title)
+                                    .attr('title', variation_title);
+                            $product_link
+                                    .attr('href', variation_link)
+                                    .attr('title', variation_caption);
+                        } else {
+                            $product_img
+                                    .attr('src', o_src)
+                                    .attr('srcset', o_srcset)
+                                    .attr('sizes', o_sizes)
+                                    .attr('alt', o_alt)
+                                    .attr('title', o_title);
+                            $product_link
+                                    .attr('href', o_href)
+                                    .attr('title', o_title);
+                        }
+                        if ($("div.images.woosvi_images.woosvilens").length > 0)
+                            WOOSVI.STARTS.imgGalreset(variation_image);
+                    }
+                    var $single_variation_wrap = $form.find('.single_variation_wrap'),
+                            $sku = $product.find('.product_meta').find('.sku'),
+                            $weight = $product.find('.product_weight'),
+                            $dimensions = $product.find('.product_dimensions');
+
+                    if (!$sku.attr('data-o_sku')) {
+                        $sku.attr('data-o_sku', $sku.text());
+                    }
+
+                    if (!$weight.attr('data-o_weight')) {
+                        $weight.attr('data-o_weight', $weight.text());
+                    }
+
+                    if (!$dimensions.attr('data-o_dimensions')) {
+                        $dimensions.attr('data-o_dimensions', $dimensions.text());
+                    }
+
+                    if (variation.sku) {
+                        $sku.text(variation.sku);
+                    } else {
+                        $sku.text($sku.attr('data-o_sku'));
+                    }
+
+                    if (variation.weight) {
+                        $weight.text(variation.weight);
+                    } else {
+                        $weight.text($weight.attr('data-o_weight'));
+                    }
+
+                    if (variation.dimensions) {
+                        $dimensions.text(variation.dimensions);
+                    } else {
+                        $dimensions.text($dimensions.attr('data-o_dimensions'));
+                    }
+
+                    var hide_qty = false;
+                    var hide_qty_button = false;
+
+                    if (!variation.is_purchasable || !variation.is_in_stock || !variation.variation_is_visible) {
+                        hide_qty_button = true;
+                    }
+
+                    if (!variation.variation_is_visible) {
+                        $form.find('.single_variation').html('<p>' + woo_svijs_params.i18n_unavailable_text + '</p>');
+                    }
+
+                    if (variation.min_qty !== '') {
+                        $single_variation_wrap.find('.quantity input.qty').attr('min', variation.min_qty).val(variation.min_qty);
+                    } else {
+                        $single_variation_wrap.find('.quantity input.qty').removeAttr('min');
+                    }
+
+                    if (variation.max_qty !== '') {
+                        $single_variation_wrap.find('.quantity input.qty').attr('max', variation.max_qty);
+                    } else {
+                        $single_variation_wrap.find('.quantity input.qty').removeAttr('max');
+                    }
+
+                    if (variation.is_sold_individually === 'yes') {
+                        $single_variation_wrap.find('.quantity input.qty').val('1');
+                        hide_qty = true;
+                    }
+
+                    // Show/hide qty container
+                    if (hide_qty) {
+                        $single_variation_wrap.find('.quantity').hide();
+                    } else {
+                        // No need to hide it when hiding its container
+                        if (!hide_qty_button) {
+                            $single_variation_wrap.find('.quantity').show();
+                        }
+                    }
+
+                    // Show/hide qty & button container
+                    if (hide_qty_button) {
+                        if ($single_variation_wrap.is(':visible')) {
+                            $form.find('.variations_button').slideUp(200);
+                        } else {
+                            $form.find('.variations_button').hide();
+                        }
+                    } else {
+                        if ($single_variation_wrap.is(':visible')) {
+                            $form.find('.variations_button').slideDown(200);
+                        } else {
+                            $form.find('.variations_button').show();
+                        }
+                    }
+
+                    // Refresh variation description
+                    $form.wc_variations_description_update(variation.variation_description);
+
+                    $single_variation_wrap.slideDown(200).trigger('show_variation', [variation]);
+                })
+
+                // Check variations
+                .on('check_variations', function (event, exclude, focus) {
+                    if ($use_ajax) {
+                        return;
+                    }
+
+                    var all_attributes_chosen = true,
+                            some_attributes_chosen = false,
+                            current_settings = {},
+                            $form = $(this),
+                            $reset_variations = $form.find('.reset_variations');
+
+                    $form.find('.variations select').each(function () {
+                        var attribute_name = $(this).data('attribute_name') || $(this).attr('name');
+
+                        if ($(this).val().length === 0) {
+                            all_attributes_chosen = false;
+                        } else {
+                            some_attributes_chosen = true;
+                        }
+
+                        if (exclude && attribute_name === exclude) {
+                            all_attributes_chosen = false;
+                            current_settings[ attribute_name ] = '';
+                        } else {
+                            // Add to settings array
+                            current_settings[ attribute_name ] = $(this).val();
+                        }
+                    });
+
+                    var matching_variations = wc_variation_form_matcher.find_matching_variations($product_variations, current_settings);
+
+                    if (all_attributes_chosen) {
+
+                        var variation = matching_variations.shift();
+
+                        if (variation) {
+                            $form.find('input[name="variation_id"], input.variation_id')
+                                    .val(variation.variation_id)
+                                    .change();
+                            $form.trigger('found_variation', [variation]);
+                        } else {
+                            // Nothing found - reset fields
+                            $form.find('.variations select').val('');
+
+                            if (!focus) {
+                                $form.trigger('reset_data');
+                            }
+
+                            window.alert(woo_svijs_params.i18n_no_matching_variations_text);
+                        }
+
+                    } else {
+
+                        $form.trigger('update_variation_values', [matching_variations]);
+
+                        if (!focus) {
+                            $form.trigger('reset_data');
+                        }
+
+                        if (!exclude) {
+                            $form.find('.single_variation_wrap').slideUp(200).trigger('hide_variation');
+                        }
+                    }
+                    if (some_attributes_chosen) {
+                        if ($reset_variations.css('visibility') === 'hidden') {
+                            $reset_variations.css('visibility', 'visible').hide().fadeIn();
+                        }
+                    } else {
+                        $reset_variations.css('visibility', 'hidden');
+                    }
+                })
+
                 // Disable option fields that are unavaiable for current set of attributes
                 .on('update_variation_values', function (event, variations) {
-
-                    $variation_form = $(this).closest('.variations_form');
-
+                    if ($use_ajax) {
+                        return;
+                    }
                     // Loop through selects and disable/enable options based on selections
-                    $variation_form.find('.variations select').each(function (index, el) {
+                    $form.find('.variations select').each(function (index, el) {
 
-                        current_attr_select = $(el);
+                        var current_attr_name, current_attr_select = $(el);
 
                         // Reset options
-                        if (!current_attr_select.data('attribute_options'))
+                        if (!current_attr_select.data('attribute_options')) {
                             current_attr_select.data('attribute_options', current_attr_select.find('option:gt(0)').get());
+                        }
 
                         current_attr_select.find('option:gt(0)').remove();
                         current_attr_select.append(current_attr_select.data('attribute_options'));
                         current_attr_select.find('option:gt(0)').removeClass('attached');
-
                         current_attr_select.find('option:gt(0)').removeClass('enabled');
                         current_attr_select.find('option:gt(0)').removeAttr('disabled');
 
                         // Get name from data-attribute_name, or from input name if it doesn't exist
-                        if (typeof (current_attr_select.data('attribute_name')) != 'undefined')
+                        if (typeof (current_attr_select.data('attribute_name')) !== 'undefined') {
                             current_attr_name = current_attr_select.data('attribute_name');
-                        else
+                        } else {
                             current_attr_name = current_attr_select.attr('name');
+                        }
 
                         // Loop through variations
                         for (var num in variations) {
 
-                            if (typeof (variations[ num ]) != 'undefined') {
+                            if (typeof (variations[ num ]) !== 'undefined') {
 
                                 var attributes = variations[ num ].attributes;
 
@@ -301,12 +417,13 @@
                                     if (attributes.hasOwnProperty(attr_name)) {
                                         var attr_val = attributes[ attr_name ];
 
-                                        if (attr_name == current_attr_name) {
+                                        if (attr_name === current_attr_name) {
 
-                                            if (variations[ num ].variation_is_active)
+                                            var variation_active = '';
+
+                                            if (variations[ num ].variation_is_active) {
                                                 variation_active = 'enabled';
-                                            else
-                                                variation_active = '';
+                                            }
 
                                             if (attr_val) {
 
@@ -314,8 +431,8 @@
                                                 attr_val = $('<div/>').html(attr_val).text();
 
                                                 // Add slashes
-                                                attr_val = attr_val.replace(/'/g, "\\'");
-                                                attr_val = attr_val.replace(/"/g, "\\\"");
+                                                attr_val = attr_val.replace(/'/g, '\\\'');
+                                                attr_val = attr_val.replace(/"/g, '\\\"');
 
                                                 // Compare the meerkat
                                                 current_attr_select.find('option[value="' + attr_val + '"]').addClass('attached ' + variation_active);
@@ -340,112 +457,7 @@
                     });
 
                     // Custom event for when variations have been updated
-                    $variation_form.trigger('woocommerce_update_variation_values');
-
-                })
-
-                // Show single variation details (price, stock, image)
-                .on('found_variation', function (event, variation) {
-                    var $woosvi;
-
-                    $woosvi = WOOSVI.STARTS.galleryDefault(variation);  //WOO_SVI run gallery swap image
-
-                    var $variation_form = $(this),
-                            $product = $(this).closest('.product'),
-                            $product_img = $product.find('div.woosvi_images img:eq(0),div.images img:eq(0)'),
-                            $product_link = $product.find('div.woosvi_images a:eq(0),div.images a.zoom:eq(0)'),
-                            o_src = $product_img.attr('data-o_src'),
-                            o_title = $product_img.attr('data-o_title'),
-                            o_alt = $product_img.attr('data-o_alt'),
-                            o_href = $product_link.attr('data-o_href'),
-                            variation_image = variation.image_src,
-                            variation_link = variation.image_link,
-                            variation_title = variation.image_title,
-                            variation_alt = variation.image_alt;
-
-                    if (!$woosvi) {
-                        if (variation_image && variation_image.length > 1) {
-                            $product_img
-                                    .attr('src', variation_image)
-                                    .attr('alt', variation_alt)
-                                    .attr('title', variation_title);
-                            $product_link
-                                    .attr('href', variation_link)
-                                    .attr('title', variation_title);
-                        } else {
-                            $product_img
-                                    .attr('src', o_src)
-                                    .attr('alt', o_alt)
-                                    .attr('title', o_title);
-                            $product_link
-                                    .attr('href', o_href)
-                                    .attr('title', o_title);
-                        }
-                        if ($("div.woosvi_images.woosvilens").length > 0)
-                            WOOSVI.STARTS.imgGalreset(variation_image);
-                    }
-                    $variation_form.find('.variations_button').show();
-                    $variation_form.find('.single_variation').html(variation.price_html + variation.availability_html + variation.variation_description);
-
-                    var $single_variation_wrap = $variation_form.find('.single_variation_wrap'),
-                            $sku = $product.find('.product_meta').find('.sku'),
-                            $weight = $product.find('.product_weight'),
-                            $dimensions = $product.find('.product_dimensions');
-
-                    if (!$sku.attr('data-o_sku'))
-                        $sku.attr('data-o_sku', $sku.text());
-
-                    if (!$weight.attr('data-o_weight'))
-                        $weight.attr('data-o_weight', $weight.text());
-
-                    if (!$dimensions.attr('data-o_dimensions'))
-                        $dimensions.attr('data-o_dimensions', $dimensions.text());
-
-                    if (variation.sku) {
-                        $sku.text(variation.sku);
-                    } else {
-                        $sku.text($sku.attr('data-o_sku'));
-                    }
-
-                    if (variation.weight) {
-                        $weight.text(variation.weight);
-                    } else {
-                        $weight.text($weight.attr('data-o_weight'));
-                    }
-
-                    if (variation.dimensions) {
-                        $dimensions.text(variation.dimensions);
-                    } else {
-                        $dimensions.text($dimensions.attr('data-o_dimensions'));
-                    }
-
-                    $single_variation_wrap.find('.quantity').show();
-
-                    if (!variation.is_purchasable || !variation.is_in_stock || !variation.variation_is_visible) {
-                        $variation_form.find('.variations_button').hide();
-                    }
-
-                    if (!variation.variation_is_visible) {
-                        $variation_form.find('.single_variation').html('<p>' + woo_svijs_params.i18n_unavailable_text + '</p>');
-                    }
-
-                    if (variation.min_qty !== '')
-                        $single_variation_wrap.find('.quantity input.qty').attr('min', variation.min_qty).val(variation.min_qty);
-                    else
-                        $single_variation_wrap.find('.quantity input.qty').removeAttr('min');
-
-                    if (variation.max_qty !== '')
-                        $single_variation_wrap.find('.quantity input.qty').attr('max', variation.max_qty);
-                    else
-                        $single_variation_wrap.find('.quantity input.qty').removeAttr('max');
-
-                    if (variation.is_sold_individually === 'yes') {
-                        $single_variation_wrap.find('.quantity input.qty').val('1');
-                        $single_variation_wrap.find('.quantity').hide();
-                    }
-
-                    $single_variation_wrap.slideDown(200).trigger('show_variation', [variation]);
-
+                    $form.trigger('woocommerce_update_variation_values');
                 });
 
         $form.trigger('wc_variation_form');
@@ -453,18 +465,93 @@
         return $form;
     };
 
+    /**
+     * Matches inline variation objects to chosen attributes
+     * @type {Object}
+     */
+    var wc_variation_form_matcher = {
+        find_matching_variations: function (product_variations, settings) {
+            var matching = [];
+            for (var i = 0; i < product_variations.length; i++) {
+                var variation = product_variations[i];
+
+                if (wc_variation_form_matcher.variations_match(variation.attributes, settings)) {
+                    matching.push(variation);
+                }
+            }
+            return matching;
+        },
+        variations_match: function (attrs1, attrs2) {
+            var match = true;
+            for (var attr_name in attrs1) {
+                if (attrs1.hasOwnProperty(attr_name)) {
+                    var val1 = attrs1[ attr_name ];
+                    var val2 = attrs2[ attr_name ];
+                    if (val1 !== undefined && val2 !== undefined && val1.length !== 0 && val2.length !== 0 && val1 !== val2) {
+                        match = false;
+                    }
+                }
+            }
+            return match;
+        }
+    };
+
+    /**
+     * Performs animated variation description refreshes
+     */
+    $.fn.wc_variations_description_update = function (variation_description) {
+        var $form = this;
+        var $variations_description = $form.find('.woocommerce-variation-description');
+        var $single_variation_wrap = $form.find('.single_variation_wrap');
+
+        if ($variations_description.length === 0) {
+            if (variation_description) {
+                // add transparent border to allow correct height measurement when children have top/bottom margins
+                $single_variation_wrap.prepend($('<div class="woocommerce-variation-description" style="border:1px solid transparent;">' + variation_description + '</div>').hide());
+                if ($single_variation_wrap.is(':visible')) {
+                    $form.find('.woocommerce-variation-description').slideDown(200);
+                } else {
+                    $form.find('.woocommerce-variation-description').show();
+                }
+            }
+        } else {
+            var load_height = $variations_description.outerHeight(true);
+            var new_height = 0;
+            var animate_height = false;
+
+            // lock height
+            $variations_description.css('height', load_height);
+            // replace html
+            $variations_description.html(variation_description);
+            // measure height
+            $variations_description.css('height', 'auto');
+
+            new_height = $variations_description.outerHeight(true);
+
+            if (Math.abs(new_height - load_height) > 1) {
+                animate_height = true;
+                // lock height
+                $variations_description.css('height', load_height);
+            }
+
+            // animate height
+            if (animate_height) {
+                $variations_description.animate({'height': new_height}, {duration: 200, queue: false, always: function () {
+                        $variations_description.css({'height': 'auto'});
+                    }});
+            }
+        }
+    };
+
     $(function () {
-
-        // woo_svijs_params is required to continue, ensure the object exists
-        if (typeof woo_svijs_params === 'undefined')
-            return false;
-
-        $('.variations_form').wc_variation_form();
-        $('.variations_form .variations select').change();
+        if (typeof woo_svijs_params !== 'undefined') {
+            $('.variations_form').each(function () {
+                $(this).wc_variation_form().find('.variations select:eq(0)').change();
+            });
+        }
     });
 
 })(jQuery, window, document);
-
 if (!WOOSVI) {
     var WOOSVI = {}
 } else {
@@ -474,80 +561,79 @@ if (!WOOSVI) {
 }
 WOOSVI.isLoaded = false;
 WOOSVI.STARTS = function ($) {
-    return{NAME: "Application initialize module", VERSION: 1.5, init: function () {
+    return{NAME: "Application initialize module", VERSION: 2.1, init: function () {
             this.loadInits();
             this.imgGal();
         }, loadInits: function () {
-            if ($("div.woosvi_images").length > 0)
-                $('body.single-product div.product div.images').remove();
+            if ($("div.woosvi_images").length > 0) {
+                //unbind click for pretyphoto
+                $("div.product div.images a").unbind('click.prettyphoto');
+                $("div.woosvi_images a:eq(0)").append('<div class="woosvi_lens"></div>');
+                $("div.woosvi_lens").click(function (e) {
+                    e.preventDefault()
+                });
+            }
+        },
+        prepVariation: function (obj) {
+
+            var image_src = obj.attr("href");
+            var image_link = obj.attr("href");
+            var image_title = obj.find("img").data("woovsi").toLowerCase();
+            var image_srcset = obj.find("img").attr("srcset");
+            return variation = {image_src: image_src, image_link: image_link, image_title: image_title, image_srcset: image_srcset};
+
+        },
+        prepGal: function () {
+            var allthumbs = $('div.images div.thumbnails a>img[data-woovsi]');
+            $.each(allthumbs, function (i, v) {
+                $(v).parent().attr("data-rel", 'prettyPhoto[' + $(v).data('woovsi') + ']')
+            });
         },
         galleryProduct: function () {
-            $("div.woosvi_images .thumbnails a[rel^='prettyPhoto'], div.images .thumbnails a.zoom").unbind('click').on('click', function (event) {
+            $("div.images.woosvi_images img:eq(0),div.images:not(.woosvi_images) img:eq(0),div.woosvilightbox div.magnifywoosvi").on('click', function (event) {
                 event.preventDefault();
+                var main = $(this);
+                if ($(this).hasClass('magnifywoosvi')) {
+                    main = $(this).find('img:eq(0)');
+                }
+                var original_img = main.parent().attr('href');
+                var images = [];
+                var desc = [];
+                $.each($(".thumbnails a[data-rel^='prettyPhoto']:visible"), function (i, v) {
+                    if ($(v).attr('href') != original_img)
+                        images.push($(v).attr('href'));
+                })
+                images.unshift(original_img);
+                $.prettyPhoto.open(images);
             });
             $(".thumbnails a").on('click', function (event) {
                 event.preventDefault();
+
                 $(".thumbnails img").removeClass("current_p_thumb");
                 $(this).find("img").addClass("current_p_thumb");
-                var photo_fullsize = $(this).attr("href");
-                $(".woocommerce-main-image img").attr("src", photo_fullsize);
-                $(".woocommerce-main-image").attr("href", photo_fullsize);
-                $(".woocommerce-main-image").attr("data-o_href", photo_fullsize);
-                if ($("div.woosvi_images.woosvilens").length > 0)
-                    WOOSVI.STARTS.imgGalreset(photo_fullsize);
+
+                var variation = WOOSVI.STARTS.prepVariation($(this));
+                WOOSVI.STARTS.swap_image(variation);
+
             });
-        },
-        galleryPopulate: function () {
-            var $primary, str, count;
-
-            $primary = $('div.woosvi_images>a>img,div.images>a>img').data('woovsi');
-
-
-
-            if (typeof $primary !== "undefined" && $primary !== '') {
-
-                count = 1;
-                $("div.woosvi_images div.thumbnails a,div.images div.thumbnails a").each(function (i, v) {
-                    $(this).find("img").removeClass("current_p_thumb");
-                    str = $(this).find("img").data("woovsi").toLowerCase();
-                    if (str === $primary && str !== '') {
-                        $(this).show();
-                        $(this).removeClass("last");
-
-                        if (count === 1) {
-                            $(this).addClass('first');
-                            $(this).find("img").addClass("current_p_thumb");
-                            count = count + 1
-                        }
-
-                    } else {
-                        $(this).find("img").removeClass("current_p_thumb");
-                        $(this).hide()
-                    }
-                })
-            }
-            $('.woosvi_images .thumbnails.hidden').removeClass('hidden');
         },
         galleryDefault: function ($elm) {
 
             var $color, count;
             var $woosvi = false;
-            var imgHeight = $("div.woosvi_images img:eq(0),div.images img:eq(0)").height() + 'px';
-            var imgWidth = $("div.woosvi_images img:eq(0),div.images img:eq(0)").width() + 'px';
+            var imgHeight = $("div.images.woosvi_images img:eq(0),div.images:not(.woosvi_images) img:eq(0)").height() + 'px';
+            var imgWidth = $("div.images.woosvi_images img:eq(0),div.images:not(.woosvi_images) img:eq(0)").width() + 'px';
             $('a.woocommerce-main-image').css('display', 'inline-block').height(imgHeight).width(imgWidth);
-
             $('.variations select').bind('change');
-
             $('.woosvi_images .thumbnails.hidden').removeClass('hidden');
-
             $.each($elm.attributes, function (i, v) {
 
-                $color = v.toLowerCase();
-
+                $color = v.replace(/ /g, '').toLowerCase();
                 if ($color !== '' && $('a>img[data-woovsi="' + $color + '"]').length > 0) {
 
-                    var allthumbs = $('div.woosvi_images div.thumbnails a>img[data-woovsi],div.images div.thumbnails a>img[data-woovsi]');
-                    var cthumbs = $('div.woosvi_images div.thumbnails a>img[data-woovsi="' + $color + '"],div.images div.thumbnails a>img[data-woovsi="' + $color + '"]');
+                    $woosvi = true;
+                    var allthumbs = $('div.images.woosvi_images div.thumbnails a>img[data-woovsi],div.images:not(.woosvi_images) div.thumbnails a>img[data-woovsi]');
+                    var cthumbs = $('div.images.woosvi_images div.thumbnails a>img[data-woovsi="' + $color + '"],div.images:not(.woosvi_images) div.thumbnails a>img[data-woovsi="' + $color + '"]');
                     allthumbs.parent().removeClass("last").removeClass("first").removeClass("current_p_thumb").hide();
                     cthumbs.parent().show();
                     cthumbs.first().parent().addClass("first");
@@ -555,50 +641,92 @@ WOOSVI.STARTS = function ($) {
                     var image_src = cthumbs.first().parent().attr("href");
                     var image_link = cthumbs.first().parent().attr("href");
                     var image_title = cthumbs.first().data("woovsi").toLowerCase();
+                    var image_srcset = cthumbs.first().attr("srcset");
                     cthumbs.first().addClass("current_p_thumb");
-                    var variation = {image_src: image_src, image_link: image_link, image_title: image_title};
+                    var variation = {image_src: image_src, image_link: image_link, image_title: image_title, image_srcset: image_srcset};
 
                     WOOSVI.STARTS.swap_image(variation);
-
                 }
             });
+
             return $woosvi;
         },
         swap_image: function (variation) {
-            var img = $("div.woosvi_images img:eq(0),div.images img:eq(0)");
-            var link = $("div.woosvi_images a:eq(0),div.images a:eq(0)");
-            var o_src = $(img).attr("data-o_src");
-            var o_title = $(img).attr("data-o_title");
-            var o_href = $(link).attr("data-o_href");
+            var img = $("div.images.woosvi_images img:eq(0),div.images:not(.woosvi_images) img:eq(0)");
+            var link = $("div.images.woosvi_images a:eq(0),div.images:not(.woosvi_images) a:eq(0)");
             var variation_image = variation.image_src;
             var variation_link = variation.image_link;
             var variation_title = variation.image_title;
+            var variation_srcset = variation.image_srcset;
 
-            $(img).attr("data-woovsi", variation_title);
-            $(img).attr("src", variation_image);
-            $(img).attr("title", variation_title);
-            $(img).attr("alt", variation_title);
-
-            $(img).attr("data-o_href", $(img).attr("href"));
-            $(img).attr("data-o_title", $(img).attr("title"))
-            $(img).attr("data-o_src", $(img).attr("src"))
+            $(link).attr("data-o_href", $(img).attr("href"));
             $(link).attr("href", variation_link);
             $(link).attr("title", variation_title);
-            //$("div.woosvi_images img:eq(0),div.images img:eq(0)").fadeIn();
-            if ($("div.woosvi_images.woosvilens").length > 0)
-                WOOSVI.STARTS.imgGalreset(variation_image);
+            $(link).attr("data-rel", 'prettyPhoto[' + variation_title + ']');
+            $(img).attr("data-woovsi", variation_title);
+            $(img).attr("title", variation_title);
+            $(img).attr("alt", variation_title);
+            $(img).attr("src", variation_image);
+            $(img).attr("srcset", variation_srcset);
+            $(img).attr("data-o_title", $(img).attr("title"));
+            $(img).attr("data-o_src", $(img).attr("src"));
+
+            if ($("div.images.woosvi_images.woosvilens").length > 0)
+                WOOSVI.STARTS.imgGalreset(variation_image, variation_title);
         },
         imgGal: function () {
-            if ($("div.woosvi_images.woosvilens").length > 0)
-                $("div.woosvi_images img:eq(0)").elevateZoom({zoomType: "lens", lensShape: "round", lensSize: 200, galleryActiveClass: "current_p_thumb", gallery: "div.woosvi_images div.thumbnails"});
-        },
-        imgGalreset: function (variation_image) {
-            var ez = $("div.woosvi_images img:eq(0)").data('elevateZoom');
 
-            ez.swaptheimage(variation_image, variation_image);
+            if ($("div.images.woosvi_images.woosvilens").length > 0) {
+                var native_width = 0;
+                var native_height = 0;
+
+                $(".woosvi_lens").css('background', 'url(' + $("div.images.woosvi_images img:eq(0)").attr("src") + ')');
+
+
+                $(".magnifywoosvi").mousemove(function (e) {
+                    if (!native_width && !native_height)
+                    {
+                        var image_object = new Image();
+                        image_object.src = $("div.images.woosvi_images img:eq(0)").attr("src");
+
+                        native_width = image_object.width;
+                        native_height = image_object.height;
+                    } else
+                    {
+                        var magnify_offset = $(this).offset();
+
+                        var mx = e.pageX - magnify_offset.left;
+                        var my = e.pageY - magnify_offset.top;
+
+
+                        if (mx < $(this).width() && my < $(this).height() && mx > 0 && my > 0)
+                        {
+                            $(".woosvi_lens").fadeIn(100);
+                        } else
+                        {
+                            $(".woosvi_lens").fadeOut(100);
+                        }
+                        if ($(".woosvi_lens").is(":visible"))
+                        {
+
+                            var rx = Math.round(mx / $("div.images.woosvi_images img:eq(0)").width() * native_width - $(".woosvi_lens").width() / 2) * -1;
+                            var ry = Math.round(my / $("div.images.woosvi_images img:eq(0)").height() * native_height - $(".woosvi_lens").height() / 2) * -1;
+                            var bgp = rx + "px " + ry + "px";
+
+                            var px = mx - $(".woosvi_lens").width() / 2;
+                            var py = my - $(".woosvi_lens").height() / 2;
+
+                            $(".woosvi_lens").css({left: px, top: py, backgroundPosition: bgp});
+                        }
+                    }
+                });
+            }
+        },
+        imgGalreset: function (variation_image, variation_title) {
+            $(".woosvi_lens").css('background', 'url(' + variation_image + ')');
         }
     }
 }(jQuery);
 jQuery(document).ready(function () {
-    WOOSVI.STARTS.init()
+    WOOSVI.STARTS.init();
 });

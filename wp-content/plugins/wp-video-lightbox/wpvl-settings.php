@@ -8,14 +8,14 @@ class Video_Lightbox_Settings_Page
     }
 
     function add_options_menu(){
-        add_options_page('Video Lightbox Settings', 'Video Lightbox', 'manage_options', 'wp_video_lightbox', array(&$this, 'display_settings_page'));
+        add_options_page(__('Video Lightbox Settings', 'wp-video-lightbox'), __('Video Lightbox', 'wp-video-lightbox'), 'manage_options', 'wp_video_lightbox', array($this, 'display_settings_page'));
     }
     
     function display_settings_page() 
     {
         $wpvl_plugin_tabs = array(
-            'wp_video_lightbox' => 'General',
-            'wp_video_lightbox&action=prettyPhoto' => 'prettyPhoto'
+            'wp_video_lightbox' => __('General', 'wp-video-lightbox'),
+            'wp_video_lightbox&action=prettyPhoto' => __('prettyPhoto', 'wp-video-lightbox')
         );
         echo '<div class="wrap">'.screen_icon().'<h2>WP Video Lightbox v'.WP_VIDEO_LIGHTBOX_VERSION.'</h2>';;    
         echo '<div id="poststuff"><div id="post-body">';  
@@ -70,14 +70,14 @@ class Video_Lightbox_Settings_Page
             update_option('wpvl_enable_jquery', ($_POST["enable_jquery"]=='1')?'1':'');
             
             echo '<div id="message" class="updated fade"><p><strong>';
-            echo 'prettyPhoto Settings Updated!';
+            echo __('prettyPhoto Settings Updated!', 'wp-video-lightbox');
             echo '</strong></p></div>';
         }
         ?>
 
         <div style="background: none repeat scroll 0 0 #FFF6D5;border: 1px solid #D1B655;color: #3F2502;margin: 10px 0;padding: 5px 5px 5px 10px;text-shadow: 1px 1px #FFFFFF;">	
-        <p><?php _e("For more information, updates, detailed documentation and video tutorial, please visit:", "WPVL"); ?><br />
-        <a href="https://www.tipsandtricks-hq.com/wordpress-video-lightbox-plugin-display-videos-in-a-fancy-lightbox-overlay-2700" target="_blank"><?php _e("WP Video Lightbox Homepage", "WPVL"); ?></a></p>
+        <p><?php _e("For more information, updates, detailed documentation and video tutorial, please visit:", "wp-video-lightbox"); ?><br />
+        <a href="https://www.tipsandtricks-hq.com/wordpress-video-lightbox-plugin-display-videos-in-a-fancy-lightbox-overlay-2700" target="_blank"><?php _e("WP Video Lightbox Homepage", "wp-video-lightbox"); ?></a></p>
         </div>
 
         <form method="post" action="<?php echo $_SERVER["REQUEST_URI"]; ?>">
@@ -88,10 +88,10 @@ class Video_Lightbox_Settings_Page
         <tbody>
         
         <tr valign="top">
-        <th scope="row">Enable jQuery</th>
-        <td> <fieldset><legend class="screen-reader-text"><span>Enable jQuery</span></legend><label for="enable_jquery">
+        <th scope="row"><?php _e('Enable jQuery', 'wp-video-lightbox')?></th>
+        <td> <fieldset><legend class="screen-reader-text"><span><?php _e('Enable jQuery', 'wp-video-lightbox')?></span></legend><label for="enable_jquery">
         <input name="enable_jquery" type="checkbox" id="enable_jquery" <?php if(get_option('wpvl_enable_jquery')== '1') echo ' checked="checked"';?> value="1">
-        Check this option if you want to enable jQuery library</label>
+        <?php _e('Check this option if you want to enable jQuery library', 'wp-video-lightbox')?></label>
         </fieldset></td>
         </tr>
         
@@ -99,7 +99,7 @@ class Video_Lightbox_Settings_Page
         
         </table>
 
-        <p class="submit"><input type="submit" name="wpvl_general_settings_update" id="wpvl_general_settings_update" class="button button-primary" value="Save Changes"></p></form>
+        <p class="submit"><input type="submit" name="wpvl_general_settings_update" id="wpvl_general_settings_update" class="button button-primary" value="<?php _e('Save Changes', 'wp-video-lightbox')?>"></p></form>
  
         <?php
     }
@@ -146,8 +146,8 @@ class Video_Lightbox_Settings_Page
         ?>
 
         <div style="background: none repeat scroll 0 0 #FFF6D5;border: 1px solid #D1B655;color: #3F2502;margin: 10px 0;padding: 5px 5px 5px 10px;text-shadow: 1px 1px #FFFFFF;">	
-        <p><?php _e("For more information, updates, detailed documentation and video tutorial, please visit:", "WPVL"); ?><br />
-        <a href="https://www.tipsandtricks-hq.com/wordpress-video-lightbox-plugin-display-videos-in-a-fancy-lightbox-overlay-2700" target="_blank"><?php _e("WP Video Lightbox Homepage", "WPVL"); ?></a></p>
+        <p><?php _e("For more information, updates, detailed documentation and video tutorial, please visit:", "wp-video-lightbox"); ?><br />
+        <a href="https://www.tipsandtricks-hq.com/wordpress-video-lightbox-plugin-display-videos-in-a-fancy-lightbox-overlay-2700" target="_blank"><?php _e("WP Video Lightbox Homepage", "wp-video-lightbox"); ?></a></p>
         </div>
 
         <form method="post" action="<?php echo $_SERVER["REQUEST_URI"]; ?>">
@@ -158,180 +158,179 @@ class Video_Lightbox_Settings_Page
         <tbody>
         
         <tr valign="top">
-        <th scope="row">Enable prettyPhoto</th>
-        <td> <fieldset><legend class="screen-reader-text"><span>Enable prettyPhoto</span></legend><label for="enable_prettyPhoto">
+        <th scope="row"><?php _e('Enable prettyPhoto', 'wp-video-lightbox')?></th>
+        <td> <fieldset><legend class="screen-reader-text"><span><?php _e('Enable prettyPhoto', 'wp-video-lightbox')?></span></legend><label for="enable_prettyPhoto">
         <input name="enable_prettyPhoto" type="checkbox" id="enable_prettyPhoto" <?php if(get_option('wpvl_enable_prettyPhoto')=='1') echo ' checked="checked"';?> value="1">
-        Check this option if you want to enable prettyPhoto library</label>
+        <?php _e('Check this option if you want to enable prettyPhoto library', 'wp-video-lightbox')?></label>
         </fieldset></td>
         </tr>    
             
         <tr valign="top">
-        <th scope="row"><label for="animation_speed">Animation speed</label></th>
+        <th scope="row"><label for="animation_speed"><?php _e('Animation speed', 'wp-video-lightbox')?></label></th>
         <td>
         <select name="animation_speed" id="animation_speed">
-            <option <?php echo ($wpvl_prettyPhoto->animation_speed==='fast')?'selected="selected"':'';?> value="fast">Fast</option>
-            <option <?php echo ($wpvl_prettyPhoto->animation_speed==='slow')?'selected="selected"':'';?> value="slow">Slow</option>
-            <option <?php echo ($wpvl_prettyPhoto->animation_speed==='normal')?'selected="selected"':'';?> value="normal">Normal</option>
+            <option <?php echo ($wpvl_prettyPhoto->animation_speed==='fast')?'selected="selected"':'';?> value="fast"><?php _e('Fast', 'wp-video-lightbox')?></option>
+            <option <?php echo ($wpvl_prettyPhoto->animation_speed==='slow')?'selected="selected"':'';?> value="slow"><?php _e('Slow', 'wp-video-lightbox')?></option>
+            <option <?php echo ($wpvl_prettyPhoto->animation_speed==='normal')?'selected="selected"':'';?> value="normal"><?php _e('Normal', 'wp-video-lightbox')?></option>
         </select>
         <!-- <span id="utc-time"><abbr title="Coordinated Universal Time">UTC</abbr> time is <code>2013-11-01 3:56:07</code></span> -->
-        <p class="description">fast / slow / normal [default: fast]</p>
+        <p class="description"><?php _e('fast / slow / normal [default: fast]', 'wp-video-lightbox')?></p>
         </td>
         </tr>    
             
         <tr valign="top">
-        <th scope="row"><label for="slideshow">Slideshow</label></th>
+        <th scope="row"><label for="slideshow"><?php _e('Slideshow', 'wp-video-lightbox')?></label></th>
         <td><input name="slideshow" type="text" id="slideshow" value="<?php echo $wpvl_prettyPhoto->slideshow; ?>" class="regular-text">
-        <p class="description">false OR interval time in ms [default: 5000]</p></td>
+        <p class="description"><?php echo sprintf(__('%s OR interval time in ms [default: %s]', 'wp-video-lightbox'), 'false', '5000')?></p></td>
         </tr>
         
         <tr valign="top">
-        <th scope="row">Autoplay slideshow</th>
-        <td> <fieldset><legend class="screen-reader-text"><span>Autoplay slideshow</span></legend><label for="autoplay_slideshow">
+        <th scope="row"><?php _e('Autoplay slideshow', 'wp-video-lightbox')?></th>
+        <td> <fieldset><legend class="screen-reader-text"><span><?php _e('Autoplay slideshow', 'wp-video-lightbox')?></span></legend><label for="autoplay_slideshow">
         <input name="autoplay_slideshow" type="checkbox" id="autoplay_slideshow" <?php if($wpvl_prettyPhoto->autoplay_slideshow == 'true') echo ' checked="checked"';?> value="1">
-        true / false [default: false]</label>
+        <?php _e('true / false [default: false]', 'wp-video-lightbox')?></label>
         </fieldset></td>
         </tr>
         
         <tr valign="top">
-        <th scope="row"><label for="opacity">Opacity</label></th>
+        <th scope="row"><label for="opacity"><?php _e('Opacity', 'wp-video-lightbox')?></label></th>
         <td><input name="opacity" type="text" id="opacity" value="<?php echo $wpvl_prettyPhoto->opacity; ?>" class="regular-text">
-        <p class="description">Value between 0 and 1 [default: 0.8]</p></td>
+        <p class="description"><?php echo sprintf(__('Value between %s and %s [default: %s]', 'wp-video-lightbox'), '0', '1', '0.8')?></p></td>
         </tr>
         
         <tr valign="top">
-        <th scope="row">Show title</th>
-        <td> <fieldset><legend class="screen-reader-text"><span>Show title</span></legend><label for="show_title">
+        <th scope="row"><?php _e('Show title', 'wp-video-lightbox')?></th>
+        <td> <fieldset><legend class="screen-reader-text"><span><?php _e('Show title', 'wp-video-lightbox')?></span></legend><label for="show_title">
         <input name="show_title" type="checkbox" id="show_title" <?php if($wpvl_prettyPhoto->show_title == 'true') echo ' checked="checked"';?> value="1">
-        true / false [default: true]</label>
+        <?php _e('true / false [default: true]', 'wp-video-lightbox')?></label>
         </fieldset></td>
         </tr>
         
         <tr valign="top">
-        <th scope="row">Allow resize</th>
-        <td> <fieldset><legend class="screen-reader-text"><span>Allow resize</span></legend><label for="allow_resize">
+        <th scope="row"><?php _e('Allow resize', 'wp-video-lightbox')?></th>
+        <td> <fieldset><legend class="screen-reader-text"><span><?php _e('Allow resize', 'wp-video-lightbox')?></span></legend><label for="allow_resize">
         <input name="allow_resize" type="checkbox" id="allow_resize" <?php if($wpvl_prettyPhoto->allow_resize == 'true') echo ' checked="checked"';?> value="1">
-        Resize the photos bigger than viewport. true / false [default: true]</label>
+        <?php _e('Resize the photos bigger than viewport. true / false [default: true]', 'wp-video-lightbox')?></label>
         </fieldset></td>
         </tr>
         
         <tr valign="top">
-        <th scope="row">Allow expand</th>
-        <td> <fieldset><legend class="screen-reader-text"><span>Allow expand</span></legend><label for="allow_expand">
+        <th scope="row"><?php _e('Allow expand', 'wp-video-lightbox')?></th>
+        <td> <fieldset><legend class="screen-reader-text"><span><?php _e('Allow expand', 'wp-video-lightbox')?></span></legend><label for="allow_expand">
         <input name="allow_expand" type="checkbox" id="allow_expand" <?php if($wpvl_prettyPhoto->allow_resize == 'true') echo ' checked="checked"';?> value="1">
-        Allow the user to expand a resized image. true / false [default: true]</label>
+        <?php _e('Allow the user to expand a resized image. true / false [default: true]', 'wp-video-lightbox')?></label>
         </fieldset></td>
         </tr>
         
         <tr valign="top">
-        <th scope="row"><label for="opacity">Default width</label></th>
+        <th scope="row"><label for="opacity"><?php _e('Default width', 'wp-video-lightbox')?></label></th>
         <td><input name="default_width" type="text" id="default_width" value="<?php echo $wpvl_prettyPhoto->default_width; ?>" class="regular-text">
-        <p class="description">[default: 640]</p></td>
+        <p class="description"><?php echo sprintf(__('[default: %s]', 'wp-video-lightbox'), '640')?></p></td>
         </tr>
         
         <tr valign="top">
-        <th scope="row"><label for="opacity">Default height</label></th>
+        <th scope="row"><label for="opacity"><?php _e('Default height', 'wp-video-lightbox')?></label></th>
         <td><input name="default_height" type="text" id="default_height" value="<?php echo $wpvl_prettyPhoto->default_height; ?>" class="regular-text">
-        <p class="description">[default: 480]</p></td>
+        <p class="description"><?php echo sprintf(__('[default: %s]', 'wp-video-lightbox'), '480')?></p></td>
         </tr>
         
         <tr valign="top">
-        <th scope="row"><label for="opacity">Counter separator label</label></th>
+        <th scope="row"><label for="opacity"><?php _e('Counter separator label', 'wp-video-lightbox')?></label></th>
         <td><input name="counter_separator_label" type="text" id="counter_separator_label" value="<?php echo $wpvl_prettyPhoto->counter_separator_label; ?>" class="regular-text">
-        <p class="description">The separator for the gallery counter 1 "of" 2 [default: /]</p></td>
+        <p class="description"><?php echo sprintf(__('The separator for the gallery counter 1 "of" 2 [default: %s]', 'wp-video-lightbox'), '/')?></p></td>
         </tr>
         
         <tr valign="top">
-        <th scope="row"><label for="theme">Theme</label></th>
+        <th scope="row"><label for="theme"><?php _e('Theme', 'wp-video-lightbox')?></label></th>
         <td>
         <select name="theme" id="theme">
-            <option selected="selected" value="pp_default">Default</option>
-            <option <?php echo ($wpvl_prettyPhoto->theme==='light_rounded')?'selected="selected"':'';?> value="light_rounded">Light Rounded</option>
-            <option <?php echo ($wpvl_prettyPhoto->theme==='dark_rounded')?'selected="selected"':'';?> value="dark_rounded">Dark Rounded</option>
-            <option <?php echo ($wpvl_prettyPhoto->theme==='light_square')?'selected="selected"':'';?> value="light_square">Light Square</option>
-            <option <?php echo ($wpvl_prettyPhoto->theme==='dark_square')?'selected="selected"':'';?> value="dark_square">Dark Square</option>
-            <option <?php echo ($wpvl_prettyPhoto->theme==='facebook')?'selected="selected"':'';?> value="facebook">Facebook</option>
+            <option selected="selected" value="pp_default"><?php _e('Default', 'wp-video-lightbox')?></option>
+            <option <?php echo ($wpvl_prettyPhoto->theme==='light_rounded')?'selected="selected"':'';?> value="light_rounded"><?php _e('Light Rounded', 'wp-video-lightbox')?></option>
+            <option <?php echo ($wpvl_prettyPhoto->theme==='dark_rounded')?'selected="selected"':'';?> value="dark_rounded"><?php _e('Dark Rounded', 'wp-video-lightbox')?></option>
+            <option <?php echo ($wpvl_prettyPhoto->theme==='light_square')?'selected="selected"':'';?> value="light_square"><?php _e('Light Square', 'wp-video-lightbox')?></option>
+            <option <?php echo ($wpvl_prettyPhoto->theme==='dark_square')?'selected="selected"':'';?> value="dark_square"><?php _e('Dark Square', 'wp-video-lightbox')?></option>
+            <option <?php echo ($wpvl_prettyPhoto->theme==='facebook')?'selected="selected"':'';?> value="facebook"><?php _e('Facebook', 'wp-video-lightbox')?></option>
         </select>
         <!-- <span id="utc-time"><abbr title="Coordinated Universal Time">UTC</abbr> time is <code>2013-11-01 3:56:07</code></span> -->
-        <p class="description">Select a theme for the lightbox window</p>
+        <p class="description"><?php _e('Select a theme for the lightbox window', 'wp-video-lightbox')?></p>
         </td>
         </tr>
         
         <tr valign="top">
-        <th scope="row"><label for="opacity">Horizontal padding</label></th>
+        <th scope="row"><label for="opacity"><?php _e('Horizontal padding', 'wp-video-lightbox')?></label></th>
         <td><input name="horizontal_padding" type="text" id="horizontal_padding" value="<?php echo $wpvl_prettyPhoto->horizontal_padding; ?>" class="regular-text">
-        <p class="description">The padding on each side of the picture [default: 20]</p></td>
+        <p class="description"><?php echo sprintf(__('The padding on each side of the picture [default: %s]', 'wp-video-lightbox'), '20')?> </p></td>
         </tr>
         
         <tr valign="top">
         <th scope="row">Hide Flash</th>
         <td> <fieldset><legend class="screen-reader-text"><span>Hide Flash</span></legend><label for="hideflash">
         <input name="hideflash" type="checkbox" id="hideflash" <?php if($wpvl_prettyPhoto->hideflash == 'true') echo ' checked="checked"';?> value="1">
-        Hides all the flash objects on a page, set to TRUE if flash appears over prettyPhoto [default: false]</label>
+        <?php _e('Hides all the flash objects on a page, set to TRUE if flash appears over prettyPhoto [default: false]', 'wp-video-lightbox')?></label>
         </fieldset></td>
         </tr>
         
         <tr valign="top">
-        <th scope="row"><label for="animation_speed">wmode</label></th>
+        <th scope="row"><label for="animation_speed"><?php _e('wmode', 'wp-video-lightbox')?></label></th>
         <td>
         <select name="wmode" id="wmode">
-            <option selected="selected" value="opaque">opaque</option>
+            <option selected="selected" value="opaque"><?php _e('opaque', 'wp-video-lightbox')?></option>
         </select>
-        <!-- <span id="utc-time"><abbr title="Coordinated Universal Time">UTC</abbr> time is <code>2013-11-01 3:56:07</code></span> -->
-        <p class="description">Set the flash wmode attribute [default: opaque]</p>
+        <p class="description"><?php _e('Set the flash wmode attribute [default: opaque]', 'wp-video-lightbox')?></p>
         </td>
         </tr>
         
         <tr valign="top">
-        <th scope="row">Autoplay</th>
-        <td> <fieldset><legend class="screen-reader-text"><span>Autoplay</span></legend><label for="autoplay">
+        <th scope="row"><?php _e('Autoplay', 'wp-video-lightbox')?></th>
+        <td> <fieldset><legend class="screen-reader-text"><span><?php _e('Autoplay', 'wp-video-lightbox')?></span></legend><label for="autoplay">
         <input name="autoplay" type="checkbox" id="autoplay" <?php if($wpvl_prettyPhoto->autoplay == 'true') echo ' checked="checked"';?> value="1">
-        Automatically start videos: true / false [default: true]</label>
+        <?php _e('Automatically start videos: true / false [default: true]', 'wp-video-lightbox')?></label>
         </fieldset></td>
         </tr>
         
         <tr valign="top">
-        <th scope="row">Modal</th>
-        <td> <fieldset><legend class="screen-reader-text"><span>Modal</span></legend><label for="modal">
+        <th scope="row"><?php _e('Modal', 'wp-video-lightbox')?></th>
+        <td> <fieldset><legend class="screen-reader-text"><span><?php _e('Modal', 'wp-video-lightbox')?></span></legend><label for="modal">
         <input name="modal" type="checkbox" id="modal" <?php if($wpvl_prettyPhoto->modal == 'true') echo ' checked="checked"';?> value="1">
-        If set to true, only the close button will close the window [default: false]</label>
+        <?php _e('If set to true, only the close button will close the window [default: false]', 'wp-video-lightbox')?></label>
         </fieldset></td>
         </tr>
         
         <tr valign="top">
-        <th scope="row">Deeplinking</th>
-        <td> <fieldset><legend class="screen-reader-text"><span>Deeplinking</span></legend><label for="deeplinking">
+        <th scope="row"><?php _e('Deeplinking', 'wp-video-lightbox')?></th>
+        <td> <fieldset><legend class="screen-reader-text"><span><?php _e('Deeplinking', 'wp-video-lightbox')?></span></legend><label for="deeplinking">
         <input name="deeplinking" type="checkbox" id="deeplinking" <?php if($wpvl_prettyPhoto->deeplinking == 'true') echo ' checked="checked"';?> value="1">
-        Allow prettyPhoto to update the url to enable deeplinking. [default: true]</label>
+        <?php _e('Allow prettyPhoto to update the url to enable deeplinking. [default: true]', 'wp-video-lightbox')?></label>
         </fieldset></td>
         </tr>
         
         <tr valign="top">
-        <th scope="row">Overlay gallery</th>
-        <td> <fieldset><legend class="screen-reader-text"><span>Overlay gallery</span></legend><label for="overlay_gallery">
+        <th scope="row"><?php _e('Overlay gallery', 'wp-video-lightbox')?></th>
+        <td> <fieldset><legend class="screen-reader-text"><span><?php _e('Overlay gallery', 'wp-video-lightbox')?></span></legend><label for="overlay_gallery">
         <input name="overlay_gallery" type="checkbox" id="overlay_gallery" <?php if($wpvl_prettyPhoto->overlay_gallery == 'true') echo ' checked="checked"';?> value="1">
-        If set to true, a gallery will overlay the fullscreen image on mouse over [default: true]</label>
+        <?php _e('If set to true, a gallery will overlay the fullscreen image on mouse over [default: true]', 'wp-video-lightbox')?></label>
         </fieldset></td>
         </tr>
         
         <tr valign="top">
-        <th scope="row"><label for="opacity">Overlay gallery max</label></th>
+        <th scope="row"><label for="opacity"><?php _e('Overlay gallery max', 'wp-video-lightbox')?></label></th>
         <td><input name="overlay_gallery_max" type="text" id="overlay_gallery_max" value="<?php echo $wpvl_prettyPhoto->overlay_gallery_max; ?>" class="regular-text">
-        <p class="description">Maximum number of pictures in the overlay gallery [default: 30]</p></td>
+        <p class="description"><?php echo sprintf(__('Maximum number of pictures in the overlay gallery [default: %s]', 'wp-video-lightbox'), '30')?></p></td>
         </tr>
         
         <tr valign="top">
-        <th scope="row">Keyboard shortcuts</th>
-        <td> <fieldset><legend class="screen-reader-text"><span>Keyboard shortcuts</span></legend><label for="keyboard_shortcuts">
+        <th scope="row"><?php _e('Keyboard shortcuts', 'wp-video-lightbox')?></th>
+        <td> <fieldset><legend class="screen-reader-text"><span><?php _e('Keyboard shortcuts', 'wp-video-lightbox')?></span></legend><label for="keyboard_shortcuts">
         <input name="keyboard_shortcuts" type="checkbox" id="keyboard_shortcuts" <?php if($wpvl_prettyPhoto->keyboard_shortcuts == 'true') echo ' checked="checked"';?> value="1">
-        Set to false if you open forms inside prettyPhoto [default: true]</label>
+        <?php _e('Set to false if you open forms inside prettyPhoto [default: true]', 'wp-video-lightbox')?></label>
         </fieldset></td>
         </tr>
         
         <tr valign="top">
-        <th scope="row">IE6 fallback</th>
-        <td> <fieldset><legend class="screen-reader-text"><span>IE6 fallback</span></legend><label for="ie6_fallback">
+        <th scope="row"><?php _e('IE6 fallback', 'wp-video-lightbox')?></th>
+        <td> <fieldset><legend class="screen-reader-text"><span><?php _e('IE6 fallback', 'wp-video-lightbox')?></span></legend><label for="ie6_fallback">
         <input name="ie6_fallback" type="checkbox" id="ie6_fallback" <?php if($wpvl_prettyPhoto->ie6_fallback == 'true') echo ' checked="checked"';?> value="1">
-        compatibility fallback for IE6 [default: true]</label>
+        <?php _e('compatibility fallback for IE6 [default: true]', 'wp-video-lightbox')?></label>
         </fieldset></td>
         </tr>
         
@@ -339,7 +338,7 @@ class Video_Lightbox_Settings_Page
         
         </table>
 
-        <p class="submit"><input type="submit" name="wpvl_prettyPhoto_update_settings" id="wpvl_prettyPhoto_update_settings" class="button button-primary" value="Save Changes"></p></form>
+        <p class="submit"><input type="submit" name="wpvl_prettyPhoto_update_settings" id="wpvl_prettyPhoto_update_settings" class="button button-primary" value="<?php _e('Save Changes', 'wp-video-lightbox')?>"></p></form>
  
         <?php
     }

@@ -1,10 +1,10 @@
-=== Plugin Name ===
+=== Smart Variations Images ===
 Contributors: drosendo
 Donate link: https://goo.gl/EPQAsA
 Tags: WooCommerce, images variations, gallery, woocommerce variations, woocommerce variations images, woocommerce images
 Requires at least: 3.0.1
-Tested up to: 4.3.1
-Stable tag: 1.4.3.1
+Tested up to: 4.4
+Stable tag: 1.5.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,7 +23,7 @@ As quick and simple as that!
 
 <strong>Read the FAQ and Screenshots before posting in support!</strong>
 
-Check out a demo at: http://www.rosendo.pt/en/product/demo-smart-variations-images/
+Check out a demo at: <a href="http://www.rosendo.pt/en/product/demo-smart-variations-images/" target="_blank">rosendo.pt</a>
 
 <strong>Please give your review!</strong>
 
@@ -76,6 +76,30 @@ You can skip steps 1 and 2 if your product is already setup with Atributes and V
 4. Lens Zoom in action (activate it in WooCommerce > Configuration > Products Tab > (Smart Variations Images)
 
 == Changelog ==
+
+= 1.5.2 =
+* Fixed SVI not overwriting product image page if template has his own files.
+
+= 1.5.1 =
+* Fixed warning messages
+* Fixed changelog typo on version
+* Fixed ligthbox not showing if using default woocomerce product template
+
+= 1.5 =
+* Major realease
+* New settings page. WooCommerce > SVI
+* Better theme compatibility
+* Ligthbox now shows only same variations images
+* Added better transition for thumbnail click
+
+= 1.4.5 =
+* Fix bug with for Wordpress 4.4 not swapping images
+* added optional register with rosendo.pt for news and updates
+
+= 1.4.4 =
+* New Lens Zoom (removed elevateZoom script, less 1 js file yay!)
+* Speed improvements due to new Lens Zoom
+* Clean JS/CSS
 
 = 1.4.3.1 =
 * Minor issue with class naming of thumbnails, first and last class.

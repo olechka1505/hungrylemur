@@ -1,6 +1,6 @@
 // textsizer
 jQuery(document).ready( function() {
-	jQuery( "#textsizer a" ).textresizer({
+	jQuery( "#text-resizer a" ).textresizer({
 		target: "#my_custom_css",
 		type: "css",
 		sizes: [

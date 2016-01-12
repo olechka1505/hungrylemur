@@ -7,7 +7,7 @@
 	$flg = 0;
 	
 	if(isset($_GET['tab'])){
-		$currTab = $_GET['tab'];
+		$currTab = sanitize_text_field( $_GET['tab'] );
 	}
 	else
 	{
@@ -17,6 +17,8 @@
 		update_option('advps-update-notification','hide');
 	}
 	if(isset($_POST['optset-id'])){
+		$optset_id = intval( $_POST['optset-id'] );
+		
 		if ( !isset($_POST['advps_wpnonce']) || !wp_verify_nonce($_POST['advps_wpnonce'],'advps-checkauthnonce') )
 		{
 			print 'Sorry, your nonce did not verify.';
@@ -24,24 +26,22 @@
 		}
 		
 		if(isset($_POST['del-optset'])){
-		$q_del = $wpdb->prepare("delete from ".$wpdb->prefix."advps_optionset where id = %d",$_POST['optset-id']);
-			
+			$q_del = $wpdb->prepare("delete from ".$wpdb->prefix."advps_optionset where id = %d",$optset_id);			
 			if($wpdb->query($q_del)){
-				delete_option('optset'.$_POST['optset-id']);
+				delete_option('optset'.$optset_id);
 				$stsMgs =  "Deleted successfully.";
 			}
 		}
 		elseif(isset($_POST['dup-optset'])){
+			$nextopt_id = intval( $_POST['nextoptid'] );
 			
-			$q_sel = "select * from ".$wpdb->prefix."advps_optionset where id = ".$_POST['optset-id'];
+			$q_sel = $wpdb->prepare( "select * from ".$wpdb->prefix."advps_optionset where id = %d",$optset_id );
 			$res = $wpdb->get_results($q_sel);
-			//echo get_option('advpssmethod'.$_POST['optset-id']);exit;
-			//echo '<pre>';
-			//print_r($res);exit;
+			
 			$q_add = $wpdb->prepare("insert into ".$wpdb->prefix."advps_optionset (template,plist,query,slider,caro_ticker,container,content,navigation) values(%s,%s,%s,%s,%s,%s,%s,%s)",$res[0]->template,$res[0]->plist,$res[0]->query,$res[0]->slider,$res[0]->caro_ticker,$res[0]->container,$res[0]->content,$res[0]->navigation);
 			
 			if($wpdb->query($q_add)){
-				update_option('advpssmethod'.$_POST['nextoptid'],get_option('advpssmethod'.$_POST['optset-id']));
+				update_option('advpssmethod'.$nextopt_id,get_option('advpssmethod'.$optset_id ));
 				$stsMgs =  "Duplicated successfully.";
 			}
 		}
@@ -56,7 +56,8 @@
 			   exit;
 			}
 			
-			$all_field = $_POST;
+			//$all_field = $_POST;
+			$nextopt_id = intval( $_POST['nextoptid'] );
 			$tem_list = array('one','two','three');
 			$template = sanitize_text_field($_POST['template']);
 			if( ! in_array( $template, $tem_list )){
@@ -84,7 +85,7 @@
 				$q_add = $wpdb->prepare("insert into ".$wpdb->prefix."advps_optionset (template,plist,query,slider,caro_ticker,container,content,navigation) values(%s,%s,%s,%s,%s,%s,%s,%s)",$template,serialize($advpsPlist),serialize($advpsQuery),serialize($advpsSlide),serialize($advpsCaroTicker),serialize($advpsContainer3),serialize($advpsContent2),serialize($advpsNavigation));
 			}
 			if($wpdb->query($q_add)){
-				update_option('advpssmethod'.$_POST['nextoptid'],'plist');
+				update_option('advpssmethod'.$nextopt_id,'plist');
 				$stsMgs =  "Added successfully.";
 			}
 		}
@@ -101,8 +102,8 @@
 			}
 			
 			$thumb_name = sanitize_text_field($_POST['advps_thumb_name']);
-			$width = sanitize_text_field($_POST['advps_thumb_width']);
-			$height = sanitize_text_field($_POST['advps_thumb_height']);
+			$width = intval($_POST['advps_thumb_width']);
+			$height = intval($_POST['advps_thumb_height']);
 			$crop = sanitize_text_field($_POST['advps_crop']);
 	
 			$q = $wpdb->prepare("insert into ".$wpdb->prefix."advps_thumbnail (thumb_name,width,height,crop) values(%s,%d,%d,%s)",$thumb_name,$width,$height,$crop);
@@ -119,10 +120,10 @@
 		   exit;
 		}
 		
-		$thumb_id = sanitize_text_field($_POST['thumb_id']);
+		$thumb_id = intval($_POST['thumb_id']);
 		$thumb_name = sanitize_text_field($_POST['advps_thumb_name']);
-		$width = sanitize_text_field($_POST['advps_thumb_width']);
-		$height = sanitize_text_field($_POST['advps_thumb_height']);
+		$width = intval($_POST['advps_thumb_width']);
+		$height = intval($_POST['advps_thumb_height']);
 		$crop = sanitize_text_field($_POST['advps_crop']);
 			
 		$q = $wpdb->prepare("update ".$wpdb->prefix."advps_thumbnail set thumb_name = '%s',width = %d, height = %d, crop = '%s' where id = %d",$thumb_name,$width,$height,$crop,$thumb_id);
@@ -153,12 +154,12 @@
 				$(this).parent().find("table").slideToggle(100,'linear',function(){});
 			}
 			if($(this).hasClass('closed')){
-				$(this).css('background-image','url(<?php echo advps_url?>images/up.png)');
+				$(this).css('background-image','url(<?php echo esc_url( advps_url );?>images/up.png)');
 				$(this).removeClass('closed');
 			}
 			else
 			{
-				$(this).css('background-image','url(<?php echo advps_url?>images/down.png)');
+				$(this).css('background-image','url(<?php echo esc_url( advps_url );?>images/down.png)');
 				$(this).addClass('closed');
 			}
 		})
@@ -191,7 +192,7 @@ fieldset {
 }
 .advps-legend {
 	background-color:#6E6E6E;
- background-image:url(<?php echo advps_url?>images/up.png);
+ background-image:url(<?php echo esc_url( advps_url );?>images/up.png);
 	background-repeat:no-repeat;
 	background-position: 96px 6px;
 	color:#FFF;
@@ -226,12 +227,12 @@ fieldset {
 	padding-left: 20px;
 }
 .postbox .down {
- background-image:url(<?php echo advps_url?>images/downb.png);
+ background-image:url(<?php echo esc_url( advps_url );?>images/downb.png);
 	background-repeat:no-repeat;
 	background-position: 4px 10px;
 }
 .postbox .up {
- background-image:url(<?php echo advps_url?>images/upb.png);
+ background-image:url(<?php echo esc_url( advps_url );?>images/upb.png);
 	background-repeat:no-repeat;
 	background-position: 4px 10px;
 }
@@ -255,7 +256,7 @@ fieldset {
   <?php }?>
   <?php if($stsMgs != ''){?>
   <div id="message" class="updated below-h2">
-    <p><?php echo $stsMgs;?></p>
+    <p><?php echo esc_html( $stsMgs );?></p>
   </div>
   <?php }?>
   <h2 class="nav-tab-wrapper"> <a href="?page=advps-slideshow&tab=one" class="nav-tab <?php if($currTab == 'one'){echo 'nav-tab-active';}?>" title="Thumbnail and overlaid title excerpt">Template One</a> <a href="?page=advps-slideshow&tab=two" class="nav-tab <?php if($currTab == 'two'){echo 'nav-tab-active';}?>" title="Thumbnail only">Template Two</a> <a href="?page=advps-slideshow&tab=three" class="nav-tab <?php if($currTab == 'three'){echo 'nav-tab-active';}?>" title="Thumbnail, title, excerpt or simply full content">Template Three</a><a href="?page=advps-slideshow&tab=thumb" class="nav-tab <?php if($currTab == 'thumb'){echo 'nav-tab-active';}?>" title="Create or manage thumbnail size">Thumbnails</a> </h2>
@@ -267,7 +268,7 @@ fieldset {
 			require 'templates/template-three.php';
 		}elseif($currTab == 'thumb'){?>
   <div class="advps-col-right">
-    <h2>Advanced post slider <?php echo get_option('advps-curr-version');?></h2>
+    <h2>Advanced post slider <?php echo esc_html( get_option('advps-curr-version') );?></h2>
     <ul>
       <li><a href="http://www.wpcue.com/wordpress-plugins/advanced-post-slider/" target="_blank">Plugin Homepage</a></li>
       <li><a href="http://www.wpcue.com/support/forum/advanced-post-slider/" target="_blank">Help / Support</a></li>
@@ -292,11 +293,11 @@ fieldset {
           <tr>
             <form method="post">
               <th scope="row">Name&nbsp;
-                <input type="text" name="advps_thumb_name" value="<?php echo $thmb->thumb_name;?>" style="width:140px" /></th>
+                <input type="text" name="advps_thumb_name" value="<?php echo esc_attr( $thmb->thumb_name );?>" style="width:140px" /></th>
               <td>Width&nbsp;
-                <input type="text" name="advps_thumb_width" value="<?php echo $thmb->width;?>" style="width:80px;" onkeypress="return onlyNum(event);" />
+                <input type="text" name="advps_thumb_width" value="<?php echo esc_attr( $thmb->width );?>" style="width:80px;" onkeypress="return onlyNum(event);" />
                 px&nbsp;&nbsp;&nbsp;Height&nbsp;
-                <input type="text" name="advps_thumb_height" value="<?php echo $thmb->height;?>" style="width:80px;" onkeypress="return onlyNum(event);" />
+                <input type="text" name="advps_thumb_height" value="<?php echo esc_attr( $thmb->height );?>" style="width:80px;" onkeypress="return onlyNum(event);" />
                 px <span style="margin-left:20px;">Crop&nbsp;
                 <select name="advps_crop">
                   <option value="yes" <?php if($thmb->crop == 'yes'){echo 'selected="selected"';}?>>true</option>
@@ -305,7 +306,7 @@ fieldset {
                 </span> <span style="margin-left:20px;">
                 <input type="submit" value="Save" class="button-secondary" name="update_thumb" />
                 </span></td>
-              <input type="hidden" value="<?php echo $thmb->id;?>" name="thumb_id" />
+              <input type="hidden" value="<?php echo esc_attr( $thmb->id );?>" name="thumb_id" />
               <?php wp_nonce_field('advps-checkauthnonce','advps_wpnonce'); ?>
             </form>
           </tr>
@@ -349,4 +350,4 @@ fieldset {
   </div>
   <?php }?>
 </div>
-<meta name="wpversion" content="<?php echo $wp_version;?>" />
+<meta name="wpversion" content="<?php echo esc_attr( $wp_version );?>" />

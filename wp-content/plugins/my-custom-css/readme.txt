@@ -2,9 +2,9 @@
 Contributors: DarkWolf
 Donate link: https://www.paypal.me/SalvatoreN
 Tags: css, style, custom, theme, plugin, stylesheet, darkwolf, laltroweb, ace, cloud9 editor
-Requires at least: 3.0
-Tested up to: 4.3.1
-Stable tag: 2.7
+Requires at least: 4.0
+Tested up to: 4.4.1
+Stable tag: 3.0
 
 Enable to add Custom CSS Code via admin panel with Ace (Ajax.org Cloud9 Editor) 
 + backup (see screen) and static file cache (best performance) :)
@@ -31,15 +31,16 @@ PS: support file backup and - very important - static css file (fantastic for pe
 
 * English
 * Italian
-* (If you translate in your language, please, send me) :)
+* Full translatable!
 
 == Screenshots ==
 
-1. My Custom CSS Panel + With All feature and DarkTheme
-2. My Custom CSS Panel + With error and LightTheme
-3. Preview in browser sourcecode
-4. Backup List (New Feature)!
-5. Confirm when delete backup!
+1. New advanced menu, in 3.0!!!
+2. My Custom CSS Panel with All feature and DarkTheme
+3. My Custom CSS Panel with LightTheme
+4. Preview in browser sourcecode
+5. Backup List (New Feature)!
+6. Confirm when delete backup!
 
 == Installation ==
 
@@ -48,11 +49,29 @@ PS: support file backup and - very important - static css file (fantastic for pe
 
 == Upgrade Notice ==
 
-= 2.7 =
+= 3.0 =
 
-* Search bar no longer fixed (caused graphics problems in some circumstances)
+* More advanced setting for enable/disable many feature!
 
 == Changelog ==
+
+= 3.0 =
+
+* More advanced setting for enable/disable many feature:
+* Enable/Disable invisible elements;
+* Enable/Disable print margin;
+* Enable/Disable line numbers;
+* Enable/Disable backups (end, if enabled, save only if exist data to save = no more empty backup)!
+* Enable/Disable autocomplete;
+* All setting saved with cookies only when an admin access in backend!
+
+= 2.9 =
+
+* Added version querystring in css and javascript (prevent cache issue from old release).
+
+= 2.8 =
+
+* More code change/fix/clean (expecially in textarea and search bar) + removed old codemirror fix.
 
 = 2.7 =
 

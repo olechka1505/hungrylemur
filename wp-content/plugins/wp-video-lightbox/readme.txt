@@ -3,8 +3,8 @@ Contributors: Tips and Tricks HQ, Ruhul Amin, wptipsntricks
 Donate link: https://www.tipsandtricks-hq.com/
 Tags: wordpress lightbox, wordpress video lightbox, video lightbox, wp video lightbox, wordpress video embed, add video to wordpress, gallery, image, images, lightbox, lightview, overlay, photo, photos, picture, video
 Requires at least: 3.0
-Tested up to: 4.3
-Stable tag: 1.7.6
+Tested up to: 4.4
+Stable tag: 1.7.8
 License: GPLv2 or later
 
 Very easy to use WordPress lightbox plugin to display YouTube and Vimeo videos in an elegant lightbox overlay.
@@ -32,6 +32,14 @@ You can embed a YouTube video using the following shortcode in a WordPress post 
 `[video_lightbox_youtube video_id="G7z74BvLWUg" width="640" height="480" anchor="http://www.example.com/images/youtube-thumb.jpg"]`
 
 You need to replace the value of "video_id" with your actual YouTube video ID. You can also control the size of the lightbox window by customizing the width and height parameters.
+
+= Optimizing the SEO of your Thumbnail Image =
+
+When you are using a thumbnail image as the anchor, you can describe it using the "alt" parameter in the shortcode. It helps Search Engines understand what this image is about. 
+
+`[video_lightbox_youtube video_id="G7z74BvLWUg" width="640" height="480" anchor="http://www.example.com/images/youtube-thumb.jpg" alt="text that describes this image"]`
+
+You need to replace the value of "alt" with your own description of the image.
 
 = Features/Settings Configuration =
 
@@ -103,6 +111,13 @@ https://www.tipsandtricks-hq.com/wordpress-video-lightbox-plugin-display-videos-
 None
 
 == Changelog ==
+
+= 1.7.8 =
+* Added "alt" parameter in the shortcode that can be used to describe the anchor image.
+
+= 1.7.7 =
+* Added translation option which is compatible with language packs.
+* Video Lightbox is now compatible with WordPress 4.4.
 
 = 1.7.6 =
 * Video Lightbox is now compatible with WordPress 4.3.

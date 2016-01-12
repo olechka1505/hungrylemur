@@ -2,9 +2,10 @@
 Contributors: husobj, husani
 Tags: subtitle, content, title, subheading, subhead, alternate title
 Requires at least: 3.7
-Tested up to: 4.3
-Stable tag: 2.5
-License: GPL2
+Tested up to: 4.4
+Stable tag: 2.6
+License: GPLv2
+License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
 Add subtitles (subheadings) to your pages, posts or custom post types.
 
@@ -98,10 +99,16 @@ The plugin is [hosted on GitHub](https://github.com/benhuson/wp-subtitle) and pu
 
 == Changelog ==
 
+= 2.6 =
+* Security Update: Sanitize `$_REQUEST` and `$_GET` when establishing post type in the admin.
+* Added quick edit support for subtitle. Props [Fabian Marz](https://github.com/fabianmarz) and [sun](https://github.com/sun).
+* Allow subtitle post meta key to be filtered using `wps_subtitle_key`.
+* Add German translation. Props [hatsumatsu](https://github.com/hatsumatsu).
+
 = 2.5 =
 * Add [wp_subtitle] shortcode.
-* Declare methods as public or private.
 * Do not use variable for textdomain - causes issues for parsers.
+* Declare methods as public or private.
 
 = 2.4.1 =
 * Fix PHP notice warning on 404 error page. Props Jay Williams.
@@ -121,14 +128,14 @@ The plugin is [hosted on GitHub](https://github.com/benhuson/wp-subtitle) and pu
 * Escape subtitle admin field value - fixes issues with subtitles with quotes.
 
 = 2.2 =
-* Moved subtitle field from meta box to below title field in WordPress 3.5+ (props Tor Morten)
 * Added 'wps_subtitle_use_meta_box' filter to allow the edit field to be displayed in a meta box (the old way).
+* Moved subtitle field from meta box to below title field in WordPress 3.5+ (props Tor Morten)
 
 = 2.1 =
 * Ready for translation - .pot file added.
-* Only include admin functionality when needed.
 * Added deprecated function warnings if WP_DEBUG enabled.
 * Fix static method warnings.
+* Only include admin functionality when needed.
 
 = 2.0.1 =
 * Use `<?php` instead of just `<?`.
@@ -136,15 +143,18 @@ The plugin is [hosted on GitHub](https://github.com/benhuson/wp-subtitle) and pu
 
 = 2.0 =
 * Added custom post type support - use add_post_type_support( '{post_type}', 'wps_subtitle' ).
-* Fixed bug in more recent versions of WordPress.
 * Added 'wps_meta_box_title' filter.
 * Added 'wps_subtitle' filter.
 * Added 'wps_subtitle_field_description' filter.
+* Fixed bug in more recent versions of WordPress.
 
 = 1.0 =
 * First version.
 
 == Upgrade Notice ==
+
+= 2.6 =
+Added quick edit support for subtitle. Security Update: Sanitize `$_REQUEST` and `$_GET` when establishing post type in the admin.
 
 = 2.5 =
 Add [wp_subtitle] shortcode. Do not use variable for textdomain - causes issues for parsers.

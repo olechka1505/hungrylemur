@@ -1,11 +1,13 @@
 <?php
 /*
 Plugin Name: WP Video Lightbox
-Version: 1.7.6
+Version: 1.7.8
 Plugin URI: https://www.tipsandtricks-hq.com/?p=2700
 Author: Tips and Tricks HQ, Ruhul Amin
 Author URI: https://www.tipsandtricks-hq.com/
 Description: Simple video lightbox plugin to display videos in a nice overlay popup. It also supports images, flash, YouTube, iFrame.
+Text Domain: wp-video-lightbox
+Domain Path: /languages
 */
 if (!defined('ABSPATH')) exit;
 
@@ -13,7 +15,7 @@ if (!class_exists('WP_Video_Lightbox'))
 {
     class WP_Video_Lightbox
     {
-        var $version = '1.7.6';
+        var $version = '1.7.8';
         var $db_version = '1.0';
         var $plugin_url;
         var $plugin_path;
@@ -59,6 +61,7 @@ if (!class_exists('WP_Video_Lightbox'))
 
         function plugins_loaded_handler()  //Runs when plugins_loaded action gets fired
         {
+            load_plugin_textdomain('wp-video-lightbox', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');
             $this->do_db_upgrade_check();
             $this->settings_obj = new Video_Lightbox_Settings_Page();   //Initialize settins menus
         }

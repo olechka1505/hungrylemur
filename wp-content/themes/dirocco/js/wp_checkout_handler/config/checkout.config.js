@@ -45,6 +45,11 @@ checkoutApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             templateUrl: "/wp-content/themes/dirocco/woocommerce/checkout/templates/login.php",
             controller:'CheckoutLoginCtrl',
         })
+        .state('signin', {
+            url: "/signin",
+            templateUrl: "/wp-content/themes/dirocco/woocommerce/checkout/templates/signin.php",
+            controller:'CheckoutSigninCtrl',
+        })
         .state('signup', {
             url: "/signup",
             templateUrl: "/wp-content/themes/dirocco/woocommerce/checkout/templates/signup.php",

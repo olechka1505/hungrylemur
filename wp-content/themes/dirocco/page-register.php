@@ -17,11 +17,7 @@ input.input-text{
 p.form-row.form-row-first{
 	margin: 0 0 6px;
 }
-form.register.main-register{
-    padding: 20px;
-    margin: 2em 0;
-    text-align: left;
-}
+
 ul.woocommerce-error {
     width: 50%;
     margin: 0 auto;
@@ -100,7 +96,7 @@ $get_checkout_url = apply_filters( 'woocommerce_get_checkout_url', WC()->cart->g
 
 			<p class="form-row">
 				<?php wp_nonce_field( 'woocommerce-register' ); ?>
-				<input type="submit" class="button" name="register" value="<?php esc_attr_e( 'Register', 'woocommerce' ); ?>" />
+				<input type="submit" class="button btn-block" name="register" value="<?php esc_attr_e( 'Register', 'woocommerce' ); ?>" />
 			</p>
 
 			<?php do_action( 'woocommerce_register_form_end' ); ?>

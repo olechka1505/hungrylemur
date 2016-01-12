@@ -32,14 +32,15 @@
             <p>{{confirmData.card.type}}: {{'****' + confirmData.card.last4}}</p>
         </div>
 
-        <div class="col-xs-12 checkout-title-separator clearfix no-padding">CREATE ACCOUNT</div>
-
-        <div class="col-md-8 col-xs-12 no-padding checkout-details checkout-create-account">
-            <div class="form-group">
-                <input ng-model="createAccount.login" class="form-control" type="text" placeholder="Email address"/>
-            </div>
-            <div class="form-group">
-                <input ng-model="createAccount.password" class="form-control" type="password" placeholder="Password"/>
+        <div ng-if="confirmData.show_create_account">
+            <div class="col-xs-12 checkout-title-separator clearfix no-padding">CREATE ACCOUNT</div>
+            <div class="col-md-8 col-xs-12 no-padding checkout-details checkout-create-account">
+                <div class="form-group">
+                    <input ng-model="createAccount.login" class="form-control" type="text" placeholder="Email address"/>
+                </div>
+                <div class="form-group">
+                    <input ng-model="createAccount.password" class="form-control" type="password" placeholder="Password"/>
+                </div>
             </div>
         </div>
     </div>

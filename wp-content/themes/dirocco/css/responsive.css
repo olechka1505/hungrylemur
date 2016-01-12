@@ -1,3 +1,7 @@
+@media only screen and (min-width: 40.063em){
+	.fp-tableCell { padding: 68px 50px!important; }
+}
+
 @media screen and (min-width: 1281px) {
 
 	#footer-wrap { position: relative; bottom: 0; padding: 0px 50px;}
@@ -9,6 +13,11 @@
 		vertical-align: middle;
 		margin-bottom: 15em;
 	}
+}
+
+@media only screen and (max-width: 1280px){
+	.world-journal-home.padding-0.row { height: 75%; }
+	.row.home-slider{ height: 68%; }
 }
 
 @media screen and (max-width: 1280px) and (min-width:960px) {
@@ -291,6 +300,186 @@
 	.page-template-page-account .woocommerce { padding: 0px 50px; }
 }
 
+@media only screen and (max-width: 767px){
+	.sf-navicon-button {    
+    	left: -70px!important;
+    	/*left:0px!important;*/
+    	top: 8px!important;
+	}
+	
+	#sf-sidebar .sf-scroll {overflow: overlay!important;height: auto!important;}
+	.footer-widget-col.widget_nav_menu { text-align: center; }
+	div#mc4wp_widget-2 {
+    	text-align: center;
+    	width: 100%;
+	}
+	form.superfly {
+    	display: inline;
+    	position: absolute;
+    	top: 45px!important;
+    	right: 3em!important;
+	}
+	.sf-navicon-button.x.sf-open { top: 0px!important; }
+	#sf-sidebar.sf-compact-footer .sf-social { display:none; }
+	.sf-sidebar-exposed .sf-navicon-button.x.sf-open { left: 215px!important; }
+	.home-video-thumb{ display:inline-block; }
+	#sf-sidebar .sf-social{ height:40px; }
+	.white-space{ height:59px!important; }
+	.section.slider.fp-section.active.fp-table { margin-top: 5%; }
+	.video-desc h3, .video-desc h2, .video-desc-description, p.icon, .video-desc.col-sm-4{text-align:center;}
+	div#logo {
+    	float: left;
+    	margin: 0px 0px 0px 0.5em!important;
+	}
+	#header-holder { min-height: 55px; }
+	form#demo-b {
+    	display: inline;
+    	position: absolute;
+    	top: 58%;
+    	right: 3em!important;
+	}
+		i.fa.fa-play {
+    	padding: 10px 12px;
+    	border: 1px solid #000;
+    	color: #000;
+	}
+	.advps-excerpt-block-one { padding-top: 0px; }
+	.featured-price-home ul li .content-product-left {
+    	width: 100%!important;
+    	padding-left: 0%!important;
+    	margin: 0!important;
+   	 	padding-right: 0%!important;
+	}
+	.explore-all-products {
+    	font-family: 'WhitneyBold','WhitneyBook'!important;
+    	/* float: left!important; */
+    	padding-top: 20%;
+    	font-weight: 600!important;
+    	color: #000!important;
+    	text-transform: uppercase;
+    	cursor: pointer;
+    	text-align: center!important;
+    	font-size: 15px;
+    	padding-left: 0px!important;
+	}
+  	.our-story-desc-description {
+    	font-family: 'WhitneyLight','WhitneyBook' !important;
+    	font-size: 15px !important;
+    	line-height: 18px!important;
+    	font-weight: 100!important;
+    	padding-top: 0%!important;
+    	padding-left: 0px;
+    	padding-right: 0%;
+    	text-align: center;
+	}
+	.our-story-desc.col-sm-12 a h2, .our-story-desc.col-sm-12 a h3, .our-story-desc.col-sm-12 p a {
+    	text-align:center;
+    	color: #000!important;
+	}
+	.our-story-desc {
+    	right: 0px!important;
+    	top: 0px!important;
+    	width: 100%!important;
+    	text-align: center!important;
+    	position: relative;
+	}
+	#sf-sidebar, .sf-sidebar-bg, #sf-sidebar .sf-nav, #sf-sidebar .sf-logo, #sf-sidebar .sf-social { width: 180px!important; }
+	.advps-excerpt-one { margin-left: 0px; }
+	.advps-excerpt-block-one p{ padding-right:0px!important; }
+	.advps-excerpt-block-one { text-align: center!important; }
+	.advps-excerpt-block-one h3, .advps-excerpt-block-one h3 a, .advps-excerpt-block-one p { color: #000!important; }
+	#advpsslideshow_1 img { margin: 0 auto; }
+}
+
+@media only screen and (min-width: 1027px){
+	.home-video-thumb{display:none;}
+	.main-home-video.padding-0.youtube.row { height: 520px; }
+}
+
+@media only screen and (min-width: 767px){
+	form.superfly {
+    	display: inline;
+    	position: absolute;
+    	top: 45px!important;
+    	right: 6em!important;
+	}
+	.home .featured-price-home ul li .content-product-right {
+    	width: 75%;
+	}
+	.home img.attachment-shop_catalog {
+    	width: 100%!important;
+	}
+	.main-home-video{
+    	background-image:url(http://dev.hungrylemur.com/wp-content/uploads/2015/11/Eric-1-of-5-Main.jpg);
+    	background-position: center top;
+    	background-size: cover;
+    	background-repeat: no-repeat !important;
+	}
+	.main-home-video.padding-0.youtube.row {
+    	height: 100%;
+    	overflow:hidden;
+	}
+	.video-desc h3, .video-desc h2{color: #fff;}
+	.video-desc-description {
+    	font-family: 'WhitneyLight','WhitneyBook' !important;
+    	font-size: 15px !important;
+    	line-height: 18px!important;
+    	font-weight: 100!important;
+    	padding-top: 2%!important;
+	}
+	.video-desc.col-sm-4 {
+    	position: absolute;
+    	top: 50%;
+    	padding-left: 4%;
+	}
+	.video-desc-description span{ color:#fff!important; }
+	.our-story-desc.col-sm-12 { position: absolute; }
+	form#demo-b {
+    	display: inline;
+    	position: absolute;
+    	top: 52%;
+    	right: 6em;
+	}
+	div#logo{ float: left; margin: 0px 0px 0px 2em!important; padding-top: 23px!important}
+	.world-journal-home.padding-0.row { height: 75%; }
+	.row.home-slider{ height: 68%; }
+	.section.slider .fp-tableCell{ vertical-align:top; }
+	.our-story-desc { top: 45%; }
+	i.fa.fa-play {
+    	padding: 10px 12px;
+    	border: 1px solid #fff;
+    	color: #fff; 
+    }
+	.advps-excerpt-one.col-sm-12 { position: absolute; }
+	.advps-excerpt-block-one { padding-top: 30%; }
+	.our-story-desc{ text-align:right; }
+	.our-story-desc-description {
+    	font-family: 'WhitneyLight','WhitneyBook' !important;
+    	font-size: 15px !important;
+    	line-height: 18px!important;
+    	font-weight: 100!important;
+    	padding-top: 2%!important;
+    	padding-left: 13%;
+    	padding-right: 0%;
+    	text-align: right;
+	}
+	.explore-all-products {
+    	font-family: 'WhitneyLight'!important;
+   	 /* float: left!important; */
+    	padding-top: 24%;
+    	font-weight: 600!important;
+    	color: #000!important;
+    	text-transform: uppercase;
+    	cursor: pointer;
+    	/* text-align: center!important; */
+    	font-size: 18px;
+    	/* margin: 0 auto; */
+    	position: absolute;
+    	padding-left: 75%!important;
+	}
+	
+}
+
 @media screen and (max-device-width: 667px) {
 	/* Post Page */
 	.post-video-image-left { width: auto; margin: 0 auto; padding: 0; max-height: inherit; }
@@ -304,6 +493,31 @@
 	div#nav_menu-7 {		float: left;		width: 40%;		margin-left:0;	}	
 	div#nav_menu-8 {		float: left;		width: 40%;		margin-left:0;	}
 	
+}
+
+@media only screen and (max-width: 640px){
+	.section.slider.fp-section.active.fp-table{margin-top:6em!important;}
+	.main-home-video li{list-style-type: none;}
+	.video-desc h2 {
+    	font-size: 22px !important;
+    	padding-bottom: 0!important;
+    	margin: 0 auto!important;
+	}
+	.video-desc h3 {
+    	font-size: 36px !important;
+    	line-height: 42px !important;
+    	padding-bottom: 0!important;
+    	padding-top: 0!important;
+    	margin-top: 0!Important;
+	}
+	.home .featured-price-home ul li .content-product-right {
+    	float: none;
+    	margin: 0 auto;
+    	text-align: center;
+	}	
+	.home .content-product-description h6 {
+		text-align:center!important;
+	}
 }
 
 @media screen and (max-width: 550px) {	

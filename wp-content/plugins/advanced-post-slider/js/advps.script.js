@@ -197,6 +197,10 @@ function deleteOptSet(id){
 		jQuery("#frmOptDel"+id).submit();
 	}
 }
+function duplicateOptSet(id){
+	jQuery("#frmOptDel"+id).removeAttr("onsubmit");
+	jQuery("#frmOptDel"+id).submit();
+}
 function pagerAttr(v){
 	alert(v);
 }

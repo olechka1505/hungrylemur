@@ -28,6 +28,12 @@ final class RUA_Level_Manager {
 	private $levels            = array();
 
 	/**
+	 * User level capabilities
+	 * @var array
+	 */
+	private $user_levels_caps  = array();
+
+	/**
 	 * Constructor
 	 */
 	public function __construct() {
@@ -50,9 +56,9 @@ final class RUA_Level_Manager {
 	 */
 	protected function add_actions() {
 		add_action('template_redirect',
-			array(&$this,'authorize_access'));
+			array($this,'authorize_access'));
 		add_action('init',
-			array(&$this,'create_restrict_type'),99);
+			array($this,'create_restrict_type'),99);
 	}
 
 	/**
@@ -63,10 +69,13 @@ final class RUA_Level_Manager {
 	protected function add_filters() {
 		if(is_admin()) {
 			add_filter('post_updated_messages',
-				array(&$this,'restriction_updated_messages'));
+				array($this,'restriction_updated_messages'));
 			add_filter( 'bulk_post_updated_messages',
-				array(&$this,'restriction_updated_bulk_messages'), 10, 2 );
+				array($this,'restriction_updated_bulk_messages'), 10, 2 );
 		}
+
+		add_filter( 'user_has_cap',
+			array($this,"user_level_has_cap"), 99, 3 );
 	}
 
 	/**
@@ -149,27 +158,6 @@ final class RUA_Level_Manager {
 	 */
 	private function _init_metadata() {
 
-		$role_list = array(
-			-1 => __("Do not synchronize",RUA_App::DOMAIN),
-			0 => __('Not logged-in',RUA_App::DOMAIN)
-		);
-		$posts_list = array();
-		if(is_admin()) {
-			foreach(get_editable_roles() as $id => $role) {
-				$role_list[$id] = $role['name'];
-			}
-
-			//TODO: autocomplete instead of getting all pages
-			foreach(get_posts(array(
-				'posts_per_page' => -1,
-				'orderby'        => 'post_title',
-				'order'          => 'ASC',
-				'post_type'      => 'page'
-			)) as $post) {
-				$posts_list[$post->ID] = $post->post_title;
-			}
-		}
-
 		$this->metadata = new WPCAObjectManager();
 		$this->metadata
 		->add(new WPCAMeta(
@@ -188,7 +176,7 @@ final class RUA_Level_Manager {
 			__('Synchronized Role'),
 			-1,
 			'select',
-			$role_list
+			array()
 		),'role')
 		->add(new WPCAMeta(
 			'handle',
@@ -206,7 +194,7 @@ final class RUA_Level_Manager {
 			__('Page'),
 			0,
 			'select',
-			$posts_list,
+			array(),
 			__('Page to redirect to or display content from under teaser.', RUA_App::DOMAIN)
 		),'page')
 		->add(new WPCAMeta(
@@ -221,9 +209,49 @@ final class RUA_Level_Manager {
 				"year"  => __("Years",RUA_App::DOMAIN)
 			),
 			__('Set to 0 for unlimited.', RUA_App::DOMAIN)
-		),'duration');
+		),'duration')
+		->add(new WPCAMeta(
+			'caps',
+			__('Capabilities'),
+			"",
+			'',
+			array(),
+			__('Description.', RUA_App::DOMAIN)
+		),'caps');
 
 		apply_filters("rua/metadata",$this->metadata);
+	}
+
+	/**
+	 * Populate input fields for metadata
+	 *
+	 * @since  0.8
+	 * @return void
+	 */
+	public function populate_metadata() {
+
+		$role_list = array(
+			-1 => __("Do not synchronize",RUA_App::DOMAIN),
+			0 => __('Not logged-in',RUA_App::DOMAIN)
+		);
+
+		foreach(get_editable_roles() as $id => $role) {
+			$role_list[$id] = $role['name'];
+		}
+
+		$posts_list = array();
+		//TODO: autocomplete instead of getting all pages
+		foreach(get_posts(array(
+			'posts_per_page' => -1,
+			'orderby'        => 'post_title',
+			'order'          => 'ASC',
+			'post_type'      => 'page'
+		)) as $post) {
+			$posts_list[$post->ID] = $post->post_title;
+		}
+
+		$this->metadata()->get("role")->set_input_list($role_list);
+		$this->metadata()->get("page")->set_input_list($posts_list);
 	}
 	
 	/**
@@ -250,7 +278,7 @@ final class RUA_Level_Manager {
 				'not_found_in_trash' => __('No Access Levels found in Trash', RUA_App::DOMAIN),
 				'parent_item_colon'  => __('Extend Level', RUA_App::DOMAIN),
 				//wp-content-aware-engine specific
-				'ca_title'           => __('Grant explicit access to',RUA_App::DOMAIN),
+				'ca_title'           => __('Members will get exclusive access to',RUA_App::DOMAIN),
 				'ca_not_found'       => __('No content. Please add at least one condition group to restrict content.',RUA_App::DOMAIN)
 			),
 			'capabilities'  => array(
@@ -374,6 +402,14 @@ final class RUA_Level_Manager {
 		return $roles;
 	}
 
+	/**
+	 * Check if user has level
+	 *
+	 * @since  0.6
+	 * @param  int  $user_id
+	 * @param  int  $level
+	 * @return boolean
+	 */
 	public function has_user_level($user_id, $level) {
 		$user = get_user_by('id',$user_id);
 		return in_array($level, $this->_get_user_levels($user,false,false));
@@ -385,9 +421,10 @@ final class RUA_Level_Manager {
 	 * Include levels synced with role
 	 *
 	 * @since  0.3
-	 * @param  WP_User  $user
+	 * @param  WP_User $user
 	 * @param  boolean $hierarchical
 	 * @param  boolean $synced_roles
+	 * @param  boolean $include_expired
 	 * @return array
 	 */
 	 public function _get_user_levels(
@@ -418,10 +455,29 @@ final class RUA_Level_Manager {
 		}
 		if($hierarchical) {
 			foreach($levels as $key => $level) {
-				$levels = array_merge($levels,get_ancestors((int)$level,RUA_App::TYPE_RESTRICT));
+				$levels = array_merge($levels,get_post_ancestors((int)$level));
 			}
 		}
+		update_postmeta_cache($levels);
 		return $levels;
+	}
+
+	/**
+	 * Get time of user level start
+	 *
+	 * @since  0.7
+	 * @param  WP_User  $user
+	 * @param  int      $level_id
+	 * @return int
+	 */
+	public function get_user_level_start($user = null, $level_id) {
+		if($user || is_user_logged_in()) {
+			if(!$user) {
+				$user = wp_get_current_user();
+			}
+			return (int)get_user_meta($user->ID,WPCACore::PREFIX."level_".$level_id,true);
+		}
+		return 0;
 	}
 
 	/**
@@ -437,14 +493,14 @@ final class RUA_Level_Manager {
 			if(!$user) {
 				$user = wp_get_current_user();
 			}
-			$time = get_user_meta($user->ID,WPCACore::PREFIX."level_".$level_id,true);
+			$time = $this->get_user_level_start($user,$level_id);
 			$duration = $this->metadata()->get("duration")->get_data($level_id);
 			if(isset($duration["count"],$duration["unit"]) && $time) {
 				$time = strtotime("+".$duration["count"]." ".$duration["unit"]. " 23:59",$time);
 				return $time;
 			}
 		}
-		return null;
+		return 0;
 	}
 
 	/**
@@ -501,6 +557,31 @@ final class RUA_Level_Manager {
 					break;
 				}
 			}
+
+			if(!$kick && is_user_logged_in()) {
+				$conditions = WPCACore::get_conditions();
+				foreach ($conditions as $condition => $level) {
+					//Check post type
+					if(isset($posts[$level])) {
+						$drip = get_post_meta($condition,WPCACore::PREFIX."opt_drip",true);
+						//Restrict access to dripped content
+						if($drip && $this->metadata()->get('role')->get_data($level) == "-1") {
+							$start = $this->get_user_level_start(null,$level);
+							$drip_time = strtotime("+".$drip." days 00:00",$start);
+							if(time() <= $drip_time) {
+								$kick = $level;
+							} else {
+								$kick = 0;
+								break;
+							}
+						} else {
+							$kick = 0;
+							break;
+						}
+					}
+				}
+			}
+
 			if($kick) {
 				$action = $this->metadata()->get('handle')->get_data($kick);
 				self::$page = $this->metadata()->get('page')->get_data($kick);
@@ -550,6 +631,40 @@ final class RUA_Level_Manager {
 		}
 
 		return $content;
+	}
+
+	/**
+	 * Override user caps with
+	 * level caps
+	 *
+	 * @since  0.8
+	 * @param  array  $allcaps
+	 * @param  string $cap
+	 * @param  array  $args
+	 * @return array
+	 */
+	public function user_level_has_cap( $allcaps, $cap, $args ) {
+		if(!$this->_has_global_access()) {
+			if(!isset($this->user_levels_caps[$args[1]])) {
+				$this->user_levels_caps[$args[1]] = $allcaps;
+				$levels = $this->_get_user_levels(get_user_by("id",$args[1]));
+				if($levels) {
+					//Make sure higher levels have priority
+					//Side-effect: synced levels < normal levels
+					$levels = array_reverse($levels);
+					foreach ($levels as $level) {
+						$level_caps = $this->metadata()->get("caps")->get_data($level);
+						if($level_caps) {
+							foreach ($level_caps as $key => $level_cap) {
+								$this->user_levels_caps[$args[1]][$key] = !!$level_cap;
+							}
+						}
+					}
+				}
+			}
+			$allcaps = $this->user_levels_caps[$args[1]];
+		}
+		return $allcaps;
 	}
 
 }

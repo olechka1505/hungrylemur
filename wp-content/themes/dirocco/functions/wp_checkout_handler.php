@@ -35,6 +35,8 @@ class WP_Checkout_handler
         add_action($this->ajax_full_action_nopriv('details'), array($this, 'details'));
         add_action($this->ajax_full_action('login'), array($this, 'login'));
         add_action($this->ajax_full_action_nopriv('login'), array($this, 'login'));
+        add_action($this->ajax_full_action('signin'), array($this, 'signin'));
+        add_action($this->ajax_full_action_nopriv('signin'), array($this, 'signin'));
         add_action($this->ajax_full_action('signup'), array($this, 'signup'));
         add_action($this->ajax_full_action_nopriv('signup'), array($this, 'signup'));
         add_action($this->ajax_full_action('guest'), array($this, 'guest'));
@@ -100,7 +102,7 @@ class WP_Checkout_handler
 
                 if ($user_id = username_exists($createAccount['login']) || email_exists($createAccount['login'])) {
                     $response['status'] = false;
-                    $response['errors'][] = sprintf('This account already exists. Please <a href="%s">sign in</a> here', '/checkout/#/login');
+                    $response['errors'][] = sprintf('This account already exists. Please <a href="%s">sign in</a> here', '/checkout/#/signin');
                     $statusCode = 500;
                 }
 
@@ -112,6 +114,16 @@ class WP_Checkout_handler
                         $response['errors'][] = __('User wan not created.');
                         $statusCode = 500;
                     } else {
+                        $billing_data = $this->get_billing_details();
+                        $shipping_data = $this->get_shipping_details();
+
+                        foreach ($billing_data as $key=> $item) {
+                            update_user_meta( $user_id, "billing_{$key}", $item );
+                        }
+                        foreach ($shipping_data as $key=> $item) {
+                            update_user_meta( $user_id, "shipping_{$key}", $item );
+                        }
+
                         $response['status'] = true;
                         $statusCode = 200;
                     }
@@ -128,18 +140,23 @@ class WP_Checkout_handler
                     ]
                 );
                 if ($result->success) {
-                    $response['shop_url'] = get_permalink( woocommerce_get_page_id( 'shop' ) );
-                    $response['order_id'] = $result->transaction->id;
-                    $woocommerce->cart->empty_cart();
-                    $order = new WC_Order(WC()->session->last_order_id);
-                    $order->update_status('completed');
-                    $response['last_order'] = WC()->session->last_orde;
-                    unset(WC()->session->last_transaction);
-                    unset(WC()->session->paymentMethod);
-                    unset(WC()->session->last_order_id);
-                    unset(WC()->session->last_order);
-                    WC()->session->last_complete = $response;
-                    $statusCode = 200;
+                    $settlement = Braintree_Transaction::submitForSettlement($result->transaction->id);
+
+                    if ($settlement->success) {
+                        $response['shop_url'] = get_permalink( woocommerce_get_page_id( 'shop' ) );
+                        $response['order_id'] = $result->transaction->id;
+                        $woocommerce->cart->empty_cart();
+                        $order = new WC_Order(WC()->session->last_order_id);
+                        $order->update_status('completed');
+                        $response['last_order'] = WC()->session->last_orde;
+                        unset(WC()->session->last_transaction);
+                        unset(WC()->session->paymentMethod);
+                        unset(WC()->session->last_order_id);
+                        unset(WC()->session->last_order);
+                        WC()->session->last_complete = $response;
+                        $statusCode = 200;
+                    }
+
                 } else {
                     $response['status'] = false;
                     $response['errors'][] = $result->message;
@@ -185,6 +202,7 @@ class WP_Checkout_handler
                     );
                     $response['tax'] += $product['line_tax'];
                 }
+                $response['show_create_account'] = !is_user_logged_in();
                 $response['delivery'] = $this->get_delivery();
                 $response['subtotal'] = $woocommerce->cart->get_cart_subtotal();
                 $response['coupons'] = $woocommerce->cart->coupon_discount_amounts;
@@ -241,7 +259,7 @@ class WP_Checkout_handler
             $billing = array_replace_recursive($_billing, $billing);
             // validation billing
             foreach ($billing as $key => $item) {
-                if ($key == 'company' || $key == 'suite') {
+                if ($key == 'company' || $key == 'suite' || $key == 'asShippingAddress') {
                     continue;
                 }
                 if (empty($item)) {
@@ -327,6 +345,24 @@ class WP_Checkout_handler
         }
         $this->response($response, $statusCode);
     }
+
+    function signin()
+    {
+        if ($signin = $this->data('signinData')) {
+            $response = array('status' => true);
+            $statusCode = 200;
+            $user = wp_signon(array(
+                'user_login'    => $signin['login'],
+                'user_password' => $signin['password'],
+            ), false);
+            if (is_wp_error($user)) {
+                $response['status'] = false;
+                $response['errors'][] = $user->get_error_message();
+                $statusCode = 500;
+            }
+        }
+        $this->response($response, $statusCode);
+    }
     
     function promo()
     {
@@ -366,7 +402,6 @@ class WP_Checkout_handler
                 }
             }
             
-            $billing = $this->get_billing_details();
             $braintree_user_id = $this->get_braintree_user_id();
             try {
                 $bt_customer = Braintree_Customer::find($braintree_user_id);
@@ -375,28 +410,6 @@ class WP_Checkout_handler
                 $braintree_user_id = $this->get_braintree_user_id();
             }
 
-            // create new user if not exist
-            if (!$braintree_user_id) {
-                $result = Braintree_Customer::create([
-                    'firstName'             => $billing['first_name'],
-                    'lastName'              => $billing['last_name'],
-                    'company'               => $billing['company'],
-                    'phone'                 => $billing['phone'],
-                    'email'                 => $billing['email'],
-                ]);
-                if ($result->success) {
-                    if ($guest = $this->guest_data()) {
-                        $this->set_guest_data('braintree_customer_id', $result->customer->id);
-                        $braintree_user_id = $this->get_braintree_user_id();
-                    } else {
-                        update_user_meta( $current_user->ID, "braintree_customer_id", $result->customer->id );
-                    }
-                } else {
-                    $response['status'] = true;
-                    $response['errors'][] = __("Customer wasn't created.");
-                    $statusCode = 500;
-                }
-            }
             $delivery = $this->get_delivery();
             $total = $woocommerce->cart->cart_contents_total;
             if (isset($delivery['expedited']) && $delivery['expedited']) {
@@ -658,10 +671,29 @@ class WP_Checkout_handler
     {
         global $current_user;
         if ($data = $this->guest_data()) {
-            return isset($data['braintree_customer_id']) ? $data['braintree_customer_id']: false;
+            $braintree_user_id = isset($data['braintree_customer_id']) ? $data['braintree_customer_id']: false;
         } else {
-            return get_user_meta( $current_user->ID, 'braintree_customer_id', true );
+            $braintree_user_id = get_user_meta( $current_user->ID, 'braintree_customer_id', true );
         }
+        if (!$braintree_user_id) {
+            $billing = $this->get_billing_details();
+            $result = Braintree_Customer::create([
+                'firstName'             => $billing['first_name'],
+                'lastName'              => $billing['last_name'],
+                'company'               => $billing['company'],
+                'phone'                 => $billing['phone'],
+                'email'                 => $billing['email'],
+            ]);
+            if ($result->success) {
+                $braintree_user_id = $result->customer->id;
+                if ($guest = $this->guest_data()) {
+                    $this->set_guest_data('braintree_customer_id', $braintree_user_id);
+                } else {
+                    update_user_meta( $current_user->ID, "braintree_customer_id", $braintree_user_id );
+                }
+            }
+        }
+        return $braintree_user_id;
     }
 
     function guest_data()

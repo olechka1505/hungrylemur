@@ -2,7 +2,7 @@
 if ( ! defined( 'ABSPATH' ) || ! current_user_can( 'manage_options' ) ) exit;
 ?>
 <div class="advps-col-right">
-  <h2>Advanced post slider <?php echo get_option('advps-curr-version');?></h2>
+  <h2>Advanced post slider <?php echo esc_html( get_option('advps-curr-version') );?></h2>
   <ul>
     <li><a href="http://www.wpcue.com/wordpress-plugins/advanced-post-slider/" target="_blank">Plugin Homepage</a></li>
     <li><a href="http://www.wpcue.com/support/forum/advanced-post-slider/" target="_blank">Help / Support</a></li>
@@ -36,8 +36,8 @@ foreach( $res2 as $dset){
     <div class="postbox closed">
       <div class="handlediv down" title="Click to toggle"> <br>
       </div>
-      <h3 style="cursor:pointer; text-align:center" class="advps-expand <?php if(isset($_POST['advps_submit']) && $_POST['advps_submit'] == 'Add new slideshow' && $_POST['nextoptid'] == $dset->id){echo 'advps-highlight';}?>" id="lbltxt<?php echo $dset->id;?>">
-        <?php if(get_option('optset'.$dset->id)){echo get_option('optset'.$dset->id);}else{echo 'Slider '.$dset->id;}?>
+      <h3 style="cursor:pointer; text-align:center" class="advps-expand <?php if(isset($_POST['advps_submit']) && $_POST['advps_submit'] == 'Add new slideshow' && $_POST['nextoptid'] == intval( $dset->id )){echo 'advps-highlight';}?>" id="lbltxt<?php echo intval( $dset->id );?>">
+        <?php if(get_option('optset'.intval( $dset->id ))){echo esc_html( get_option('optset'.intval( $dset->id )) );}else{echo 'Slider '.intval( $dset->id );}?>
       </h3>
       <div class="inside">
         <fieldset>
@@ -45,29 +45,29 @@ foreach( $res2 as $dset){
           <table class="form-table">
             <tr>
               <th scope="row">Label</th>
-              <td><input type="text" style="" value="<?php if(get_option('optset'.$dset->id)){echo get_option('optset'.$dset->id);}else{echo 'Slider '.$dset->id;}?>" name="optset<?php echo $dset->id;?>" class="advps-optset-label" onchange="advpsUpdateLabel(this.name,this.value,<?php echo $dset->id;?>)" />
-                <span id="lbludtSts<?php echo $dset->id;?>" style="padding-left:10px; display:none;"><img src="<?php echo advps_url;?>/images/ajax-loader.gif" /></span></td>
+              <td><input type="text" style="" value="<?php if(get_option('optset'.intval( $dset->id ))){echo esc_attr( get_option('optset'.intval( $dset->id )) );}else{echo 'Slider '.intval( $dset->id );}?>" name="optset<?php echo intval( $dset->id );?>" class="advps-optset-label" onchange="advpsUpdateLabel(this.name,this.value,<?php echo intval( $dset->id );?>)" />
+                <span id="lbludtSts<?php echo intval( $dset->id );?>" style="padding-left:10px; display:none;"><img src="<?php echo esc_url( advps_url );?>/images/ajax-loader.gif" /></span></td>
             </tr>
             <tr>
               <th scope="row">Usage</th>
-              <td><input style="width:200px; font-size:12px; text-align:center;" type="text" value='[advps-slideshow optset="<?php echo $dset->id;?>"]' readonly="readonly"  /></td>
+              <td><input style="width:200px; font-size:12px; text-align:center;" type="text" value='[advps-slideshow optset="<?php echo intval( $dset->id );?>"]' readonly="readonly"  /></td>
             </tr>
           </table>
         </fieldset>
         <fieldset>
           <legend class="advps-legend advpssm" style="width:80px; background-position:79px 6px;"><strong>Select Post</strong></legend>
-          <div id="advps-sel<?php echo $dset->id;?>">
+          <div id="advps-sel<?php echo intval( $dset->id );?>">
             <table class="form-table">
               <tr>
                 <th scope="row">Select post using</th>
-                <td><select name="advpssmethod<?php echo $dset->id?>" onchange="updateSm(this,<?php echo $dset->id;?>);">
-                    <option value="plist" <?php if(get_option('advpssmethod'.$dset->id) == 'plist'){echo 'selected="selected"';}?>>Post list</option>
-                    <option value="query" <?php if(get_option('advpssmethod'.$dset->id) == 'query'){echo 'selected="selected"';}?>>Query</option>
-                  </select><span id="smudtsts<?php echo $dset->id;?>" style="padding-left:10px; display:none;"><img src="<?php echo advps_url;?>/images/ajax-loader.gif" /></span></td>
+                <td><select name="advpssmethod<?php echo intval( $dset->id )?>" onchange="updateSm(this,<?php echo intval( $dset->id );?>);">
+                    <option value="plist" <?php if(get_option('advpssmethod'.intval( $dset->id )) == 'plist'){echo 'selected="selected"';}?>>Post list</option>
+                    <option value="query" <?php if(get_option('advpssmethod'.intval( $dset->id )) == 'query'){echo 'selected="selected"';}?>>Query</option>
+                  </select><span id="smudtsts<?php echo intval( $dset->id );?>" style="padding-left:10px; display:none;"><img src="<?php echo esc_url( advps_url );?>/images/ajax-loader.gif" /></span></td>
               </tr>
             </table>
-            <form method="post" onsubmit="return false" id="plist<?php echo $dset->id;?>">
-              <table class="form-table <?php if(get_option('advpssmethod'.$dset->id) == 'query'){echo 'advps-hide';}?>">
+            <form method="post" onsubmit="return false" id="plist<?php echo intval( $dset->id );?>">
+              <table class="form-table <?php if(get_option('advpssmethod'.intval( $dset->id )) == 'query'){echo 'advps-hide';}?>">
                 <tr>
                   <th scope="row">Listing option</th>
                   <td><select title="Post type" name="advps_post_stypes">
@@ -82,7 +82,7 @@ foreach( $res2 as $dset){
                           ?>
                     </select>
                     <span style="padding-left:10px;">
-                    <input type="text" name="advps_plistmax" value="<?php echo $plist['advps_plistmax'];?>" style="width:40px;" onkeypress="return onlyNum(event);" title="Max number of post to list" />
+                    <input type="text" name="advps_plistmax" value="<?php echo esc_attr( $plist['advps_plistmax'] );?>" style="width:40px;" onkeypress="return onlyNum(event);" title="Max number of post to list" />
                     </span> <span style="padding-left:10px;">
                     <select name="advps_plistorder_by" title="Order by">
                       <option value="date" <?php if($plist['advps_plistorder_by'] == 'date'){echo 'selected="selected"';}?>>Date</option>
@@ -100,18 +100,18 @@ foreach( $res2 as $dset){
                       <option value="DESC" <?php if($plist['advps_plistorder'] == 'DESC'){echo 'selected="selected"';}?>>Descending</option>
                     </select>
                     </span> <span style="padding-left:10px;">
-                    <button class="button-secondary" value="" onclick="listPost(<?php echo $dset->id;?>)">List</button>
-                    </span> <span class="ajx-loaderp" style="padding-left:12px; display:none;"><img src="<?php echo advps_url;?>/images/ajax-loader.gif" /></span></td>
+                    <button class="button-secondary" value="" onclick="listPost(<?php echo intval( $dset->id );?>)">List</button>
+                    </span> <span class="ajx-loaderp" style="padding-left:12px; display:none;"><img src="<?php echo esc_url( advps_url );?>/images/ajax-loader.gif" /></span></td>
                 </tr>
                 <tr>
                   <th scope="row">Select post from list</th>
-                  <td><select name="advps_plist[]" multiple="multiple" style="min-height:250px; min-width:300px;" id="advps-plist-field<?php echo $dset->id;?>">
+                  <td><select name="advps_plist[]" multiple="multiple" style="min-height:250px; min-width:300px;" id="advps-plist-field<?php echo intval( $dset->id );?>">
                       <?php 
 						$lpargs = array(
-								'post_type'      => ($plist['advps_post_stypes']) ? $plist['advps_post_stypes'] : 'post',
-								'posts_per_page' => ($plist['advps_plistmax']) ? $plist['advps_plistmax'] : 99,
-								'orderby'		 => ($plist['advps_plistorder_by']) ? $plist['advps_plistorder_by'] : 'date',
-								'order'			 => ($plist['advps_plistorder']) ? $plist['advps_plistorder'] : 'DESC'
+								'post_type'      => ($plist['advps_post_stypes']) ? esc_html( $plist['advps_post_stypes'] ) : 'post',
+								'posts_per_page' => ($plist['advps_plistmax']) ? esc_html( $plist['advps_plistmax'] ) : 99,
+								'orderby'		 => ($plist['advps_plistorder_by']) ? esc_html( $plist['advps_plistorder_by'] ) : 'date',
+								'order'			 => ($plist['advps_plistorder']) ? esc_html( $plist['advps_plistorder'] ) : 'DESC'
 						);
 					 	$pl_query = new WP_Query($lpargs); while ($pl_query->have_posts()) : $pl_query->the_post();?>
                       <option value="<?php the_id();?>" <?php if(isset($plist['advps_plist']) && in_array(get_the_id(),$plist['advps_plist'])){echo 'selected="selected"';}?>>
@@ -123,32 +123,32 @@ foreach( $res2 as $dset){
                 </tr>
                 <tr>
                   <th scope="row">&nbsp;</th>
-                  <td><input type="submit" name="advps_submit" value="Save changes" class="button-primary" onclick="updateOptionSet('plist<?php echo $dset->id;?>')" />
-                    <span class="ajx-loader" style="padding-left:15px; display:none;"><img src="<?php echo advps_url;?>/images/ajax-loader.gif" /></span><span class="ajx-sts"></span></td>
+                  <td><input type="submit" name="advps_submit" value="Save changes" class="button-primary" onclick="updateOptionSet('plist<?php echo intval( $dset->id );?>')" />
+                    <span class="ajx-loader" style="padding-left:15px; display:none;"><img src="<?php echo esc_url( advps_url );?>/images/ajax-loader.gif" /></span><span class="ajx-sts"></span></td>
                 </tr>
               </table>
               <input type="hidden" name="opt_field" value="plist" />
-              <input type="hidden" value="<?php echo $dset->id;?>" name="opt_id" />
+              <input type="hidden" value="<?php echo intval( $dset->id );?>" name="opt_id" />
             </form>
-            <form method="post" onsubmit="return false" id="query<?php echo $dset->id;?>">
-              <table class="form-table <?php if(!get_option('advpssmethod'.$dset->id) || get_option('advpssmethod'.$dset->id) == 'plist'){echo 'advps-hide';}?>">
+            <form method="post" onsubmit="return false" id="query<?php echo intval( $dset->id );?>">
+              <table class="form-table <?php if(!get_option('advpssmethod'.intval( $dset->id )) || get_option('advpssmethod'.intval( $dset->id )) == 'plist'){echo 'advps-hide';}?>">
                 <tr>
                   <th scope="row">Post Type</th>
-                  <td><select name="advps_post_types" onchange="advpsCheckCat(this.value,<?php echo $dset->id;?>)">
+                  <td><select name="advps_post_types" onchange="advpsCheckCat(this.value,<?php echo intval( $dset->id );?>)">
                       <option value="post" <?php if($query['advps_post_types'] == 'post'){echo 'selected="selected"';}?>>post</option>
                       <option value="page" <?php if($query['advps_post_types'] == 'page'){echo 'selected="selected"';}?>>page</option>
                       <?php
                               foreach ($customPostTypes  as $post_type ) {
                           ?>
-                      <option value="<?php echo $post_type;?>" <?php if($query['advps_post_types'] == $post_type){echo 'selected="selected"';}?>><?php echo $post_type;?></option>
+                      <option value="<?php echo esc_attr( $post_type );?>" <?php if($query['advps_post_types'] == $post_type){echo 'selected="selected"';}?>><?php echo $post_type;?></option>
                       <?php		
                               }
                           ?>
                     </select></td>
                 </tr>
-                <tr id="advps-cat-field<?php echo $dset->id;?>">
+                <tr id="advps-cat-field<?php echo intval( $dset->id );?>">
                   <?php
-					$posttypeobj = get_post_type_object($query['advps_post_types']);  
+					$posttypeobj = get_post_type_object( esc_html( $query['advps_post_types']) );  
 					if($query['advps_post_types'] != "page" && ($query['advps_post_types'] == 'post' || in_array('category',$posttypeobj->taxonomies))){
 				?>
                   <th scope="row">Category</th>
@@ -157,7 +157,7 @@ foreach( $res2 as $dset){
 					  	$catList = get_categories();
 						foreach($catList as $scat){
 					  ?>
-                      <option value="<?php echo $scat->term_id;?>" <?php if(isset($query['advps_category']) && in_array($scat->term_id,$query['advps_category'])){echo 'selected="selected"';}?>><?php echo $scat->name;?></option>
+                      <option value="<?php echo esc_attr( $scat->term_id );?>" <?php if(isset($query['advps_category']) && in_array($scat->term_id,$query['advps_category'])){echo 'selected="selected"';}?>><?php echo esc_html( $scat->name );?></option>
                       <?php }?>
                     </select>
                     <span style="padding-left:10px; font-size:10px; font-style:italic; vertical-align:top;">[ * You can select multiple category ]</span></td>
@@ -165,16 +165,16 @@ foreach( $res2 as $dset){
                 </tr>
                 <tr>
                   <th scope="row">Max. Number of post</th>
-                  <td><input type="text" name="advps_maxpost" value="<?php echo $query['advps_maxpost'];?>" style="width:60px;" onkeypress="return onlyNum(event);" />
+                  <td><input type="text" name="advps_maxpost" value="<?php echo esc_attr( $query['advps_maxpost'] );?>" style="width:60px;" onkeypress="return onlyNum(event);" />
                     <span style="padding-left:10px; font-size:10px; font-style:italic;">[ * Maximum Slides]</span></td>
                 </tr>
                 <tr>
                   <th scope="row">Offset (optional)</th>
-                  <td><input type="text" name="advps_offset" value="<?php echo $query['advps_offset'];?>" style="width:60px;" onkeypress="return onlyNum(event);" /></td>
+                  <td><input type="text" name="advps_offset" value="<?php echo esc_attr( $query['advps_offset'] );?>" style="width:60px;" onkeypress="return onlyNum(event);" /></td>
                 </tr>
                 <tr>
                   <th scope="row">Exclude (optional)</th>
-                  <td><input type="text" name="advps_exclude" value="<?php echo $query['advps_exclude'];?>" style="width:100px;" />
+                  <td><input type="text" name="advps_exclude" value="<?php echo esc_attr( $query['advps_exclude'] );?>" style="width:100px;" />
                     <span style="padding-left:10px; font-size:10px; font-style:italic;">[ Ex. 1,5,10 Comma separated post IDs that need to exclude from slideshow ]</span></td>
                 </tr>
                 <tr>
@@ -199,22 +199,22 @@ foreach( $res2 as $dset){
                 </tr>
                 <tr>
                   <th scope="row">&nbsp;</th>
-                  <td><input type="submit" name="advps_submit" value="Save changes" class="button-primary" onclick="updateOptionSet('query<?php echo $dset->id;?>')" />
-                    <span class="ajx-loader" style="padding-left:15px; display:none;"><img src="<?php echo advps_url;?>/images/ajax-loader.gif" /></span><span class="ajx-sts"></span></td>
+                  <td><input type="submit" name="advps_submit" value="Save changes" class="button-primary" onclick="updateOptionSet('query<?php echo intval( $dset->id );?>')" />
+                    <span class="ajx-loader" style="padding-left:15px; display:none;"><img src="<?php echo esc_url( advps_url );?>/images/ajax-loader.gif" /></span><span class="ajx-sts"></span></td>
                 </tr>
               </table>
               <input type="hidden" name="opt_field" value="query" />
-              <input type="hidden" value="<?php echo $dset->id;?>" name="opt_id" />
+              <input type="hidden" value="<?php echo intval( $dset->id );?>" name="opt_id" />
             </form>
           </div>
         </fieldset>
         <fieldset>
           <legend class="advps-legend" style="width:50px; background-position:49px 6px;"><strong>Slider</strong></legend>
-          <form method="post" id="slider<?php echo $dset->id;?>" onsubmit="return false">
+          <form method="post" id="slider<?php echo intval( $dset->id );?>" onsubmit="return false">
             <table class="form-table">
               <tr>
                 <th scope="row">Slider Type</th>
-                <td><select name="advps_slider_type" onchange="sliderType(this.value,<?php echo $dset->id;?>);">
+                <td><select name="advps_slider_type" onchange="sliderType(this.value,<?php echo intval( $dset->id );?>);">
                     <option value="standard" <?php if($slider['advps_slider_type'] == 'standard'){echo 'selected="selected"';}?>>Standard</option>
                     <option value="carousel" <?php if($slider['advps_slider_type'] == 'carousel'){echo 'selected="selected"';}?>>Carousel</option>
                     <option value="ticker" <?php if($slider['advps_slider_type'] == 'ticker'){echo 'selected="selected"';}?>>Ticker</option>
@@ -238,7 +238,7 @@ foreach( $res2 as $dset){
               </tr>
               <tr>
                 <th scope="row">Speed</th>
-                <td><input type="text" name="advps_speed" value="<?php echo $slider['advps_speed'];?>" style="width:60px;" onkeypress="return onlyNum(event);" /></td>
+                <td><input type="text" name="advps_speed" value="<?php echo esc_attr( $slider['advps_speed'] );?>" style="width:60px;" onkeypress="return onlyNum(event);" /></td>
               </tr>
               <tr>
                 <th scope="row">Auto play</th>
@@ -249,11 +249,11 @@ foreach( $res2 as $dset){
               </tr>
               <tr>
                 <th scope="row">Pause</th>
-                <td><input type="text" name="advps_timeout" value="<?php echo $slider['advps_timeout'];?>" style="width:60px;" onkeypress="return onlyNum(event);" /></td>
+                <td><input type="text" name="advps_timeout" value="<?php echo esc_attr( $slider['advps_timeout'] );?>" style="width:60px;" onkeypress="return onlyNum(event);" /></td>
               </tr>
               <tr>
                 <th scope="row">Slide margin</th>
-                <td><input type="text" name="advps_sldmargin" value="<?php echo $slider['advps_sldmargin'];?>" style="width:60px;" onkeypress="return onlyNum(event);" /></td>
+                <td><input type="text" name="advps_sldmargin" value="<?php echo esc_attr( $slider['advps_sldmargin'] );?>" style="width:60px;" onkeypress="return onlyNum(event);" /></td>
               </tr>
               <tr>
                 <th scope="row">Enable pause on hover</th>
@@ -265,41 +265,41 @@ foreach( $res2 as $dset){
               </tr>
               <tr>
                 <th scope="row">&nbsp;</th>
-                <td><input type="submit" name="advps_submit" value="Save changes" class="button-primary" onclick="updateOptionSet('slider<?php echo $dset->id;?>')" />
-                  <span class="ajx-loader" style="padding-left:15px; display:none;"><img src="<?php echo advps_url;?>/images/ajax-loader.gif" /></span><span class="ajx-sts"></span></td>
+                <td><input type="submit" name="advps_submit" value="Save changes" class="button-primary" onclick="updateOptionSet('slider<?php echo intval( $dset->id );?>')" />
+                  <span class="ajx-loader" style="padding-left:15px; display:none;"><img src="<?php echo esc_url( advps_url );?>/images/ajax-loader.gif" /></span><span class="ajx-sts"></span></td>
               </tr>
             </table>
             <input type="hidden" name="opt_field" value="slider" />
-            <input type="hidden" value="<?php echo $dset->id;?>" name="opt_id" />
+            <input type="hidden" value="<?php echo intval( $dset->id );?>" name="opt_id" />
           </form>
         </fieldset>
         <fieldset>
           <legend class="advps-legend" style="width:121px; background-position:120px 6px;"><strong>Carousel & Ticker</strong></legend>
-          <form method="post" onsubmit="return false" id="caro_ticker<?php echo $dset->id;?>">
+          <form method="post" onsubmit="return false" id="caro_ticker<?php echo intval( $dset->id );?>">
             <table class="form-table">
               <tr>
                 <th scope="row">Number of slide</th>
-                <td><input type="text" name="advps_caro_slds" value="<?php if(isset($caro_ticker['advps_caro_slds'])){echo $caro_ticker['advps_caro_slds'];}?>" style="width:60px;" onkeypress="return onlyNum(event);" />
+                <td><input type="text" name="advps_caro_slds" value="<?php if(isset($caro_ticker['advps_caro_slds'])){echo esc_attr( $caro_ticker['advps_caro_slds'] );}?>" style="width:60px;" onkeypress="return onlyNum(event);" />
                   <span style="padding-left:20px; font-size:10px; font-style:italic;">[ N.B. For slider type Carousel or Ticker. ]</span></td>
               </tr>
               <tr>
                 <th scope="row">Slide width</th>
-                <td><input type="text" name="advps_caro_sldwidth" value="<?php if(isset($caro_ticker['advps_caro_sldwidth'])){echo $caro_ticker['advps_caro_sldwidth'];}?>" style="width:60px;" onkeypress="return onlyNum(event);" />
+                <td><input type="text" name="advps_caro_sldwidth" value="<?php if(isset($caro_ticker['advps_caro_sldwidth'])){echo esc_attr( $caro_ticker['advps_caro_sldwidth'] );}?>" style="width:60px;" onkeypress="return onlyNum(event);" />
                   <span style="padding-left:20px; font-size:10px; font-style:italic;">[ N.B. For slider type Carousel or Ticker. ]</span></td>
               </tr>
               <tr>
                 <th scope="row">&nbsp;</th>
-                <td><input type="submit" name="advps_submit" value="Save changes" class="button-primary" onclick="updateOptionSet('caro_ticker<?php echo $dset->id;?>')" />
-                  <span class="ajx-loader" style="padding-left:15px; display:none;"><img src="<?php echo advps_url;?>/images/ajax-loader.gif" /></span><span class="ajx-sts"></span></td>
+                <td><input type="submit" name="advps_submit" value="Save changes" class="button-primary" onclick="updateOptionSet('caro_ticker<?php echo intval( $dset->id );?>')" />
+                  <span class="ajx-loader" style="padding-left:15px; display:none;"><img src="<?php echo esc_url( advps_url );?>/images/ajax-loader.gif" /></span><span class="ajx-sts"></span></td>
               </tr>
             </table>
             <input type="hidden" name="opt_field" value="caro_ticker" />
-            <input type="hidden" value="<?php echo $dset->id;?>" name="opt_id" />
+            <input type="hidden" value="<?php echo intval( $dset->id );?>" name="opt_id" />
           </form>
         </fieldset>
         <fieldset>
           <legend class="advps-legend" style="width:158px; background-position:157px 6px;"><strong>Container & Thumbnail</strong></legend>
-          <form method="post" onsubmit="return false" id="container<?php echo $dset->id;?>">
+          <form method="post" onsubmit="return false" id="container<?php echo intval( $dset->id );?>">
             <table class="form-table">
               <tr>
                 <th scope="row">Select Thumbnail</th>
@@ -313,7 +313,7 @@ foreach( $res2 as $dset){
                         unset($_wp_additional_image_sizes['post-thumbnail']);
                         foreach($_wp_additional_image_sizes as $tkey => $tval){
                         ?>
-                    <option value="<?php echo $tkey;?>" <?php if($container['advps_thumbnail'] == $tkey){echo 'selected="selected"';}?>><?php echo $tkey;?></option>
+                    <option value="<?php echo esc_attr( $tkey );?>" <?php if($container['advps_thumbnail'] == $tkey){echo 'selected="selected"';}?>><?php echo esc_html( $tkey );?></option>
                     <?php
                         }
                         ?>
@@ -321,12 +321,12 @@ foreach( $res2 as $dset){
               </tr>
               <tr>
                 <th scope="row">Default image url</th>
-                <td><input type="text" name="advps_default_image" value="<?php if(isset($container['advps_default_image'])){ echo $container['advps_default_image'];}?>" style="width:250px;" />
+                <td><input type="text" name="advps_default_image" value="<?php if(isset($container['advps_default_image'])){ echo esc_url( $container['advps_default_image'] );}?>" style="width:250px;" />
                   <span style="padding-left:10px; font-size:10px; font-style:italic;"> [ N.B. If any post doesn't have featured image then default image will be shown.]</span></td>
               </tr>
               <tr>
                 <th scope="row">Slide Container Width</th>
-                <td><input type="text" name="advps_sld_width" value="<?php echo $container['advps_sld_width'];?>" style="width:45px;" onkeypress="return onlyNum(event);" />
+                <td><input type="text" name="advps_sld_width" value="<?php echo esc_attr( $container['advps_sld_width'] );?>" style="width:45px;" onkeypress="return onlyNum(event);" />
                   &nbsp;px</td>
               </tr>
               <tr>
@@ -338,13 +338,13 @@ foreach( $res2 as $dset){
               </tr>
               <tr>
                 <th scope="row">Background Color</th>
-                <td><input id="advpscolor<?php echo ++$flg?>" class="advps-color-picker" type="text" name="advps_bgcolor" value="<?php echo $container['advps_bgcolor'];?>" style="width:100px;" />
+                <td><input id="advpscolor<?php echo ++$flg?>" class="advps-color-picker" type="text" name="advps_bgcolor" value="<?php echo esc_attr( $container['advps_bgcolor'] );?>" style="width:100px;" />
                   <div class="advpsfarb" style="padding-left:22%"></div></td>
               </tr>
               <tr>
                 <th scope="row">Border</th>
                 <td><span style="vertical-align:top">
-                  <input type="text" name="advps_border_size" value="<?php echo $container['advps_border_size'];?>" style="width:40px;" onkeypress="return onlyNum(event);" />
+                  <input type="text" name="advps_border_size" value="<?php echo esc_attr( $container['advps_border_size'] );?>" style="width:40px;" onkeypress="return onlyNum(event);" />
                   px &nbsp;&nbsp;
                   <select name="advps_border_type">
                     <option value="dashed" <?php if($container['advps_border_type'] == 'dashed'){echo 'selected="selected"';}?>>dashed</option>
@@ -355,7 +355,7 @@ foreach( $res2 as $dset){
                     <option value="outset" <?php if($container['advps_border_type'] == 'outset'){echo 'selected="selected"';}?>>outset</option>
                   </select>
                   &nbsp;&nbsp;</span>
-                  <input id="advpscolor<?php echo ++$flg?>" class="advps-color-picker" type="text" name="advps_border_color" value="<?php echo $container['advps_border_color'];?>" style="width:100px;" />
+                  <input id="advpscolor<?php echo ++$flg?>" class="advps-color-picker" type="text" name="advps_border_color" value="<?php echo esc_attr( $container['advps_border_color'] );?>" style="width:100px;" />
                   <div class="advpsfarb" style="padding-left:22%"></div></td>
               </tr>
               <tr>
@@ -368,13 +368,13 @@ foreach( $res2 as $dset){
               <tr>
                 <th scope="row">Box Shadow</th>
                 <td><span style="vertical-align:top">
-                  <input type="text" name="advps_bxshad1" value="<?php echo $container['advps_bxshad1'];?>" style="width:40px;" onkeypress="return onlyNum(event);" />
+                  <input type="text" name="advps_bxshad1" value="<?php echo esc_attr( $container['advps_bxshad1'] );?>" style="width:40px;" onkeypress="return onlyNum(event);" />
                   px &nbsp;&nbsp;
-                  <input type="text" name="advps_bxshad2" value="<?php echo $container['advps_bxshad2'];?>" style="width:40px;" onkeypress="return onlyNum(event);" />
+                  <input type="text" name="advps_bxshad2" value="<?php echo esc_attr( $container['advps_bxshad2'] );?>" style="width:40px;" onkeypress="return onlyNum(event);" />
                   px&nbsp;&nbsp;
-                  <input type="text" name="advps_bxshad3" value="<?php echo $container['advps_bxshad3'];?>" style="width:40px;" onkeypress="return onlyNum(event);" />
+                  <input type="text" name="advps_bxshad3" value="<?php echo esc_attr( $container['advps_bxshad3'] );?>" style="width:40px;" onkeypress="return onlyNum(event);" />
                   px&nbsp;&nbsp;</span>
-                  <input id="advpscolor<?php echo ++$flg?>" class="advps-color-picker" type="text" name="advps_bxshadcolor" value="<?php echo $container['advps_bxshadcolor'];?>" style="width:100px;" />
+                  <input id="advpscolor<?php echo ++$flg?>" class="advps-color-picker" type="text" name="advps_bxshadcolor" value="<?php echo esc_attr( $container['advps_bxshadcolor'] );?>" style="width:100px;" />
                   <div class="advpsfarb" style="padding-left:22%"></div></td>
               </tr>
               <tr>
@@ -434,17 +434,17 @@ foreach( $res2 as $dset){
               </tr>
               <tr>
                 <th scope="row">&nbsp;</th>
-                <td><input type="submit" name="advps_submit" value="Save changes" class="button-primary" onclick="updateOptionSet('container<?php echo $dset->id;?>')" />
-                  <span class="ajx-loader" style="padding-left:15px; display:none;"><img src="<?php echo advps_url;?>/images/ajax-loader.gif" /></span><span class="ajx-sts"></span></td>
+                <td><input type="submit" name="advps_submit" value="Save changes" class="button-primary" onclick="updateOptionSet('container<?php echo intval( $dset->id );?>')" />
+                  <span class="ajx-loader" style="padding-left:15px; display:none;"><img src="<?php echo esc_url( advps_url );?>/images/ajax-loader.gif" /></span><span class="ajx-sts"></span></td>
               </tr>
             </table>
             <input type="hidden" name="opt_field" value="container" />
-            <input type="hidden" value="<?php echo $dset->id;?>" name="opt_id" />
+            <input type="hidden" value="<?php echo intval( $dset->id );?>" name="opt_id" />
           </form>
         </fieldset>
         <fieldset>
           <legend class="advps-legend" style="width:79px; background-position:78px 6px;"><strong>Navigation</strong></legend>
-          <form method="post" onsubmit="return false" id="navigation<?php echo $dset->id;?>">
+          <form method="post" onsubmit="return false" id="navigation<?php echo intval( $dset->id );?>">
             <table class="form-table">
               <tr>
                 <th scope="row">Exclude pager</th>
@@ -459,13 +459,13 @@ foreach( $res2 as $dset){
                   <input type="radio" name="advps_pager_type" value="number" <?php if(isset($navigation['advps_pager_type']) && $navigation['advps_pager_type'] == 'number'){echo 'checked="checked"';}?>>
                   <span style="padding:0px 5px 0px 10px;">Bullet</span>
                   <input type="radio" name="advps_pager_type" value="bullet" <?php if(isset($navigation['advps_pager_type']) && $navigation['advps_pager_type'] == 'bullet'){echo 'checked="checked"';}?>>
-                  <span id="advps-pthumb-lvl<?php echo $dset->id;?>" style="padding:0px 5px 0px 10px;" class="<?php if($slider['advps_slider_type'] != 'standard'){echo 'advps-fade';}?>">Thumbnail</span>
-                  <input id="advps-pthumb<?php echo $dset->id;?>" <?php if($slider['advps_slider_type'] != 'standard'){echo 'disabled="disabled"';}?> type="radio" name="advps_pager_type" value="thumb" <?php if(isset($navigation['advps_pager_type']) && $navigation['advps_pager_type'] == 'thumb'){echo 'checked="checked"';}?>></td>
+                  <span id="advps-pthumb-lvl<?php echo intval( $dset->id );?>" style="padding:0px 5px 0px 10px;" class="<?php if($slider['advps_slider_type'] != 'standard'){echo 'advps-fade';}?>">Thumbnail</span>
+                  <input id="advps-pthumb<?php echo intval( $dset->id );?>" <?php if($slider['advps_slider_type'] != 'standard'){echo 'disabled="disabled"';}?> type="radio" name="advps_pager_type" value="thumb" <?php if(isset($navigation['advps_pager_type']) && $navigation['advps_pager_type'] == 'thumb'){echo 'checked="checked"';}?>></td>
               </tr>
               <tr>
                 <th scope="row">Thumbnail Width</th>
                 <td>
-                  <input type="text" name="advps_pthumb_width" value="<?php echo $navigation['advps_pthumb_width'];?>" style="width:50px;" onkeypress="return onlyNum(event);" />&nbsp;%                  
+                  <input type="text" name="advps_pthumb_width" value="<?php echo esc_attr( $navigation['advps_pthumb_width'] );?>" style="width:50px;" onkeypress="return onlyNum(event);" />&nbsp;%                  
                   <span style="padding-left:10px; font-size:10px; font-style:italic;">[ N.B. For pager type thumbnail. ]</span></td>
               </tr>
               <tr>
@@ -478,7 +478,7 @@ foreach( $res2 as $dset){
               </tr>
               <tr>
                 <th scope="row">Pager position from bottom</th>
-                <td><input type="text" name="advps_pager_bottom" value="<?php echo $navigation['advps_pager_bottom'];?>" style="width:50px;" onkeypress="return NumNdNeg(event);" />
+                <td><input type="text" name="advps_pager_bottom" value="<?php echo esc_attr( $navigation['advps_pager_bottom'] );?>" style="width:50px;" onkeypress="return NumNdNeg(event);" />
                   &nbsp;px</td>
               </tr>
               <tr>
@@ -499,7 +499,7 @@ foreach( $res2 as $dset){
               </tr>
               <tr>
                 <th scope="row">Play/Pause position from bottom</th>
-                <td><input type="text" name="advps_ppause_bottom" value="<?php echo $navigation['advps_ppause_bottom'];?>" style="width:50px;" onkeypress="return NumNdNeg(event);" />
+                <td><input type="text" name="advps_ppause_bottom" value="<?php echo esc_attr( $navigation['advps_ppause_bottom'] );?>" style="width:50px;" onkeypress="return NumNdNeg(event);" />
                   &nbsp;px</td>
               </tr>
               <tr>
@@ -511,20 +511,20 @@ foreach( $res2 as $dset){
               </tr>
               <tr>
                 <th scope="row">&nbsp;</th>
-                <td><input type="submit" name="advps_submit" value="Save changes" class="button-primary" onclick="updateOptionSet('navigation<?php echo $dset->id;?>')" />
-                  <span class="ajx-loader" style="padding-left:15px; display:none;"><img src="<?php echo advps_url;?>/images/ajax-loader.gif" /></span><span class="ajx-sts"></span></td>
+                <td><input type="submit" name="advps_submit" value="Save changes" class="button-primary" onclick="updateOptionSet('navigation<?php echo intval( $dset->id );?>')" />
+                  <span class="ajx-loader" style="padding-left:15px; display:none;"><img src="<?php echo esc_url( advps_url );?>/images/ajax-loader.gif" /></span><span class="ajx-sts"></span></td>
               </tr>
             </table>
             <input type="hidden" name="opt_field" value="navigation" />
-            <input type="hidden" value="<?php echo $dset->id;?>" name="opt_id" />
+            <input type="hidden" value="<?php echo intval( $dset->id );?>" name="opt_id" />
           </form>
         </fieldset>
-        <form method="post" id="frmOptDel<?php echo $dset->id;?>" onsubmit="return false">
-          <input type="hidden" value="<?php echo $dset->id;?>" name="optset-id" />
+        <form method="post" id="frmOptDel<?php echo intval( $dset->id );?>" onsubmit="return false">
+          <input type="hidden" value="<?php echo intval( $dset->id );?>" name="optset-id" />
           <input type="hidden" value="<?php echo $tcount[0]->Auto_increment;?>" name="nextoptid" />
           <p>
-            <input type="submit" name="del-optset" value="Delete" class="button-secondary" onclick="deleteOptSet(<?php echo $dset->id;?>)" style="width:12%;" />
-            <span style="margin-left:5px;"><input type="submit" name="dup-optset" value="Duplicate" class="button-secondary" onclick="duplicateOptSet(<?php echo $dset->id;?>)" style="width:12%;" /></span>
+            <input type="submit" name="del-optset" value="Delete" class="button-secondary" onclick="deleteOptSet(<?php echo intval( $dset->id );?>)" style="width:12%;" />
+            <span style="margin-left:5px;"><input type="submit" name="dup-optset" value="Duplicate" class="button-secondary" onclick="duplicateOptSet(<?php echo intval( $dset->id );?>)" style="width:12%;" /></span>
           </p>
           <?php wp_nonce_field('advps-checkauthnonce','advps_wpnonce'); ?>
         </form>

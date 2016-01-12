@@ -1,10 +1,10 @@
 ﻿=== Advanced post slider ===
 Contributors: digontoahsan
 Donate link: 
-Tags: post slider, content slider, slider, slideshow, wordpress content slider, content, wordpress slideshow, images, logo scroller, testimonial scroller, banner rotator, recent post slider, bxslider, image slider, sidebar slideshow, posts, post, image, image slideshow, responsive slideshow, responsive slider, carousel slider, ticker, responsive carousel slider, responsive carousel, showcase, news slider, thumbnail, thumbnail slider, featured thumbnail
+Tags: post slider, wordpress content slider, wordpress slideshow, logo scroller, testimonial scroller, banner rotator, recent post slider, image slider, image slideshow, responsive slider, responsive carousel slider, news slider
 Requires at least: 3.0.1
-Tested up to: 4.2
-Stable tag: 2.3.4
+Tested up to: 4.4
+Stable tag: 2.5.0
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -144,5 +144,12 @@ Check details here [Advanced post slider 2.3.0](http://www.wpcue.com/advanced-po
 
 = 2.3.4 =
 * Small fix for loading issue and Readme update.
+
+= 2.4.0 =
+* Security fix.
+
+= 2.5.0 =
+* Important security fix and data cleaning. Upgrade is highly recommended.
+* Duplicating option set not working issue resolved.
 
 == Upgrade Notice ==

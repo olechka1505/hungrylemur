@@ -16,7 +16,7 @@ final class RUA_App {
 	/**
 	 * Plugin version
 	 */
-	const PLUGIN_VERSION       = '0.6';
+	const PLUGIN_VERSION       = '0.8';
 
 	/**
 	 * Post Type for restriction
@@ -153,7 +153,7 @@ final class RUA_App {
 
 		$user = get_userdata($user_id);
 
-		$new_levels = isset($_POST[WPCACore::PREFIX.'level']) ? $_POST[WPCACore::PREFIX.'level'] : null;
+		$new_levels = isset($_POST[WPCACore::PREFIX.'level']) ? $_POST[WPCACore::PREFIX.'level'] : array();
 		$user_levels = array_flip($this->level_manager->_get_user_levels($user,false,false,true));
 
 		foreach ($new_levels as $level) {
@@ -252,8 +252,7 @@ final class RUA_App {
 
 		if($current_screen->post_type == self::TYPE_RESTRICT){
 
-			wp_register_script('select2', plugins_url('/js/select2.min.js', __FILE__), array('jquery'), "3.5.4");
-			wp_register_script('rua/admin/edit', plugins_url('/js/edit.js', __FILE__), array('select2'), self::PLUGIN_VERSION);
+			wp_register_script('rua/admin/edit', plugins_url('/js/edit.js', __FILE__), array('select2','jquery'), self::PLUGIN_VERSION);
 
 			wp_register_style('rua/style', plugins_url('/css/style.css', __FILE__), array(), self::PLUGIN_VERSION);
 

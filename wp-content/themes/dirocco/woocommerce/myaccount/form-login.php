@@ -69,7 +69,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<div class="col-2">	
 
 		<form method="post" class="register main-register">
-		
+
 		<h2><?php _e( 'New Account', 'woocommerce' ); ?></h2>
 
 			<?php do_action( 'woocommerce_register_form_start' ); ?>

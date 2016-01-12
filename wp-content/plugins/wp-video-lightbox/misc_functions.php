@@ -9,19 +9,20 @@ function wp_vid_lightbox_vimeo5_handler($atts)
             'width' => '',	
             'height' => '',
             'description' => '',
-            'anchor' => '',	
+            'anchor' => '',
+            'alt' => '',
             'auto_thumb' => '',
     ), $atts));
     if(empty($video_id) || empty($width) || empty($height)){
-            return "<p>Error! You must specify a value for the Video ID, Width, Height and Anchor parameters to use this shortcode!</p>";
+            return '<p>'.__('Error! You must specify a value for the Video ID, Width, Height and Anchor parameters to use this shortcode!', 'wp-video-lightbox').'</p>';
     }
     if(empty($auto_thumb) && empty($anchor)){
-    	return "<p>Error! You must specify an anchor parameter if you are not using the auto_thumb option.</p>";
+    	return '<p>'.__('Error! You must specify an anchor parameter if you are not using the auto_thumb option.', 'wp-video-lightbox').'</p>';
     }
         
     $atts['vid_type'] = "vimeo";
     if (preg_match("/http/", $anchor)){ // Use the image as the anchor
-        $anchor_replacement = '<img src="'.$anchor.'" class="video_lightbox_anchor_image" alt="" />';
+        $anchor_replacement = '<img src="'.$anchor.'" class="video_lightbox_anchor_image" alt="'.$alt.'" />';
     }
     else if($auto_thumb == "1")
     {
@@ -47,10 +48,10 @@ function wp_vid_lightbox_youtube_handler($atts)
             'auto_thumb' => '',
     ), $atts));
     if(empty($video_id) || empty($width) || empty($height)){
-            return "<p>Error! You must specify a value for the Video ID, Width, Height parameters to use this shortcode!</p>";
+            return '<p>'.__('Error! You must specify a value for the Video ID, Width, Height parameters to use this shortcode!', 'wp-video-lightbox').'</p>';
     }
     if(empty($auto_thumb) && empty($anchor)){
-    	return "<p>Error! You must specify an anchor parameter if you are not using the auto_thumb option.</p>";
+    	return '<p>'.__('Error! You must specify an anchor parameter if you are not using the auto_thumb option.', 'wp-video-lightbox').'</p>';
     }
     
     $atts['vid_type'] = "youtube";
@@ -74,12 +75,15 @@ function wp_vid_lightbox_get_auto_thumb($atts)
     $video_id = $atts['video_id'];
     $pieces = explode("&", $video_id);
     $video_id = $pieces[0];
-
+    $alt = '';
+    if(isset($atts['alt']) && !empty($atts['alt'])){
+        $alt = $atts['alt'];
+    }
     $anchor_replacement = "";
     if($atts['vid_type']=="youtube")
     {
         $anchor_replacement = '<div class="wpvl_auto_thumb_box_wrapper"><div class="wpvl_auto_thumb_box">';
-        $anchor_replacement .= '<img src="https://img.youtube.com/vi/'.$video_id.'/0.jpg" class="video_lightbox_auto_anchor_image" alt="" />';
+        $anchor_replacement .= '<img src="https://img.youtube.com/vi/'.$video_id.'/0.jpg" class="video_lightbox_auto_anchor_image" alt="'.$alt.'" />';
         $anchor_replacement .= '<div class="wpvl_auto_thumb_play"><img src="'.WP_VID_LIGHTBOX_URL.'/images/play.png" class="wpvl_playbutton" /></div>';
         $anchor_replacement .= '</div></div>';
     }
@@ -89,7 +93,7 @@ function wp_vid_lightbox_get_auto_thumb($atts)
         $thumb = $VideoInfo['thumbnail_medium'];
         //print_r($VideoInfo);
         $anchor_replacement = '<div class="wpvl_auto_thumb_box_wrapper"><div class="wpvl_auto_thumb_box">';
-        $anchor_replacement .= '<img src="'.$thumb.'" class="video_lightbox_auto_anchor_image" alt="" />';
+        $anchor_replacement .= '<img src="'.$thumb.'" class="video_lightbox_auto_anchor_image" alt="'.$alt.'" />';
         $anchor_replacement .= '<div class="wpvl_auto_thumb_play"><img src="'.WP_VID_LIGHTBOX_URL.'/images/play.png" class="wpvl_playbutton" /></div>';
         $anchor_replacement .= '</div></div>';
     }

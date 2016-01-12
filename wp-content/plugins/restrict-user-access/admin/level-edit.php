@@ -33,20 +33,25 @@ final class RUA_Level_Edit {
 	 * @since 0.5
 	 */
 	protected function add_actions() {
-		add_action('save_post',
+		add_action('save_post_'.RUA_App::TYPE_RESTRICT,
 			array($this,'save_post'));
 		add_action('add_meta_boxes_'.RUA_App::TYPE_RESTRICT,
 			array($this,'create_meta_boxes'));
 		add_action('in_admin_header',
 			array($this,'clear_admin_menu'),99);
-		add_action('edit_form_top',
-			array($this,'render_tab_navigation'));
+		add_action("edit_form_after_title",
+			array($this,"render_tab_navigation"));
 		add_action('load-post.php' ,
 			array($this, "process_requests"));
-		add_action('dbx_post_sidebar',
+		add_action('edit_form_advanced',
 			array($this,'render_screen_members'),999);
 		add_action('wp_ajax_rua/user/suggest',
 			array($this,'ajax_get_users'));
+
+		add_action("wpca/modules/save-data",
+			array($this,"save_condition_options"));
+		add_action("wpca/group/settings",
+			array($this,"render_condition_options"));
 	}
 
 	/**
@@ -220,12 +225,29 @@ final class RUA_Level_Edit {
 	}
 
 	/**
+	 * Display extra options for condition group
+	 *
+	 * @since  0.7
+	 * @param  string  $post_type
+	 * @return void
+	 */
+	public function render_condition_options($post_type) {
+		if($post_type == RUA_App::TYPE_RESTRICT) {
+			echo "<div><label>Drip content:";
+			echo '<input class="js-rua-drip-option" type="number" value="<%= _.has(options,"_ca_opt_drip") ? options._ca_opt_drip : 0 %>" name="'.WPCACore::PREFIX.'opt_drip" /> '.__("days");
+			echo "</label></div>";
+		}
+	}
+
+	/**
 	 * Meta box for options
 	 *
 	 * @since  0.1
 	 * @return void
 	 */
 	public function meta_box_options($post) {
+
+		RUA_App::instance()->level_manager->populate_metadata();
 
 		$pages = wp_dropdown_pages(array(
 			'post_type'        => $post->post_type,
@@ -317,8 +339,9 @@ final class RUA_Level_Edit {
 
 ?>
 	<h2 class="nav-tab-wrapper js-rua-tabs hide-if-no-js ">
-		<a href="#top#poststuff" class="nav-tab nav-tab-active"><?php _e("Restrictions",RUA_App::DOMAIN); ?></a>
+		<a href="#top#normal-sortables" class="nav-tab nav-tab-active"><?php _e("Restrictions",RUA_App::DOMAIN); ?></a>
 		<a href="#top#rua-members" class="nav-tab"><?php _e("Members",RUA_App::DOMAIN); ?></a>
+		<a href="#top#rua-caps" class="nav-tab"><?php _e("Capabilities",RUA_App::DOMAIN); ?></a>
 	</h2>
 <?php
 		endif;
@@ -339,20 +362,22 @@ final class RUA_Level_Edit {
 
 			$this->list_members->prepare_items();
 
-			echo "</div>"; //post body
-			echo '<br class="clear">';
-			echo "</div>"; //post stuff
-			echo "</form>";
+			$list_caps = new RUA_Capabilities_List();
+			$list_caps->prepare_items();
 
-			echo "<form method='post' action='post.php'>"."\n";
-			echo '<input type="hidden" name="post_type" value="'.get_post_type().'" />'."\n";
-			echo '<input type="hidden" name="post_ID" class="js-rua-post-id" value="'.get_the_ID().'" />'."\n";
-			wp_referer_field();
-			echo "<div>";
 			echo '<div id="rua-members" style="display:none;">';
 			echo '<input type="hidden" name="users" class="js-rua-user-suggest" value="" /> ';
 			echo '<input type="submit" name="add_users" class="button button-primary" value="'.__("Add Members",RUA_App::DOMAIN).'" />';
 			$this->list_members->display();
+
+			echo "</div>";
+
+			echo '<div id="rua-caps" style="display:none;">';
+			echo '<input type="hidden" name="caps" value="" />';
+
+			$list_caps->display();
+
+			echo "</div>";
 		endif;
 	}
 
@@ -403,14 +428,6 @@ final class RUA_Level_Edit {
 		if (!isset($_POST['original_publish']) && !isset($_POST['save_post']))
 			return;
 
-		// Only sidebar type
-		if (get_post_type($post_id) != RUA_App::TYPE_RESTRICT)
-			return;
-
-		// Verify nonce
-		if (!check_admin_referer(WPCACore::PREFIX.$post_id, WPCACore::NONCE))
-			return;
-
 		// Check permissions
 		if (!current_user_can(RUA_App::CAPABILITY, $post_id))
 			return;
@@ -421,14 +438,33 @@ final class RUA_Level_Edit {
 
 		// Update metadata
 		foreach (RUA_App::instance()->level_manager->metadata()->get_all() as $field) {
-			$new = isset($_POST[$field->get_id()]) ? $_POST[$field->get_id()] : '';
+			$new = isset($_POST[$field->get_id()]) ? $_POST[$field->get_id()] : false;
 			$old = $field->get_data($post_id);
 
-			if ($new != '' && $new != $old) {
-				$field->update($post_id,$new);
-			} elseif ($new == '' && $old != '') {
-				$field->delete($post_id,$old);
+			if($new !== false) {
+				if ($new != '' && $new != $old) {
+					$field->update($post_id,$new);
+				} elseif ($new == '' && $old != '') {
+					$field->delete($post_id,$old);
+				}
 			}
+		}
+	}
+
+	/**
+	 * Save extra options for condition group
+	 *
+	 * @since  0.7
+	 * @param  int  $group_id
+	 * @return void
+	 */
+	public function save_condition_options($group_id) {
+		$key = WPCACore::PREFIX."opt_drip";
+		$value = isset($_POST[$key]) ? (int)$_POST[$key] : 0;
+		if($value > 0) {
+			update_post_meta($group_id,$key,$value);
+		} else if(get_post_meta($group_id,$key,true)) {
+			delete_post_meta($group_id,$key);
 		}
 	}
 }

@@ -12,6 +12,310 @@ Tags: FOR_WP_THEME_SEARCH_IF_PUBLISHED
 
 @import url('css/newstyle.css');
 @import url(https://fonts.googleapis.com/css?family=Montserrat);
+
+/* COPIED OVER FROM my_style.css */
+#sf-sidebar .sf-navicon-button {
+    top: 0px;
+    left: -13px;
+}
+ul#menu-main-menu-1 li a {
+    text-transform: uppercase;
+    font-size: 13px;
+}
+div#header-holder { position: fixed!important; }
+.sidebar-footer { display: none; }
+.sidebar-footer:first-child { display: block; }
+input.button.alt.prev, input.button.alt.next{
+    font-family: 'WhitneyLight','WhitneyBook'!important;
+    font-size: 12px!important;
+    background: transparent;
+    border: 1px solid #333;
+    border-radius: 0;
+    color: #333!important;
+    left: auto;
+    letter-spacing: 2px;
+    line-height: 11px;
+    margin: 0;
+    overflow: visible;
+    padding: 17px 20px;
+    position: relative;
+    text-decoration: none;
+    transition: all 0.2s linear 0s;
+    white-space: nowrap;
+    text-transform: uppercase;
+}
+#footer.section .fp-tableCell { padding: 0px!important; }
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6{font-family: 'Montserrat', sans-serif!important;}
+.post-96 {max-width:1200px!important;width:100%!important;margin:0 auto!important;}
+.products {max-width:1200px!important;width:100%!important;margin:0 auto!important;}
+.post-single{max-width:1200px!important;width:100%!important;margin:0 auto!important;}
+.single-product .post-single{max-width:100%!important;width:100%!important;margin:0 auto!important;}
+.home h2.home-page-h3.last {
+    margin-bottom: 2em;
+}
+/*Fix for Ipad*/
+/*@media only screen 
+  and (min-device-width: 767px) 
+  and (max-device-width: 1024px) 
+  and (-webkit-min-device-pixel-ratio: 1){
+        form#demo-b {right: 6em!important;}
+        #sf-sidebar .sf-rollback {top: 13px!important; left: -8em!important;}
+}*/
+
+#menu-main-menu {border-bottom:1px solid #fff!important;}
+#menu-main-menu {border-top:1px solid #fff!important;}
+.content-product-left {margin-right:3%!important;}
+ul#menu-top-main-menu li a {
+    font-size: 12px;
+}
+.back-to-top {z-index: 9999999; color:#000!important;}
+/*.world-journal-home.images.col-lg-4.col-md-4.col-sm-12.col-xs-12 {
+    height: 239px;
+    overflow: hidden;
+    margin-bottom: 15px;
+}*/
+.sf-sidebar-exposed .sf-navicon-button.x.sf-open{
+        left: 270px!important;
+}
+.home .woocommerce ul.products li.product a img {
+    margin: 0 auto;
+}
+.slick-initialized .slick-slide {
+    outline: 0;
+}
+/* Header Magic Margins */
+.col1 .post-single, .col1 #content-box {
+    padding-top: 0!important;
+}
+ul.lcp_catlist > li {
+    margin: 0px 1.25% 0 0;
+}
+ul.lcp_catlist > li:last-child {
+    margin: 0px 0 0 0%;
+    width: 32%;
+}
+#main {
+    margin-top: 79px!important;
+}
+.home #main {
+    margin-top: 0px!important;
+}
+div#grid-container{
+    margin-top: 0px!important;
+}
+/* End Header Magic Margins */
+.wp-post-image {
+    margin: 0px; 
+}
+span.new-wrapper a img{margin: 0 0 2em;}
+
+/* First section with video */
+.main-home-video.padding-0.youtube.row, .world-journal-home.padding-0.row{
+    margin-right: 0px!important;
+    margin-left: 0px!important;
+}
+.home-video-thumb img { width: 100% !important; /*For Mozilla*/ }
+div#thevideo {
+    width: 100%;
+    height: 100%;
+}
+.home-video-thumb {
+    display: inline-block;
+    overflow: hidden;
+}
+
+/* End First section with video */
+.post-single .thumbnails.columns-3{display: none;}
+ul.lcp_catlist > li { width: 32%; }
+.navbar-default {
+    background-color: #fff;
+    border-color: #fff;
+}
+.navbar { border-radius: 0px; }
+/*.section.journal .fp-tableCell{vertical-align:top;}*/
+#sf-sidebar .sf-rollback{
+left: -85px;
+height: 55px;
+}
+
+.woocommerce.post-type-archive ul.products li.product a img, .woocommerce-page ul.products li.product a img {
+    box-shadow: none;
+    background-color: #ffffff;
+    width: 50%;
+    margin: 0 auto;
+}
+.content-product-description p {
+    font-family: 'GalaxiePolarisLight' !important;
+    font-size: 11px !important;
+}
+.vjs-default-skin .vjs-big-play-button {
+    border: .2em solid #fff!important;
+    opacity: 1!important;
+    -webkit-border-radius: 0px!important;
+    -moz-border-radius: 0px!important;
+    border-radius: 0px!important;
+    background: transparent!important;
+    background: none!important;
+    background: none!important;
+    background: none!important;
+    background: none!important;
+    background: none!important;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#454545',endColorstr='#3f3f3f',GradientType=0);
+    background: none!important;
+    -webkit-box-shadow: none!important;
+    -moz-box-shadow: none!important;
+    box-shadow: none!important;
+}
+.woocommerce.post-type-archive a.content-product-title, .woocommerce.post-type-archive .content-product-price { text-align: left; }
+h2.home-page-h3, .woocommerce ul.products li.product h3, .woocommerce-page ul.products li.product h3{font-family: 'Montserrat', sans-serif!important;}
+p.icon { display: inline-block; }
+#footer { border-top: 1px solid #fff; }
+.section { border-bottom: 1px solid #f0f0f0; }
+i.fa.fa-play:hover{ opacity:0.8; }
+.section.slider .fp-tableCell{ vertical-align:top; }
+/*.advps-excerpt-block-one {
+    padding-top: 100%;
+}*/
+h3.text-content span.subtitle {
+    font-size: 15px!important;
+}
+.advs-title a {
+    font-family: 'WhitneyLight'!important;
+}
+h3.advs-sub-title, h3.advs-title {
+    margin-top: 0px!important;
+    margin-bottom: 0px!important;
+    font-family: 'Montserrat', sans-serif!important;
+    font-weight: 200;
+}
+h3.advs-sub-title, h3.advs-title{font-family: 'Montserrat', sans-serif!important;}
+h3.advs-title{
+	font-size: 46px!important;
+    padding: 0.2em 0;
+}
+.our-story-desc h2, .world-journal-title{ font-family: 'Montserrat', sans-serif!important; font-size: 24px; }
+.our-story-desc h3{ font-family: 'Montserrat', sans-serif!important; font-size: 46px; }
+h3.advs-sub-title{
+	color: #fff;
+	padding-bottom:0px;
+}
+.new-wrapper { float: left; }
+/*.new-wrapper:hover { opacity: 0.85; filter: alpha(opacity=100);
+ 	-webkit-transition: opacity .15s linear; background-color: rgba(58,52,42,0);}*/
+.new-wrapper h3 { visibility: hidden; font-family: 'Montserrat', sans-serif !important;}
+.new-wrapper:hover h3 { visibility: visible; }
+.new-wrapper { position: relative; }
+.new-wrapper h3 { position: absolute; top: 25%; width: 100%; text-align: center; color: #fff;}
+
+#sf-sidebar .sf-navicon-button {
+    top: 0px;
+    left: -13px;
+}
+ul#menu-main-menu-1 li a {
+    text-transform: uppercase;
+    font-size: 13px;
+}
+div#header-holder {
+    position: fixed!important;
+}
+.sidebar-footer {
+    display: none;
+}
+.sidebar-footer:first-child {
+    display: block;
+}
+/*.sf-va-middle {
+    position: absolute;
+}*/
+input.button.alt.prev, input.button.alt.next{
+    font-family: 'WhitneyLight','WhitneyBook'!important;
+    font-size: 12px!important;
+    background: transparent;
+    border: 1px solid #333;
+    border-radius: 0;
+    color: #333!important;
+    left: auto;
+    letter-spacing: 2px;
+    line-height: 11px;
+    margin: 0;
+    overflow: visible;
+    padding: 17px 20px;
+    position: relative;
+    text-decoration: none;
+    transition: all 0.2s linear 0s;
+    white-space: nowrap;
+    text-transform: uppercase;
+}
+#footer.section .fp-tableCell { padding: 0px!important; }
+/*#sf-sidebar.sf-compact-footer .sf-social {position: absolute!important;}*/
+
+input.button.alt.prev:hover, input.button.alt.next:hover{background: transparent;}
+.woocommerce-checkout #payment div.form-row {
+    padding: 1em 0px 0px 0px!important;
+}
+#form_actions input.button.alt.prev {
+	margin-right: 0px;
+}
+.fp-tableCell {
+    display: table-cell;
+    vertical-align: middle;
+}
+#checkout_timeline.text li .timeline-wrapper .timeline-label {
+    font-family: 'WhitneyBook' !important;
+}
+html{ overflow:visible; }
+div#mc4wp-form-1 input[type="submit"] { width: 30%!important; }
+img.play-image {
+    margin: 10px;
+    width: 30px!important;
+}
+.advps-excerpt-block-one p {
+    font-family: 'WhitneyLight','WhitneyBook' !important;
+    font-size: 15px !important;
+    line-height: 18px!important;
+    font-weight: 100!important;
+    padding-top: 1%!important;
+    padding-left: 0%;
+    padding-right: 13%;
+}
+h2.advs-title{ margin-bottom:0px; font-family: 'Montserrat', sans-serif !important; }
+/*Header abra-kadbra*/
+/*div#logo{float:left; margin: 0px 0px 0px 2%!important; padding-top: 0px!important;}*/
+.navbar-menu-mobile {
+    position: absolute;
+    background-color: #fff;
+}
+.crp_thumb { height: auto; }
+/*.navbar {
+    z-index: 9999999;
+    background-color: #fff;
+}*/
+.whopper-container{ display:none; }
+#sf-sidebar .sf-navicon, #sf-sidebar .sf-navicon:after, #sf-sidebar .sf-navicon:before, #sf-sidebar .sf-label-metro .sf-navicon-button, #sf-mob-navbar { background-color: #4D4D4D; }
+h3.home-page-h3{ margin-top: 0px!important; }
+ul.sub-menu li { padding-left: 50px; }
+ul#menu-main-menu-1 { padding-left: 30px; }
+.top-menu li { margin-left: 16px; display: inline-block; }
+.top-menu { margin-bottom: 0px; }
+ul#menu-main-menu-1 li { line-height: 30px; }
+#sf-sidebar .sf-scroll { overflow: overlay!important;height: auto; }
+.menu-item-121 { margin-bottom: 18px; }
+.white-space { height: 51px;background: #fff; }
+#sf-sidebar.sf-compact .sf-logo {
+    margin-top: 0px!important;
+    margin-bottom: 0px!important;
+}
+#sf-sidebar.sf-compact-footer .sf-social { margin-top: 15px!important; }
+.sf-mobile #sf-sidebar .sf-social { position: absolute; }
+
+/* END OF COPY */
+
+
+
+
+
+
 /* Checkout */
 #checkout_timeline { display: none !important; }
 #checkout_login h2 { font-family: 'Montserrat', sans-serif; color: black; padding-bottom: 20px; padding-top: 0px; margin-top: 0px;  text-align: center; border-bottom: 2px #ddd; border-style: solid; }
@@ -37,6 +341,15 @@ Tags: FOR_WP_THEME_SEARCH_IF_PUBLISHED
 
 /* Cart */
 div.cart-quantity { display: none; }
+.woocommerce a.button.alt {  
+	border: solid 1px #777777 !important; 
+ 	color: #777777 !important; 
+ }
+.woocommerce a.button.alt:hover {  
+	color: white !important;
+	background-color: #a0a0a0 !important;
+	transition: background-color 125ms linear !important;
+ }
 
 /* Gray scale image hover effect on homepage, stories/journal */
 /* text hover */
@@ -298,7 +611,6 @@ img.wp-post-image {
     height: auto;
     max-width: 100%;
 }
-
 
 .margin-bottom-10 {
     margin-bottom: 10px;
@@ -3938,6 +4250,11 @@ button:hover {
  * Checkout section - Luis
 /* ------------------------------------------------------------------------- */
 form.register.main-register { max-width: 300px; margin: 0 auto; }
+form.register.main-register{
+    padding: 20px;
+    margin: 0 auto;
+    text-align: left;
+}
 
 .form-control  {  
   -webkit-appearance: none;
@@ -4351,12 +4668,41 @@ Wcoocommerce css change by Pulkit
 }
 
 /* Hello section */
-.helo-head { font-family: 'whitney-semiboldregular'; font-size: 14px;  margin-bottom: 5%; border-bottom: 1px solid #333; padding-bottom: 6px; font-weight:bold; color: black; }
-.helo-outer { font-family: 'WhitneyLight','WhitneyBook'; letter-spacing: 0px; font-size: 14px; line-height: 20px;  padding-bottom: 5%; color: black;  }
-.helo-outer p { font-family: 'WhitneyLight','WhitneyBook'; font-size: 14px; color: black; line-height: 20px; color: black; }
-.helo-outer div { text-align: right; color: black; }
-.emailhello { font-size: 11px; width: 100%;    word-wrap: break-word; text-align: right; color: black; }
-
+.helo-head { 
+	font-family: 'whitney-semiboldregular'; 
+	font-size: 11px;  
+	margin-bottom: 5%; 
+	border-bottom: 1px solid #333; 
+	padding-bottom: 6px; 
+	font-weight:bold; 
+	color: black; 
+}
+.helo-outer {
+	font-family: 'WhitneyLight','WhitneyBook'; 
+	letter-spacing: 2px; 
+	font-size: 11px; 
+	line-height: 20px; 
+	padding-bottom: 5%; 
+	color: black;  
+}
+.helo-outer p { 
+	font-family: 'WhitneyLight','WhitneyBook'; 
+	font-size: 14px; 
+	color: black; 
+	line-height: 20px; 
+	color: black; 
+}
+.helo-outer div { 
+	text-align: right; 
+	color: black; 
+}
+.emailhello { 
+	font-size: 11px; 
+	width: 100%;
+	word-wrap: break-word; 
+	text-align: right; 
+	color: black; 
+}
 .content-product-title {
     font-family: 'GalaxiePolarisBook' !important;
     font-size: 18px !important;

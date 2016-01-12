@@ -4,10 +4,13 @@
 Plugin Name: WP Subtitle
 Plugin URI: http://wordpress.org/plugins/wp-subtitle/
 Description: Adds a subtitle field to pages and posts. Possible to add support for custom post types.
-Author: Husani Oakley, Ben Huson
+Version: 2.6
+Author: Ben Huson, Husani Oakley
 Author URI: https://github.com/benhuson/wp-subtitle
-Version: 2.5
 License: GPLv2
+License URI: http://www.gnu.org/licenses/gpl-2.0.txt
+Text Domain: wp-subtitle
+Domain Path: /languages
 */
 
 /*
@@ -40,10 +43,10 @@ include_once( WPSUBTITLE_DIR . 'includes/shortcode.php' );
 
 // Include admin-only functionality
 if ( is_admin() ) {
+	require_once( WPSUBTITLE_DIR . 'admin/admin.php' );
 	if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
 		// Load AJAX functions here if required...
 	} else {
-		require_once( WPSUBTITLE_DIR . 'admin/admin.php' );
 		require_once( WPSUBTITLE_DIR . 'admin/pointers.php' );
 	}
 }
@@ -131,7 +134,22 @@ class WPSubtitle {
 	 */
 	public static function _get_post_meta( $id = 0 ) {
 		$post = get_post( $id );
-		return get_post_meta( $post->ID, 'wps_subtitle', true );
+		return get_post_meta( $post->ID, self::_get_post_meta_key( $post->ID ), true );
+	}
+
+	/**
+	 * Get Post Meta Key
+	 *
+	 * @since  2.5.x
+	 * @internal
+	 *
+	 * @param   int     $post  Post ID.
+	 * @return  string         The subtitle meta key.
+	 */
+	public static function _get_post_meta_key( $post_id = 0 ) {
+
+		return apply_filters( 'wps_subtitle_key', 'wps_subtitle', $post_id );
+
 	}
 
 }

@@ -134,6 +134,25 @@ checkoutApp.controller('CheckoutLoginCtrl',['$scope','$http', '$location', '$sta
     }
 }]);
 
+checkoutApp.controller('CheckoutSigninCtrl',['$scope','$http', '$location', '$state', '$rootScope', 'CheckoutService', function($scope, $http, $location, $state, $rootScope, CheckoutService) {
+    $scope.signinData = {};
+    $rootScope.hasError = false;
+    $rootScope.errors = [];
+    $rootScope.breadcrumbs = [
+        {type: 'link', title: 'HOME', url: home_url},
+        {type: 'separator'},
+        {type: 'span', title: 'CHECKOUT'},
+    ];
+    $scope.signin = function() {
+        var promise = CheckoutService.request('signin', {signinData: $scope.signinData});
+        promise.then(function(response){
+            if (response.data.status) {
+                $state.go('details');
+            }
+        })
+    }
+}]);
+
 checkoutApp.controller('CheckoutCompleteCtrl',['$scope','$http', '$location', '$state', '$rootScope', 'checkoutCompleteData', 'CheckoutService', function($scope, $http, $location, $state, $rootScope, checkoutCompleteData, CheckoutService) {
     $scope.completeData = checkoutCompleteData.data;
 
