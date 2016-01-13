@@ -61,7 +61,8 @@
             <div ng-if="confirmData.delivery.expedited" class="text-right">SHIPPING: +$40</div>
             <div class="text-right">TAX: {{confirmData.tax | currency}}</div>
             <div ng-if="confirmData.coupons_sum" class="text-right">COUPONS: -{{confirmData.coupons_sum | currency}}</div>
-            <div ng-if="confirmData.total" class="text-right">TOTAL: {{confirmData.total + confirmData.tax | currency}}</div>
+            <div ng-if="confirmData.shipping_total" class="text-right">SHIPPING: {{confirmData.shipping_total | currency}}</div>
+            <div ng-if="confirmData.total_with_tax" class="text-right">TOTAL: {{confirmData.total_with_tax | currency}}</div>
 
             <div class="separator"></div>
 				<a ui-sref="details" class="btn btn-checkout">GO BACK</a>

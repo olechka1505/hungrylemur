@@ -44,6 +44,7 @@ checkoutApp.controller('CheckoutDetailsCtrl',['$scope','$http', '$location', '$s
     $scope.deliveryData = {};
     $scope.process = false;
     $scope.isPromo = false;
+    $state.shipping_loading = false;
     $scope.paymentData = {};
     $scope.years = [2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025,2026,2027,2028,2029,2030];
     $scope.month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
@@ -78,6 +79,23 @@ checkoutApp.controller('CheckoutDetailsCtrl',['$scope','$http', '$location', '$s
         $rootScope.type = type;
         $state.go('billing');
     }
+
+
+    $scope.$watch('detailsData.chosen_shipping_methods', function(newValue, oldValue) {
+        if (newValue != oldValue) {
+            $state.shipping_loading = true;
+            var promise = CheckoutService.request('updateShipping', {rate_id: newValue});
+            promise.then(function(response){
+                if (response.data.status) {
+                    $state.shipping_loading = false;
+                }
+            })
+        }
+    }, true);
+
+    $scope.updateShipping = function($rate_id){
+
+    };
     
     $scope.promo = function(){
         var promise = CheckoutService.request('promo', {promo: $scope.paymentData.promo});
@@ -86,7 +104,7 @@ checkoutApp.controller('CheckoutDetailsCtrl',['$scope','$http', '$location', '$s
                 $scope.isPromo = true;
             }
         })
-    },
+    };
     
     $scope.payment = function() {
         $scope.errors.number = typeof($scope.paymentData.number) == 'undefined' || !$scope.paymentData.number.length;
@@ -155,8 +173,6 @@ checkoutApp.controller('CheckoutSigninCtrl',['$scope','$http', '$location', '$st
 
 checkoutApp.controller('CheckoutCompleteCtrl',['$scope','$http', '$location', '$state', '$rootScope', 'checkoutCompleteData', 'CheckoutService', function($scope, $http, $location, $state, $rootScope, checkoutCompleteData, CheckoutService) {
     $scope.completeData = checkoutCompleteData.data;
-
-    console.log($scope.completeData);
     $rootScope.breadcrumbs = [
         {type: 'link', title: 'HOME', url: home_url},
         {type: 'separator'},

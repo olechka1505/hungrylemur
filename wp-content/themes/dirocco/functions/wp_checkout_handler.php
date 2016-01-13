@@ -51,21 +51,37 @@ class WP_Checkout_handler
         add_action($this->ajax_full_action_nopriv('complete'), array($this, 'complete'));
         add_action($this->ajax_full_action('confirmOrder'), array($this, 'confirmOrder'));
         add_action($this->ajax_full_action_nopriv('confirmOrder'), array($this, 'confirmOrder'));
+        add_action($this->ajax_full_action('updateShipping'), array($this, 'updateShipping'));
+        add_action($this->ajax_full_action_nopriv('updateShipping'), array($this, 'updateShipping'));
         add_action('woocommerce_after_cart_table', array($this, 'cart_promo'));
         add_action('woocommerce_before_notices', array($this, 'cart_promo_apply'));
+        add_action('woocommerce_shipping_init', array($this, 'shipping_init'));
 
         // Filters
         add_filter( 'woocommerce_coupon_message', array($this, 'filter_woocommerce_coupon_message', 10, 3));
+        add_filter( 'default_checkout_country', array($this, 'change_default_checkout_country'));
     }
 
-    function filter_woocommerce_coupon_message( $msg, $msg_code, $instance ) 
+    function change_default_checkout_country()
+    {
+        WC()->session->shippinng_rates = WC()->shipping()->get_packages();
+    }
+
+    function shipping_init()
+    {
+        return 'US'; // country code
+    }
+
+    function filter_woocommerce_coupon_message( $msg, $msg_code, $instance )
     {
         return false;
     }
     
     function cart_promo()
     {
-        require_once get_template_directory() . "/woocommerce/cart/promo_code.php";
+        if ( 'yes' === get_option( 'woocommerce_enable_coupons' ) ) {
+            require_once get_template_directory() . "/woocommerce/cart/promo_code.php";
+        }
     }
     
     function cart_promo_apply()
@@ -86,6 +102,9 @@ class WP_Checkout_handler
 
     function details()
     {
+        $response['rates'] = WC()->session->shippinng_rates[0]['rates'];
+        $chosen_shipping_methods = WC()->session->get( 'chosen_shipping_methods' );
+        $response['chosen_shipping_methods'] = $chosen_shipping_methods[0];
         // if user is not logged in
         $this->check_permissions();
         // get billing details
@@ -93,6 +112,25 @@ class WP_Checkout_handler
         // get shipping details
         $response['shipping'] = $this->get_shipping_details();
         $this->response($response);
+    }
+
+    function updateShipping()
+    {
+        $response['status'] = true;
+        $statusCode = 200;
+        if ($rate_id = $this->data('rate_id')) {
+            $chosen_shipping_methods = WC()->session->get( 'chosen_shipping_methods' );
+            if ( isset( $rate_id ) ) {
+                $chosen_shipping_methods = array($rate_id);
+            }
+            WC()->session->set( 'chosen_shipping_methods', $chosen_shipping_methods );
+        } else {
+            $response['status'] = false;
+            $response['errors'][] = __("Choose shipping method.");
+            $statusCode = 500;
+        }
+        WC()->cart->calculate_totals();
+        $this->response($response, $statusCode);
     }
 
 
@@ -231,8 +269,9 @@ class WP_Checkout_handler
                 $response['subtotal'] = $woocommerce->cart->get_cart_subtotal();
                 $response['coupons'] = $woocommerce->cart->coupon_discount_amounts;
                 $response['coupons_sum'] = array_sum($response['coupons']);
+                $response['shipping_total'] = $woocommerce->cart->shipping_total;
                 $response['total'] = $woocommerce->cart->cart_contents_total;
-                $response['total_with_tax'] = floatval($woocommerce->cart->cart_contents_total) + floatval($response['tax']);
+                $response['total_with_tax'] = floatval($woocommerce->cart->cart_contents_total) + floatval($response['tax']) + floatval($woocommerce->cart->shipping_total);
                 if ($response['delivery']['expedited']) {
                     $response['total'] += 40;
                 }
@@ -244,10 +283,8 @@ class WP_Checkout_handler
 
     function billing()
     {
-        // if user is not logged in
-//        unset($_SESSION);
+        global $woocommerce;
         $this->check_permissions();
-
         $_billing = $_shipping = array(
             'first_name' => '',
             'last_name' => '',
@@ -310,10 +347,7 @@ class WP_Checkout_handler
                 if ($guest_data = $this->guest_data()) {
                     $billing['country'] = 'US';
                     $shipping['country'] = 'US';
-                    
-                    $billing['email'] = $guest_data['email'];
-                    $shipping['email'] = $guest_data['email'];
-                    
+                    $billing['email'] = $shipping['email'] = $guest_data['email'];
                     $this->set_guest_data('billing', $billing);
                     $this->set_guest_data('shipping', $shipping);
                 } else {

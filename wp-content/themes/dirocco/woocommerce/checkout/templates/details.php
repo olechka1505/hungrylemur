@@ -23,24 +23,13 @@
             <a ng-click="edit('shipping')" class="btn-edit"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
         </div>
     </div>
-    <div class="col-md-4 col-md-offset-1 col-xs-12 checkout-details checkout-delivery-details">
+    <div ng-if="!shipping_loading" class="col-md-4 col-md-offset-1 col-xs-12 checkout-details checkout-delivery-details">
         <h3 class="checkout-form-title text-left">DELIVERY OPTIONS</h3>
-        <p>
-            <label>
-                <input:read-only ng-model="deliveryData.standard" type="checkbox" ng-checked='true' ng-init="deliveryData.standard=true" />
-                Standard Shipping (Free)
-            </label><br/>
-            <small>5 Business days.</small>
-        </p>
-        <p id="expedited-shipping">
-            <label>
-                <input ng-model="deliveryData.expedited" type="checkbox"/>
-                Expedited Shipping (+$40)
-            </label><br/>
-            <small>Orders placed before 1 p.m. ET will be delivered
-            by the end of the next business day.</small>
-        </p>
+        <div class="col-xs-12" ng-repeat="rate in detailsData.rates">
+            <input type="radio" ng-model="detailsData.chosen_shipping_methods" ng-value="rate.id"/> {{rate.label}} - ({{rate.cost | currency}})
+        </div>
     </div>
+    <div ng-if="shipping_loading">Loading...</div>
 </div>
 <div class="col-xs-12" ng-if="!process">
     <div class="col-md-9 col-md-offset-1 col-xs-12 checkout-payment-details">

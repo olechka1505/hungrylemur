@@ -44,3 +44,4 @@
 .margin-top-5 {margin-top: 5%;}
 body:not(.woocommerce-cart) .woocommerce-error{display:none;}
 .coupons-added {line-height: 34px;}
+.promo-section .btn-promo-apply {margin-top:0;}
