@@ -19,9 +19,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	<?php if( 'lost_password' == $args['form'] ) : ?>
 
-		<p><?php echo apply_filters( 'woocommerce_lost_password_message', __( 'Lost your password? Please enter your username or email address. You will receive a link to create a new password via email.', 'woocommerce' ) ); ?></p>
+		<p><?php echo apply_filters( 'woocommerce_lost_password_message', __( 'Lost your password? Please enter your email address. You will receive a link to create a new password via email.', 'woocommerce' ) ); ?></p>
 
-		<p class="form-row form-row-first"><label for="user_login"><?php _e( 'Username or email', 'woocommerce' ); ?></label> <input class="input-text" type="text" name="user_login" id="user_login" /></p>
+		<p class="form-row form-row-first"> <input class="input-text" placeholder="Email Address" type="text" name="user_login" id="user_login" /></p>
 
 	<?php else : ?>
 

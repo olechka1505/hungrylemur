@@ -39,7 +39,7 @@ function showDiv() {
 		</p>
 		<div class="clear"></div>
 		<p class="form-row form-row-wide">
-			<input type="email" class="input-text" placeholder="Email address" name="account_email" id="account_email" value="<?php echo esc_attr( $user->user_email ); ?>" />
+			<input readonly type="email" class="input-text" placeholder="Email address" name="account_email" id="account_email" value="<?php echo esc_attr( $user->user_email ); ?>" />
 		</p>
 		<p class="form-row form-row-wide">
 			<input type="button" id="change-password-button" class="button" name="answer" value="Change Password" onclick="showDiv()" />

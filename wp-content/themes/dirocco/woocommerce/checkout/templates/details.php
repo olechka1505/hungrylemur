@@ -73,7 +73,7 @@
             </div>
         </div>
 
-        <div class="col-md-4 col-xs-12 no-padding">
+        <!--<div class="col-md-4 col-xs-12 no-padding">
             <div class="form-group col-md-6 col-xs-12 no-padding-left">
                 <input type="text" ng-model="paymentData.promo" class="form-control" placeholder="Promo Code">
             </div>
@@ -81,7 +81,7 @@
                 <input ng-if="!isPromo" type="button" ng-click="promo()" class="btn btn-checkout" value="APPLY">
                 <i ng-if="isPromo" class="fa fa-check coupons-added"></i>
             </div>
-        </div>
+        </div>-->
 
         <div class="separator"></div>
         <div class="separator"></div>

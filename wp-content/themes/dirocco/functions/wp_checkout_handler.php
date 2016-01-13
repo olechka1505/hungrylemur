@@ -51,13 +51,37 @@ class WP_Checkout_handler
         add_action($this->ajax_full_action_nopriv('complete'), array($this, 'complete'));
         add_action($this->ajax_full_action('confirmOrder'), array($this, 'confirmOrder'));
         add_action($this->ajax_full_action_nopriv('confirmOrder'), array($this, 'confirmOrder'));
+        add_action('woocommerce_after_cart_table', array($this, 'cart_promo'));
+        add_action('woocommerce_before_notices', array($this, 'cart_promo_apply'));
 
         // Filters
         add_filter( 'woocommerce_coupon_message', array($this, 'filter_woocommerce_coupon_message', 10, 3));
     }
 
-    function filter_woocommerce_coupon_message( $msg, $msg_code, $instance ) {
+    function filter_woocommerce_coupon_message( $msg, $msg_code, $instance ) 
+    {
         return false;
+    }
+    
+    function cart_promo()
+    {
+        require_once get_template_directory() . "/woocommerce/cart/promo_code.php";
+    }
+    
+    function cart_promo_apply()
+    {
+        global $woocommerce;
+        if (isset($_POST['promo']) && wp_verify_nonce( $_POST['promo_nonce'], 'woocommerce_before_notices' )) {
+            $promo = $_POST['promo'];
+            if ($woocommerce->cart->has_discount(sanitize_text_field($promo))) {
+                $woocommerce->cart->remove_coupons(sanitize_text_field($promo));
+                $woocommerce->cart->calculate_totals();
+            }
+            if ($woocommerce->cart->add_discount( sanitize_text_field( $promo ))) {
+                $woocommerce->cart->calculate_totals();
+                wc_add_notice('Coupon apllied.');
+            }
+        }
     }
 
     function details()
@@ -293,31 +317,16 @@ class WP_Checkout_handler
                     $this->set_guest_data('billing', $billing);
                     $this->set_guest_data('shipping', $shipping);
                 } else {
+                    $billing['email'] = $shipping['email'] = $current_user->user_email;
                     // update billing info
-                    update_user_meta( $current_user->ID, "billing_first_name", $billing['first_name'] );
-                    update_user_meta( $current_user->ID, "billing_last_name", $billing['last_name'] );
-                    update_user_meta( $current_user->ID, "billing_company", $billing['company'] );
-                    update_user_meta( $current_user->ID, "billing_address_1", $billing['address_1'] );
-                    update_user_meta( $current_user->ID, "billing_postcode", $billing['postcode'] );
-                    update_user_meta( $current_user->ID, "billing_phone", $billing['phone'] );
-                    update_user_meta( $current_user->ID, "billing_suite", $billing['suite'] );
-                    update_user_meta( $current_user->ID, "billing_city", $billing['city'] );
-                    update_user_meta( $current_user->ID, "billing_state", $billing['state'] );
-                    update_user_meta( $current_user->ID, "billing_country", $billing['country'] );
-                    update_user_meta( $current_user->ID, "billing_email", $current_user->user_email );
+                    foreach ($billing as $key_billing => $value_biling) {
+                       update_user_meta( $current_user->ID, "billing_{$key_billing}", $value_biling ); 
+                    }
 
                     // update shipping info
-                    update_user_meta( $current_user->ID, "shipping_first_name", $shipping['first_name'] );
-                    update_user_meta( $current_user->ID, "shipping_last_name", $shipping['last_name'] );
-                    update_user_meta( $current_user->ID, "shipping_company", $shipping['company'] );
-                    update_user_meta( $current_user->ID, "shipping_address_1", $shipping['address_1'] );
-                    update_user_meta( $current_user->ID, "shipping_postcode", $shipping['postcode'] );
-                    update_user_meta( $current_user->ID, "shipping_phone", $shipping['phone'] );
-                    update_user_meta( $current_user->ID, "shipping_suite", $shipping['suite'] );
-                    update_user_meta( $current_user->ID, "shipping_state", $shipping['state'] );
-                    update_user_meta( $current_user->ID, "shipping_city", $shipping['city'] );
-                    update_user_meta( $current_user->ID, "shipping_country", $shipping['country'] );
-                    update_user_meta( $current_user->ID, "shipping_email", $current_user->user_email );
+                    foreach ($billing as $key_shipping => $value_shipping) {
+                       update_user_meta( $current_user->ID, "shipping_{$key_shipping}", $value_shipping );
+                    }
                 }
             }
         }

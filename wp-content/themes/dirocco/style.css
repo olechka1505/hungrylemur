@@ -24,6 +24,7 @@ ul#menu-main-menu-1 li a {
 }
 div#header-holder { position: fixed!important; }
 .sidebar-footer { display: none; }
+.no-padding{padding:0!important;}
 .sidebar-footer:first-child { display: block; }
 input.button.alt.prev, input.button.alt.next{
     font-family: 'WhitneyLight','WhitneyBook'!important;
@@ -331,6 +332,11 @@ ul#menu-main-menu-1 li { line-height: 30px; }
 .woocommerce-account .addresses address { margin: 0; padding: 20px 0; border: none; }
 .woocommerce-account .addresses .title .edit { margin-top: 20px; padding-top: 12px; }
 
+/* my-account/lost-password */
+.woocommerce .lost_reset_password .input-text { max-width: 300px; }
+.woocommerce .lost_reset_password p { float: none; display: block; }
+.woocommerce .lost_reset_password input { max-width: 300px; }
+
 /* homepage */
 /* featured post image */
 .home-video-thumb img { 
@@ -424,6 +430,7 @@ div.cart-quantity { display: none; }
     bottom: 0px;
     z-index:99999999;
 }
+
 /* Menu icon override */
 .sf-label-none .sf-navicon, .sf-label-text .sf-navicon, .sf-label-none .sf-navicon:after, .sf-label-none .sf-navicon:before, .sf-navicon:before, .sf-navicon:after {
 	width: 21px;
