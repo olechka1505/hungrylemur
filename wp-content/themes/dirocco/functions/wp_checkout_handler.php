@@ -102,7 +102,10 @@ class WP_Checkout_handler
 
     function details()
     {
-        $response['rates'] = WC()->session->shippinng_rates[0]['rates'];
+        $shipping_package = WC()->session->shippinng_rates;
+        if (!empty($shipping_package)) {
+            $response['rates'] = $shipping_package[0]['rates'];
+        }
         $chosen_shipping_methods = WC()->session->get( 'chosen_shipping_methods' );
         $response['chosen_shipping_methods'] = $chosen_shipping_methods[0];
         // if user is not logged in
@@ -283,9 +286,6 @@ class WP_Checkout_handler
 
     function billing()
     {
-//        WC()->shipping()->calculate_shipping();
-//        $packages = WC()->shipping()->get_packages();
-        $method = new wf_fedex_woocommerce_shipping_method();
         $this->check_permissions();
         $_billing = $_shipping = array(
             'first_name' => '',
@@ -365,6 +365,8 @@ class WP_Checkout_handler
                     }
                 }
                 $this->set_wc_customer_data();
+                WC()->shipping()->calculate_shipping(WC()->cart->get_shipping_packages());
+                WC()->session->shippinng_rates = WC()->shipping()->get_packages();
             }
         }
         // get billing details

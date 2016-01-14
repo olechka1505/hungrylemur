@@ -1,4 +1,5 @@
 <div class="checkout" ng-app="checkoutApp">
+    <div class="horisontal-loader" ng-show="loading"></div>
     <div ng-cloak ng-hide="loading" class="breadcrumbs">
         <div class="breadcrumbs-wrap">
             <ul>
@@ -9,11 +10,6 @@
                 </li>
             </ul>
         </div>
-    </div>
-    <div ng-show="loading">
-            <div class="col-xs-12 checkout-loading text-center">
-                    <h3>Loading...</h3>
-            </div>
     </div>
     <div ng-hide="loading" class="col-md-12">
             <div ng-if="hasError" class="col-xs-12 has-error error text-center">
