@@ -1,11 +1,9 @@
-<div class="col-xs-12">
-	<div class="col-md-4 col-md-offset-1 col-xs-12">
-		<p><strong>ORDER NUMBER: {{completeData.order_id}}</strong></p>
-    </div>
-</div>	
+<div class="col-xs-12 text-center"">
+    <h3>ORDER NUMBER: {{completeData.order_id}}</h3>
+</div>
 <div class="col-xs-12">
     <div class="col-md-4 col-md-offset-1 col-xs-12 checkout-details checkout-shipping-details">
-        <div class="col-xs-12 no-padding">
+        <div class="col-xs-11 no-padding">
             <h3 class="checkout-form-title text-left">SHIPPING ADDRESS</h3>
             <p>{{completeData.shipping.first_name}} {{completeData.shipping.last_name}}</p>
             <p ng-if="completeData.shipping.company">{{completeData.shipping.company}}</p>
@@ -16,19 +14,7 @@
         <div class="col-xs-12 checkout-title-separator clearfix no-padding">DELIVERY OPTIONS</div>
 
         <div class="col-xs-12 no-padding">
-            <p ng-if="completeData.delivery.standard">
-                <label>
-                    Standard Shipping (Free)
-                </label><br/>
-                <small>5 Business days.</small>
-            </p>
-            <p ng-if="completeData.delivery.expedited">
-                <label>
-                    Expedited Shipping (+$40)
-                </label><br/>
-                <small>Orders placed before 1 p.m. ET will be delivered
-                    by the end of the next business day.</small>
-            </p>
+            <p>{{completeData.delivery.label}} - {{completeData.delivery.cost | currency}}</p>
         </div>
 
         <div class="col-xs-12 checkout-title-separator clearfix no-padding">CREDIT CARD</div>
@@ -40,7 +26,7 @@
 	
     <div class="col-md-7 col-xs-12 checkout-product-summary">
         <table class="checkout-confirm-table">
-            <tr ng-repeat="product in completeData.products">
+            <tr ng-repeat="product in completeData.order_info.products">
                 <td><img ng-src="{{product.image}}" alt=""></td>
                 <td class="text-center">{{product.name}}</td>
                 <td class="text-center">{{product.cat}}</td>
@@ -49,11 +35,11 @@
             </tr>
         </table>
         <div class="col-md-4 col-xs-12 text-right pull-right">
-            <div ng-if="completeData.subtotal" class="text-right"><strong ng-bind-html="'SUBTOTAL: ' + completeData.subtotal"></strong></div>
-            <div ng-if="completeData.delivery.standard" class="text-right"><strong>SHIPPING: FREE</strong></div>
-            <div ng-if="completeData.delivery.expedited" class="text-right"><strong>SHIPPING: +$40</strong></div>
-            <div class="text-right"><strong>TAX: {{completeData.tax | currency}}</strong></div>
-            <div ng-if="completeData.total" class="text-right"><strong>TOTAL: {{completeData.total + completeData.tax | currency}}</strong></div>
+            <div ng-if="completeData.order_info.subtotal" class="text-right"><div ng-bind-html="'SUBTOTAL: ' + completeData.order_info.subtotal"></div>
+                <div class="text-right">TAX: {{completeData.order_info.tax | currency}}</div>
+                <div ng-if="completeData.order_info.shipping_total" class="text-right">SHIPPING: {{completeData.order_info.shipping_total | currency}}</div>
+                <div ng-if="completeData.order_info.coupons_total" class="text-right">COUPONS: -{{completeData.order_info.coupons_total | currency}}</div>
+                <div ng-if="completeData.order_info.total" class="text-right">TOTAL: {{completeData.order_info.total | currency}}</div>
 
 			<div class="separator"></div>
 			<div class="col-xs-12 text-right">

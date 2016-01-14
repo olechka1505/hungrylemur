@@ -46,4 +46,4 @@
 body:not(.woocommerce-cart) .woocommerce-error{display:none;}
 .coupons-added {line-height: 34px;}
 .promo-section .btn-promo-apply {margin-top:0;}
-.horisontal-loader{    background: url(../../images/preloader.GIF) #ccc 50% 50% no-repeat;width: 100%;height: 100%;position: absolute;background-size: 20%;z-index: 10;opacity: .3;}
+.horisontal-loader{background: url(../../images/preloader.GIF) 50% 50% no-repeat;width: 100%;height: 100%;position: absolute;background-size: 20%;z-index: 10;opacity:.5;}

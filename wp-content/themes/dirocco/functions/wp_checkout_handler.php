@@ -55,7 +55,6 @@ class WP_Checkout_handler
         add_action($this->ajax_full_action_nopriv('updateShipping'), array($this, 'updateShipping'));
         add_action('woocommerce_after_cart_table', array($this, 'cart_promo'));
         add_action('woocommerce_before_notices', array($this, 'cart_promo_apply'));
-        add_action('woocommerce_shipping_init', array($this, 'shipping_init'));
 
         // Filters
         add_filter( 'woocommerce_coupon_message', array($this, 'filter_woocommerce_coupon_message', 10, 3));
@@ -65,11 +64,6 @@ class WP_Checkout_handler
     function change_default_checkout_country()
     {
         return 'US';
-    }
-
-    function shipping_init()
-    {
-//        WC()->session->shippinng_rates = WC()->shipping()->get_packages();
     }
 
     function filter_woocommerce_coupon_message( $msg, $msg_code, $instance )
@@ -103,8 +97,11 @@ class WP_Checkout_handler
     function details()
     {
         $shipping_package = WC()->session->shippinng_rates;
-        if (!empty($shipping_package)) {
+        $response['rates_error'] = false;
+        if (!empty($shipping_package[0]['rates'])) {
             $response['rates'] = $shipping_package[0]['rates'];
+        } else {
+            $response['rates_error'] = sprintf(__( 'There are no shipping methods available. Please double <a href="%s">check your address</a>, or contact us if you need any help.', 'woocommerce' ), '/checkout/#/billing');
         }
         $chosen_shipping_methods = WC()->session->get( 'chosen_shipping_methods' );
         $response['chosen_shipping_methods'] = $chosen_shipping_methods[0];
@@ -173,8 +170,8 @@ class WP_Checkout_handler
 
                 // create user and logged in
                 if ($response['status']) {
-                    $user_id = wp_create_user( $createAccount['login'], $createAccount['password'], $createAccount['login'] );
-                    if (is_wp_error($user_id)) {
+                    $create_user_id = wp_create_user( $createAccount['login'], $createAccount['password'], $createAccount['login'] );
+                    if (is_wp_error($create_user_id)) {
                         $response['status'] = false;
                         $response['errors'][] = __('User wan not created.');
                         $statusCode = 500;
@@ -183,10 +180,10 @@ class WP_Checkout_handler
                         $shipping_data = $this->get_shipping_details();
 
                         foreach ($billing_data as $key=> $item) {
-                            update_user_meta( $user_id, "billing_{$key}", $item );
+                            update_user_meta( $create_user_id, "billing_{$key}", $item );
                         }
                         foreach ($shipping_data as $key=> $item) {
-                            update_user_meta( $user_id, "shipping_{$key}", $item );
+                            update_user_meta( $create_user_id, "shipping_{$key}", $item );
                         }
 
                         $response['status'] = true;
@@ -201,7 +198,7 @@ class WP_Checkout_handler
                 $result = Braintree_Transaction::sale(
                     [
                         'customerId' => $braintree_user_id,
-                        'amount' => money_format('%i', $order['total_with_tax'])
+                        'amount' => money_format('%i', $order['total'])
                     ]
                 );
                 if ($result->success) {
@@ -210,10 +207,31 @@ class WP_Checkout_handler
                     if ($settlement->success) {
                         $response['shop_url'] = get_permalink( woocommerce_get_page_id( 'shop' ) );
                         $response['order_id'] = $result->transaction->id;
+                        $response['order_info'] = $order;
+                        $paymentMethod = WC()->session->paymentMethod;
+                        if ($paymentMethod) {
+                            $response['card'] = array(
+                                'type'  => $paymentMethod->cardType,
+                                'bin'   => $paymentMethod->bin,
+                                'last4' => $paymentMethod->last4,
+                            );
+                        }
+                        $shipping_package = WC()->session->shippinng_rates;
+                        $chosen_shipping_methods = WC()->session->get( 'chosen_shipping_methods' );
+                        if (!empty($shipping_package[0]['rates'])) {
+                            $response['delivery'] = $shipping_package[0]['rates'][$chosen_shipping_methods[0]];
+                        }
                         $woocommerce->cart->empty_cart();
                         $order = new WC_Order(WC()->session->last_order_id);
                         $order->update_status('completed');
-                        $response['last_order'] = WC()->session->last_orde;
+
+                        if (is_user_logged_in()) {
+                            global $current_user;
+                            update_post_meta($order->id, '_customer_user', $current_user->ID);
+                        } else if ($create_user_id) {
+                            update_post_meta($order->id, '_customer_user', $create_user_id);
+                        }
+
                         unset(WC()->session->last_transaction);
                         unset(WC()->session->paymentMethod);
                         unset(WC()->session->last_order_id);
@@ -265,23 +283,29 @@ class WP_Checkout_handler
                         'price_with_tax'    => $product['line_subtotal'],
                         'tax'               => $product['line_tax'],
                     );
-                    $response['tax'] += $product['line_tax'];
                 }
+                WC()->cart->calculate_shipping();
+                WC()->cart->calculate_fees();
                 $response['show_create_account'] = !is_user_logged_in();
-                $response['delivery'] = $this->get_delivery();
-                $response['subtotal'] = $woocommerce->cart->get_cart_subtotal();
-                $response['coupons'] = $woocommerce->cart->coupon_discount_amounts;
-                $response['coupons_sum'] = array_sum($response['coupons']);
-                $response['shipping_total'] = $woocommerce->cart->shipping_total;
-                $response['total'] = $woocommerce->cart->cart_contents_total;
-                $response['total_with_tax'] = floatval($woocommerce->cart->cart_contents_total) + floatval($response['tax']) + floatval($woocommerce->cart->shipping_total);
-                if ($response['delivery']['expedited']) {
-                    $response['total'] += 40;
-                }
+                $response['subtotal'] = WC()->cart->get_cart_subtotal();
+                $response['coupons_total'] = $this->get_coupons_total();
+                $response['shipping_total'] = WC()->cart->shipping_total;
+                $response['tax'] = WC()->cart->tax_total;
+                $response['total'] = $this->get_cart_total();
                 WC()->session->last_order = $response;
             }
         }
         $this->response($response, $statusCode);
+    }
+
+    public function get_cart_total()
+    {
+        return WC()->cart->cart_contents_total + WC()->cart->shipping_total + WC()->cart->tax_total;
+    }
+
+    public function get_coupons_total()
+    {
+        return array_sum(WC()->cart->coupon_discount_amounts);
     }
 
     function billing()
@@ -514,6 +538,7 @@ class WP_Checkout_handler
     function complete()
     {
         $response = WC()->session->last_complete;
+        $response['shipping'] = $this->get_shipping_details();
         $statusCode = 200;
         $this->response($response, $statusCode);
     }
@@ -790,8 +815,6 @@ class WP_Checkout_handler
     function set_wc_customer_data()
     {
         global $woocommerce;
-        $r1 = WC()->cart->needs_shipping() ;
-        $o1 = WC()->cart->show_shipping();
         $billing = $this->get_billing_details();
         $shipping = $this->get_shipping_details();
 

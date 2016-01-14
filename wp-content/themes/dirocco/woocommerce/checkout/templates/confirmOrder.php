@@ -8,24 +8,6 @@
             <p>{{confirmData.shipping.city}}, {{confirmData.shipping.state}}, {{confirmData.shipping.postcode}}</p>
         </div>
 
-        <div class="col-xs-12 checkout-title-separator clearfix no-padding">DELIVERY OPTIONS</div>
-
-        <div class="col-xs-12 no-padding">
-            <p ng-if="confirmData.delivery.standard">
-                <label style="font-weight: normal">
-                    Standard Shipping (Free)
-                </label><br/>
-                <small>5 Business days.</small>
-            </p>
-            <p ng-if="confirmData.delivery.expedited">
-                <label style="font-weight: normal">
-                    Expedited Shipping (+$40)
-                </label><br/>
-                <small>Orders placed before 1 p.m. ET will be delivered
-                    by the end of the next business day.</small>
-            </p>
-        </div>
-
         <div class="col-xs-12 checkout-title-separator clearfix no-padding">CREDIT CARD</div>
 
         <div class="col-xs-12 no-padding">
@@ -57,12 +39,10 @@
         </table>
         <div class="col-md-4 col-xs-12 text-right pull-right margin-top-5">
             <div ng-if="confirmData.subtotal" class="text-right"><div ng-bind-html="'SUBTOTAL: ' + confirmData.subtotal"></div>
-            <div ng-if="confirmData.delivery.standard" class="text-right">SHIPPING: FREE</div>
-            <div ng-if="confirmData.delivery.expedited" class="text-right">SHIPPING: +$40</div>
             <div class="text-right">TAX: {{confirmData.tax | currency}}</div>
-            <div ng-if="confirmData.coupons_sum" class="text-right">COUPONS: -{{confirmData.coupons_sum | currency}}</div>
             <div ng-if="confirmData.shipping_total" class="text-right">SHIPPING: {{confirmData.shipping_total | currency}}</div>
-            <div ng-if="confirmData.total_with_tax" class="text-right">TOTAL: {{confirmData.total_with_tax | currency}}</div>
+            <div ng-if="confirmData.coupons_total" class="text-right">COUPONS: -{{confirmData.coupons_total | currency}}</div>
+            <div ng-if="confirmData.total" class="text-right">TOTAL: {{confirmData.total | currency}}</div>
 
             <div class="separator"></div>
 				<a ui-sref="details" class="btn btn-checkout">GO BACK</a>

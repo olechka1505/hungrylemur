@@ -26,7 +26,8 @@
     <div class="col-md-4 col-md-offset-1 col-xs-12 checkout-details checkout-delivery-details">
         <div class="horisontal-loader" ng-show="shipping_loading"></div>
         <h3 class="checkout-form-title text-left">DELIVERY OPTIONS</h3>
-        <div class="col-xs-12" ng-repeat="rate in detailsData.rates">
+        <div ng-if="detailsData.rates_error" ng-bind-html="detailsData.rates_error"></div>
+        <div ng-if="!detailsData.rates_error" class="col-xs-12" ng-repeat="rate in detailsData.rates">
             <input type="radio" ng-model="detailsData.chosen_shipping_methods" ng-value="rate.id"/> {{rate.label}} - ({{rate.cost | currency}})
         </div>
     </div>
@@ -38,10 +39,6 @@
         </div>
 
         <div class="col-md-8 col-xs-12 no-padding">
-            <!--<div class="form-group col-xs-12 no-padding-left">
-                <label>Expiration date</label>
-            </div>
-			-->
             <div class="form-group col-md-6 col-xs-12 no-padding-left">
                 <input data-braintree-name="number" ng-class="{'error-field': errors.number}" type="text" maxlength="16" ng-model="paymentData.number" class="form-control" placeholder="Credit Card">
             </div>
@@ -62,22 +59,12 @@
             </div>
         </div>
 
-        <!--<div class="col-md-4 col-xs-12 no-padding">
-            <div class="form-group col-md-6 col-xs-12 no-padding-left">
-                <input type="text" ng-model="paymentData.promo" class="form-control" placeholder="Promo Code">
-            </div>
-            <div class="form-group col-md-6 col-xs-12 no-padding-left">
-                <input ng-if="!isPromo" type="button" ng-click="promo()" class="btn btn-checkout" value="APPLY">
-                <i ng-if="isPromo" class="fa fa-check coupons-added"></i>
-            </div>
-        </div>-->
-
         <div class="separator"></div>
         <div class="separator"></div>
 
         <div class="col-xs-12 text-right">
             <a ui-sref="billing" class="btn btn-checkout">GO BACK</a>
-            <input type="button" ng-click="payment()" class="btn btn-checkout" value="REVIEW ORDER">
+            <input ng-class="{disabled: detailsData.rates_error}" type="button" ng-click="payment()" class="btn btn-checkout" value="REVIEW ORDER">
         </div>
     </div>
 </div>
