@@ -64,12 +64,12 @@ class WP_Checkout_handler
 
     function change_default_checkout_country()
     {
-        WC()->session->shippinng_rates = WC()->shipping()->get_packages();
+        return 'US';
     }
 
     function shipping_init()
     {
-        return 'US'; // country code
+//        WC()->session->shippinng_rates = WC()->shipping()->get_packages();
     }
 
     function filter_woocommerce_coupon_message( $msg, $msg_code, $instance )
@@ -283,7 +283,9 @@ class WP_Checkout_handler
 
     function billing()
     {
-        global $woocommerce;
+//        WC()->shipping()->calculate_shipping();
+//        $packages = WC()->shipping()->get_packages();
+        $method = new wf_fedex_woocommerce_shipping_method();
         $this->check_permissions();
         $_billing = $_shipping = array(
             'first_name' => '',
@@ -362,6 +364,7 @@ class WP_Checkout_handler
                        update_user_meta( $current_user->ID, "shipping_{$key_shipping}", $value_shipping );
                     }
                 }
+                $this->set_wc_customer_data();
             }
         }
         // get billing details
@@ -781,6 +784,26 @@ class WP_Checkout_handler
             global $current_user;
             return get_user_meta( $current_user->ID, '_braintree_transaction_id', true );
         }
+    }
+    function set_wc_customer_data()
+    {
+        global $woocommerce;
+        $r1 = WC()->cart->needs_shipping() ;
+        $o1 = WC()->cart->show_shipping();
+        $billing = $this->get_billing_details();
+        $shipping = $this->get_shipping_details();
+
+        WC()->customer->set_country('US');
+        WC()->customer->set_state( $billing['state'] );
+        WC()->customer->set_postcode( $billing['postcode'] );
+        WC()->customer->set_city( $billing['city'] );
+        WC()->customer->set_address( $billing['address_1'] );
+        WC()->customer->set_shipping_country( $shipping['country'] );
+        WC()->customer->set_shipping_state( $shipping['state'] );
+        WC()->customer->set_shipping_postcode( $shipping['postcode'] );
+        WC()->customer->set_shipping_city( $shipping['city'] );
+        WC()->customer->set_shipping_address( $shipping['address_1'] );
+        WC()->cart->calculate_totals();
     }
 
 }
