@@ -44,7 +44,7 @@ checkoutApp.controller('CheckoutDetailsCtrl',['$scope','$http', '$location', '$s
     $scope.deliveryData = {};
     $scope.process = false;
     $scope.isPromo = false;
-    $state.shipping_loading = false;
+    $scope.shipping_loading = false;
     $scope.paymentData = {};
     $scope.years = [2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025,2026,2027,2028,2029,2030];
     $scope.month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
@@ -83,11 +83,11 @@ checkoutApp.controller('CheckoutDetailsCtrl',['$scope','$http', '$location', '$s
 
     $scope.$watch('detailsData.chosen_shipping_methods', function(newValue, oldValue) {
         if (newValue != oldValue) {
-            $state.shipping_loading = true;
-            var promise = CheckoutService.request('updateShipping', {rate_id: newValue});
+            $scope.shipping_loading = true;
+            var promise = CheckoutService.request('updateShipping', {rate_id: newValue}, true);
             promise.then(function(response){
                 if (response.data.status) {
-                    $state.shipping_loading = false;
+                    $scope.shipping_loading = false;
                 }
             })
         }

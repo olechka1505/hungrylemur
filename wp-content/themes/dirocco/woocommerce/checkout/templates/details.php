@@ -23,13 +23,13 @@
             <a ng-click="edit('shipping')" class="btn-edit"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
         </div>
     </div>
-    <div ng-if="!shipping_loading" class="col-md-4 col-md-offset-1 col-xs-12 checkout-details checkout-delivery-details">
+    <div class="col-md-4 col-md-offset-1 col-xs-12 checkout-details checkout-delivery-details">
+        <div class="horisontal-loader" ng-show="shipping_loading"></div>
         <h3 class="checkout-form-title text-left">DELIVERY OPTIONS</h3>
         <div class="col-xs-12" ng-repeat="rate in detailsData.rates">
             <input type="radio" ng-model="detailsData.chosen_shipping_methods" ng-value="rate.id"/> {{rate.label}} - ({{rate.cost | currency}})
         </div>
     </div>
-    <div ng-if="shipping_loading">Loading...</div>
 </div>
 <div class="col-xs-12" ng-if="!process">
     <div class="col-md-9 col-md-offset-1 col-xs-12 checkout-payment-details">

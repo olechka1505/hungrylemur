@@ -1,7 +1,9 @@
 checkoutApp.factory('CheckoutService', ['$http', '$rootScope', '$state', function($http, $rootScope, $state){
     return {
-        request: function(action, data) {
-            $rootScope.loading = true;
+        request: function(action, data, disable_loader) {
+            disable_loader = disable_loader || false;
+            if (!disable_loader)
+                $rootScope.loading = true;
             $rootScope.hasError = false;
             $rootScope.statusCode = 200;
             data = data || {};
@@ -16,11 +18,13 @@ checkoutApp.factory('CheckoutService', ['$http', '$rootScope', '$state', functio
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             }).then(function(response){
                 $rootScope.statusCode = response.status;
-                $rootScope.loading = false;
+                if (!disable_loader)
+                    $rootScope.loading = false;
                 return response;
             }, function(response){
                 $rootScope.hasError = true;
-                $rootScope.loading = false;
+                if (!disable_loader)
+                    $rootScope.loading = false;
                 $rootScope.statusCode = response.status;
                 switch (response.status) {
                     case 403:
