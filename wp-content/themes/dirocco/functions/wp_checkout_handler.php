@@ -230,6 +230,10 @@ class WP_Checkout_handler
                             update_post_meta($order->id, '_customer_user', $current_user->ID);
                         } else if ($create_user_id) {
                             update_post_meta($order->id, '_customer_user', $create_user_id);
+                            wp_set_current_user($create_user_id);
+                            wp_set_current_user($create_user_id, $createAccount['login']);
+                            wp_set_auth_cookie($create_user_id);
+                            do_action('wp_login', $createAccount['login']);
                         }
 
                         unset(WC()->session->last_transaction);
@@ -300,6 +304,7 @@ class WP_Checkout_handler
 
     public function get_cart_total()
     {
+        WC()->cart->calculate_shipping();
         return WC()->cart->cart_contents_total + WC()->cart->shipping_total + WC()->cart->tax_total;
     }
 
@@ -482,12 +487,6 @@ class WP_Checkout_handler
                 $braintree_user_id = $this->get_braintree_user_id();
             }
 
-            $delivery = $this->get_delivery();
-            $total = $woocommerce->cart->cart_contents_total;
-            if (isset($delivery['expedited']) && $delivery['expedited']) {
-                $total += 40;
-            }
-
             // charge credit card
             $result = Braintree_PaymentMethod::create([
                 'customerId' => $braintree_user_id,
@@ -507,7 +506,8 @@ class WP_Checkout_handler
 
                 $order->set_address( $this->get_billing_details(), 'billing' );
                 $order->set_address( $this->get_shipping_details(), 'shipping' );
-                $order->calculate_totals();
+//                $order->calculate_totals(true);
+                $order->set_total($this->get_cart_total());
 
                 $current_gateway = 'braintree_credit_card';
                 update_post_meta( $order->id, '_payment_method', $current_gateway );
