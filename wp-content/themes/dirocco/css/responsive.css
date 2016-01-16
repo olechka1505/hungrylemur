@@ -21,12 +21,18 @@
 }
 
 @media screen and (max-width: 1280px) and (min-width:960px) {
-	#footer .fp-tableCell {vertical-align: bottom!important;}
-	#footer-wrap {position: relative; padding: 0px 50px; }
+	#footer .fp-tableCell { vertical-align: bottom;}
+	#footer-wrap { position: relative; padding: 0px 50px; margin-top: -30px; }
 	.col-lg-9.centered {
 		margin: 5em auto;
 		float: none;
 	}
+	.col-lg-9.centered.extra-section {
+		margin: 3.5em auto 0 auto;
+	}
+	.helo-outer p { 
+		letter-spacing: 1px;
+    }
 }
 
 @media screen and (max-width: 1200px) {
@@ -391,6 +397,15 @@
 	#advpsslideshow_1 img { margin: 0 auto; }
 }
 
+@media only screen and (max-width: 1027px) {
+	.main-home-video2 { position: inherit; background-image: none; }
+	.main-home-video2 img { display: block; width: 100%;}
+	  
+	#fullpage .slider2 .fp-tableCell { padding: 0!important; }
+	#fullpage .section.slider2 .fp-tableCell { padding: 0!important; }
+
+
+}
 @media only screen and (min-width: 1027px){
 	.home-video-thumb{display:none;}
 	.main-home-video.padding-0.youtube.row { height: 520px; }
@@ -410,8 +425,10 @@
     	width: 100%!important;
 	}
 	.main-home-video{
-    	background-image:url(http://dev.hungrylemur.com/wp-content/uploads/2015/11/Eric-1-of-5-Main.jpg);
-    	background-position: center top;
+    	/*background-image:url(../../../wp-content/uploads/2015/11/Eric-1-of-5-Main.jpg);
+    	background-position: center top; */
+    	background-position: center;
+    	background-image:url(../../../wp-content/uploads/2015/09/MGG_DETAIL.jpg);
     	background-size: cover;
     	background-repeat: no-repeat !important;
 	}
@@ -496,6 +513,7 @@
 }
 
 @media only screen and (max-width: 640px){
+	.main-home-video2 img { padding-top: 10%}
 	.section.slider.fp-section.active.fp-table{margin-top:6em!important;}
 	.main-home-video li{list-style-type: none;}
 	.video-desc h2 {
@@ -521,6 +539,7 @@
 }
 
 @media screen and (max-width: 550px) {	
+	.main-home-video2 img { padding-top: 15%}
 	.banner .inner h1 { 
 		font-size: 1.4em;
 	}

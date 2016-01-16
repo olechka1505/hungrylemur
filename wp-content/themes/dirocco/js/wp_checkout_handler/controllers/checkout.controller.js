@@ -169,6 +169,7 @@ checkoutApp.controller('CheckoutSigninCtrl',['$scope','$http', '$location', '$st
         promise.then(function(response){
             if (response.data.status) {
                 $state.go('details');
+                //window.location.href = '/checkout/#/details';
             }
         })
     }

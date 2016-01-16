@@ -1,5 +1,5 @@
 <?php
-
+error_reporting(E_ALL);
 require_once (get_template_directory() . '/lib/autoload.php');
 
 class WP_Checkout_handler
@@ -53,7 +53,7 @@ class WP_Checkout_handler
         add_action($this->ajax_full_action_nopriv('confirmOrder'), array($this, 'confirmOrder'));
         add_action($this->ajax_full_action('updateShipping'), array($this, 'updateShipping'));
         add_action($this->ajax_full_action_nopriv('updateShipping'), array($this, 'updateShipping'));
-        add_action('woocommerce_after_cart_table', array($this, 'cart_promo'));
+        add_action('woocommerce_before_cart_totals', array($this, 'cart_promo'));
         add_action('woocommerce_before_notices', array($this, 'cart_promo_apply'));
 
         // Filters
@@ -230,7 +230,6 @@ class WP_Checkout_handler
                             update_post_meta($order->id, '_customer_user', $current_user->ID);
                         } else if ($create_user_id) {
                             update_post_meta($order->id, '_customer_user', $create_user_id);
-                            wp_set_current_user($create_user_id);
                             wp_set_current_user($create_user_id, $createAccount['login']);
                             wp_set_auth_cookie($create_user_id);
                             do_action('wp_login', $createAccount['login']);
@@ -407,34 +406,66 @@ class WP_Checkout_handler
 
     function login()
     {
+        global $wpdb;
         if ($login = $this->data('loginData')) {
             $response = array('status' => true);
             $statusCode = 200;
-            $user = wp_signon(array(
-                'user_login'    => $login['login'],
-                'user_password' => $login['password'],
-            ), false);
-            if (is_wp_error($user)) {
+
+            $user = $wpdb->get_row(
+                $wpdb->prepare(
+                    "
+                    SELECT *
+                    FROM {$wpdb->users}
+                    WHERE ({$wpdb->users}.user_email = '%s' OR {$wpdb->users}.user_login = '%s') AND {$wpdb->users}.user_pass = MD5('%s')
+                    ",
+                    $login['login'],
+                    $login['login'],
+                    $login['password']
+                ),
+                OBJECT
+            );
+
+            if ($user) {
+                wp_set_current_user($user->ID, $user->user_login);
+                wp_set_auth_cookie($user->ID);
+                do_action('wp_login', $user->user_login);
+            } else {
                 $response['status'] = false;
-                $response['errors'][] = $user->get_error_message();
+                $response['errors'][] = 'Invalid login or password.';
                 $statusCode = 500;
-            }                     
+            }
         }
         $this->response($response, $statusCode);
     }
 
     function signin()
     {
+        global $wpdb;
         if ($signin = $this->data('signinData')) {
             $response = array('status' => true);
             $statusCode = 200;
-            $user = wp_signon(array(
-                'user_login'    => $signin['login'],
-                'user_password' => $signin['password'],
-            ), false);
-            if (is_wp_error($user)) {
+
+            $user = $wpdb->get_row(
+                $wpdb->prepare(
+                    "
+                    SELECT *
+                    FROM {$wpdb->users}
+                    WHERE ({$wpdb->users}.user_email = '%s' OR {$wpdb->users}.user_login = '%s') AND {$wpdb->users}.user_pass = MD5('%s')
+                    ",
+                    $signin['login'],
+                    $signin['login'],
+                    $signin['password']
+                ),
+                OBJECT
+            );
+
+            if ($user) {
+                wp_set_current_user($user->ID, $user->user_login);
+                wp_set_auth_cookie($user->ID);
+                do_action('wp_login', $user->user_login);
+            } else {
                 $response['status'] = false;
-                $response['errors'][] = $user->get_error_message();
+                $response['errors'][] = 'Invalid login or password.';
                 $statusCode = 500;
             }
         }

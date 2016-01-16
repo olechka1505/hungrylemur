@@ -17,7 +17,7 @@ get_header(); ?>
 		jQuery('#fullpage').fullpage({
 			responsiveWidth: 1027,
 			responsiveHeight: 0,
-			fitToSection: false,
+			fitToSection: true,
 			afterLoad: function() {
 				// if (jQuery(window).width() >= 1027) {
 				// 	jQuery.fn.fullpage.setFitToSection(true);
@@ -25,41 +25,31 @@ get_header(); ?>
 			}
 		});
 	});
-$(document).ready(function() {
+
+	$(function(){
+		$('#main-home-video2').css({'height':(($(window).height())-10)+'px'});
+	
+	  $(window).resize(function(){
+	          $('#main-home-video2').css({'height':(($(window).height())-10)+'px'});
+    });
+})
+/*$(document).ready(function() {
   $('.play-video').on('click', function(ev) {
  
     $("#video")[0].src += "&autoplay=1";
     ev.preventDefault();
  
   });
-});
+});*/
 </script>
 <div id="main" class="<?php echo esc_attr($modality_theme_options['layout_settings']); ?>">
 	<div id="fullpage">
-		<div class="section slider">
-			<!-- mainslider -->
-<?php query_posts('p=38'); ?>
-			<?php if (have_posts()) : while (have_posts()) : the_post(); ?>
-				  <div class="main-home-video padding-0 youtube row" onclick="thevid=document.getElementById('thevideo'); thevid.style.display='block'; this.style.display='none'; document.getElementById('iframe').src = document.getElementById('iframe').src.replace('autoplay=0','autoplay=1');">				<!-- <div class="main-home-video padding-0 youtube row" onclick="thevid=document.getElementById('thevideo'); thevid.style.display='block'; this.style.display='none'; document.getElementById('iframe').src = document.getElementById('iframe').src.replace('autoplay=0','autoplay=1');"> -->
-<div class="home-video-thumb">			
-<?php the_post_thumbnail(); ?></div>
+		<div class="section slider2" style="height: 100%;">
+			<div id="main-home-video2" class="main-home-video2">
+				<img src="../../../wp-content/uploads/2016/01/MGG_DETAIL-HOME.jpg" alt="">
+				<!-- <img src="http://dev.hungrylemur.com/wp-content/uploads/2015/09/MGG_FRONT.jpg"/> -->
+			</div>
 
-						<div class="video-desc col-sm-4">
-							<a href="<?php the_permalink() ?>">
-							<h2><?php the_subtitle(); ?></h2>
-							<h3><?php the_title(); ?></h3>
-							<p class="video-desc-description"><span><?php echo get_excerpt(100); ?></span></p>
-</a>
-<!-- <p class="icon"><i class="fa fa-play"></i></p> -->
-						</div>
-				</div>
-			<!-- <div id="thevideo" style="display: none;"><iframe id="iframe" width="100%" height="100%" src="http://www.youtube.com/embed/LatorN4P9aA?controls=0&showinfo=0&rel=0&autoplay=0" frameborder="0" allowscriptaccess="always" allowfullscreen="true"></iframe></div> -->
-			<?php endwhile; endif; ?>		
-			
-	<!-- END LUIS CHANGES (TEST)-->		
-			
-			
-			<!-- ./mainslider -->
 		</div>
 		<!-- newest storytellers -->
 		<div class="section">
@@ -67,16 +57,20 @@ $(document).ready(function() {
 			<h2 class="home-page-h3">Newest Storytellers</h3>
 			<?php query_posts('cat=8&showposts=6'); ?>
 			<?php if (have_posts()) : while (have_posts()) : the_post(); ?>
-			<div class="world-journal-home images col-lg-4 col-md-4 col-sm-12 col-xs-12 ">
-				<li>
-					<div class="new-wrapper hover08 column cell">
-						<a href="<?php the_permalink() ?>">
-						<?php the_post_thumbnail(); ?>
-						<h3 class="text-content" id="text"><span class="subtitle"><?php the_subtitle(); ?></span><br><span><?php the_title(); ?></span></h3>
-						</a>
-					</div>
-				</li>
-			</div>			
+			<?php if (get_the_title() != 'WRENCH') { ?>
+				
+				<div class="world-journal-home images col-lg-4 col-md-4 col-sm-12 col-xs-12 ">
+					<li>
+						<div class="new-wrapper hover08 column cell">
+							<a href="<?php the_permalink() ?>">
+							<?php the_post_thumbnail(); ?>
+							<h3 class="text-content" id="text"><span class="subtitle"><?php the_subtitle(); ?></span><br><span><?php the_title(); ?></span></h3>
+							</a>
+						</div>
+					</li>
+				</div>	
+				
+			<?php } ?>		
 			<?php endwhile; endif; ?>
 			<div class="clearfix"></div>
 		</div>

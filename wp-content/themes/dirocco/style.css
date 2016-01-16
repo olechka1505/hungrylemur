@@ -13,6 +13,34 @@ Tags: FOR_WP_THEME_SEARCH_IF_PUBLISHED
 @import url('css/newstyle.css');
 @import url(https://fonts.googleapis.com/css?family=Montserrat);
 
+.main-home-video2 { 
+    background-image:url(../../../wp-content/uploads/2016/01/MGG_DETAIL-HOME.jpg);
+    /*background-position: center bottom;*/
+	background-position: center top;
+	background-size: cover;
+	height: 100%;
+	overflow: hidden;
+}
+.main-home-video2 { 
+	width: 100%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+}
+.main-home-video2 h2 { position: absolute; top: 2%; text-align: center; font-size: 15px; color: black; }
+
+.main-home-video2 img { display: none; }
+
+/*
+.main-home-video2 img {
+    width: 100%;
+    position: absolute;
+    overflow: visible;
+    vertical-align: middle;   
+    left: 0;
+	}
+*/
 /* COPIED OVER FROM my_style.css */
 #sf-sidebar .sf-navicon-button {
     top: 0px;
@@ -194,6 +222,15 @@ h3.advs-sub-title, h3.advs-title{font-family: 'Montserrat', sans-serif!important
 h3.advs-title{
 	font-size: 46px!important;
     padding: 0.2em 0;
+}
+.video-desc h2 { font-family: 'Montserrat', sans-serif; font-size: 22px; line-height: 24px; padding-bottom: 0; margin-bottom: 0; }
+.video-desc h3 { 
+	font-family: 'Montserrat', sans-serif; 
+	font-size: 36px; 
+	line-height: 42px; 
+	margin-top: 0; 
+	padding-top: 0; 
+	padding-bottom: 0;
 }
 .our-story-desc h2, .world-journal-title{ font-family: 'Montserrat', sans-serif!important; font-size: 24px; }
 .our-story-desc h3{ font-family: 'Montserrat', sans-serif!important; font-size: 46px; }
@@ -395,10 +432,10 @@ div.cart-quantity { display: none; }
 		filter: url(filters.svg#grayscale); /* Firefox 3.5+ */
 		filter: gray; /* IE6-9 */
 		-webkit-filter: grayscale(1); /* Google Chrome, Safari 6+ & Opera 15+ */
+		filter: grayscale(100);
 		opacity:1;
 		z-index:2;
 		/*hoverpart*/
-		filter: none;
 		-webkit-filter: grayscale(1);
 		transition: opacity .1s ease-in-out;
 		-moz-transition: opacity .55s ease-in-out;
@@ -444,9 +481,9 @@ ul.sub-menu li { padding-left: 15%; }
 div.content-product-price { padding-left: 15px; }
 
 #content-about { width: 75%; margin: 0 auto;}
-#content-about  .col1 { float: left; width: 45%; }
-#content-about  .col2 { float: right; width: 45%; }
-#content-about  p { font-size: 14px; }
+#content-about .col1 { float: left; width: 45%; }
+#content-about .col2 { float: right; width: 45%; font-family: 'WhitneyLight','WhitneyBook'; font-size: 14px; line-height: 20px;}
+#content-about p { font-size: 14px; }
 .vjs-big-play-button { display: none!important;  }
 
 
@@ -2429,9 +2466,9 @@ div#nav_menu-8 li {    padding: 0;    font-family: 'WhitneyLight','WhitneyBook';
 div#nav_menu-8 {    float: left;    width: 16%;    margin-left: 1%; }
 
 .mc4wp-form-fields input[type="submit"] {
-    width: 175px;
+    width: 125px;
     font-size: 13px;
-    line-height: 18px;
+    line-height: 10px;
     margin-top: 15px;
 }
 
@@ -4271,6 +4308,13 @@ form.register.main-register{
   background: url(images/down-arrow.svg) no-repeat 254px 12px;
   border-radius: 0px !important;
 }
+.col-xs-12.ng-binding.ng-scope {
+	font-family: 'WhitneyLight','WhitneyBook';
+    color: #777777;
+    font-weight: normal;
+    letter-spacing: 2px;
+    padding: 1% 0;
+}
 /* ------------------------------------------------------------------------- *
  *  12. Features Section
 /* ------------------------------------------------------------------------- */
@@ -4700,8 +4744,11 @@ Wcoocommerce css change by Pulkit
 	color: black; 
 }
 .helo-outer div { 
+	font-family: 'WhitneyLight','WhitneyBook'; 
+	font-size: 14px; 
+	line-height: 20px; 
 	text-align: right; 
-	color: black; 
+	color: black;
 }
 .emailhello { 
 	font-size: 11px; 
