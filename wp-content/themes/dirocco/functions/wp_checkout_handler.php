@@ -8,19 +8,19 @@ class WP_Checkout_handler
     public $ajaxPrefix          = false;
     private $braintree_config   = false;
     private $clientToken        = false;
-    
-    
+
+
     function __construct()
     {
         $this->ajaxUrl = admin_url('admin-ajax.php');
         $this->ajaxPrefix = 'wp_checkout_';
         $this->braintree_config = get_option('woocommerce_braintree_credit_card_settings');
-        
+
         $environment = $this->braintree_config['environment'];
         $public_key = $environment == 'sandbox' ? $this->braintree_config['sandbox_public_key']: $this->braintree_config['public_key'];
         $private_key = $environment == 'sandbox' ? $this->braintree_config['sandbox_private_key']: $this->braintree_config['private_key'];
         $merchant_id = $environment == 'sandbox' ? $this->braintree_config['sandbox_merchant_id']: $this->braintree_config['merchant_id'];
-        
+
         Braintree_Configuration::environment($environment);
         Braintree_Configuration::merchantId($merchant_id);
         Braintree_Configuration::publicKey($public_key);
@@ -70,14 +70,14 @@ class WP_Checkout_handler
     {
         return false;
     }
-    
+
     function cart_promo()
     {
         if ( 'yes' === get_option( 'woocommerce_enable_coupons' ) ) {
             require_once get_template_directory() . "/woocommerce/cart/promo_code.php";
         }
     }
-    
+
     function cart_promo_apply()
     {
         global $woocommerce;
@@ -344,7 +344,7 @@ class WP_Checkout_handler
 
         $guest = $this->guest_data();
         $billing['country'] = $shipping['country'] = 'US';
-        $billing['email'] = $shipping['email'] = is_user_logged_in() ? $current_user->user_email : $guest['email'];
+        $billing['email'] = $shipping['email'] = is_user_logged_in() ? $current_user->user_email : $guest['guest_login']['email'];
 
         if ($billing) {
             $billing = array_replace_recursive($_billing, $billing);
@@ -377,19 +377,19 @@ class WP_Checkout_handler
                 if ($guest_data = $this->guest_data()) {
                     $billing['country'] = 'US';
                     $shipping['country'] = 'US';
-                    $billing['email'] = $shipping['email'] = $guest_data['email'];
+                    $billing['email'] = $shipping['email'] = $guest_data['guest_login']['email'];
                     $this->set_guest_data('billing', $billing);
                     $this->set_guest_data('shipping', $shipping);
                 } else {
                     $billing['email'] = $shipping['email'] = $current_user->user_email;
                     // update billing info
                     foreach ($billing as $key_billing => $value_biling) {
-                       update_user_meta( $current_user->ID, "billing_{$key_billing}", $value_biling ); 
+                        update_user_meta( $current_user->ID, "billing_{$key_billing}", $value_biling );
                     }
 
                     // update shipping info
                     foreach ($billing as $key_shipping => $value_shipping) {
-                       update_user_meta( $current_user->ID, "shipping_{$key_shipping}", $value_shipping );
+                        update_user_meta( $current_user->ID, "shipping_{$key_shipping}", $value_shipping );
                     }
                 }
                 $this->set_wc_customer_data();
@@ -471,11 +471,11 @@ class WP_Checkout_handler
         }
         $this->response($response, $statusCode);
     }
-    
+
     function promo()
     {
         global $woocommerce;
-        
+
         if ($promo = $this->data('promo')) {
             $response = array('status' => false);
             $statusCode = 200;
@@ -509,15 +509,8 @@ class WP_Checkout_handler
                     update_user_meta( $current_user->ID, "checkout_delivery", $delivery ) || add_user_meta( $current_user->ID, "checkout_delivery", $delivery, true );
                 }
             }
-            
-            $braintree_user_id = $this->get_braintree_user_id();
-            try {
-                $bt_customer = Braintree_Customer::find($braintree_user_id);
-            } catch (Exception $e) {
-                delete_user_meta($current_user->ID, "braintree_customer_id");
-                $braintree_user_id = $this->create_braintree_user();
-            }
 
+            $braintree_user_id = $this->get_braintree_user_id();
             // charge credit card
             $result = Braintree_PaymentMethod::create([
                 'customerId' => $braintree_user_id,
@@ -565,7 +558,7 @@ class WP_Checkout_handler
                 $statusCode = 500;
             }
         }
-        
+
         $this->response($response, $statusCode);
     }
 
@@ -591,16 +584,16 @@ class WP_Checkout_handler
             }
 
             if ($response['status']) {
-                $_SESSION['checkout_as_guest'] = array(
+                $this->set_guest_data('guest_login', array(
                     'status'    => true,
                     'email'     => $guest['email'],
-                );
+                ));
             }
 
         }
         $this->response($response, $statusCode);
     }
-    
+
     function signup()
     {
         if ($signup = $this->data('signupData')) {
@@ -610,19 +603,19 @@ class WP_Checkout_handler
                 $response['status'] = false;
                 $response['errors'][] = __("User email can't be blank.");
                 $statusCode = 500;
-            } 
+            }
             if (empty($signup['password']) || empty($signup['confirmPassword'])) {
                 $response['status'] = false;
                 $response['errors'][] = __("Password can't be blank.");
                 $statusCode = 500;
             }
-            
+
             if (!is_email($signup['login'])) {
                 $response['status'] = false;
                 $response['errors'][] = __('Invalid email address.');
                 $statusCode = 500;
             }
-            
+
             if ($user_id = username_exists($signup['login']) || email_exists($signup['login'])) {
                 $response['status'] = false;
                 $response['errors'][] = sprintf('This account already exists. <a href="%s">Please sign in here</a>', '/checkout/#/login');
@@ -632,7 +625,7 @@ class WP_Checkout_handler
                 $response['status'] = false;
                 $response['errors'][] = __('Please confirm your password.');
                 $statusCode = 500;
-            } 
+            }
             // create user and logged in
             if ($response['status']) {
                 $user_id = wp_create_user( $signup['login'], $signup['password'], $signup['login'] );
@@ -773,7 +766,7 @@ class WP_Checkout_handler
             ), 403);
         }
     }
-    
+
     function get_braintree_user_id()
     {
         global $current_user;
@@ -782,38 +775,52 @@ class WP_Checkout_handler
         } else {
             $braintree_user_id = get_user_meta( $current_user->ID, 'braintree_customer_id', true );
         }
+
+        try {
+            $bt_customer = Braintree_Customer::find($braintree_user_id);
+        } catch (Exception $e) {
+            $this->detele_session_data('braintree_customer_id');
+            delete_user_meta($current_user->ID, "braintree_customer_id");
+            if ($data = $this->guest_data()) {
+                $braintree_user_id = isset($data['braintree_customer_id']) ? $data['braintree_customer_id']: false;
+            } else {
+                $braintree_user_id = get_user_meta( $current_user->ID, 'braintree_customer_id', true );
+            }
+        }
+
         if (!$braintree_user_id) {
-            $braintree_user_id = $this->create_braintree_user();
+            $billing = $this->get_billing_details();
+            $result = Braintree_Customer::create([
+                'firstName'             => $billing['first_name'],
+                'lastName'              => $billing['last_name'],
+                'company'               => $billing['company'],
+                'phone'                 => $billing['phone'],
+                'email'                 => $billing['email'],
+            ]);
+            if ($result->success) {
+                $braintree_user_id = $result->customer->id;
+                if ($guest = $this->guest_data()) {
+                    $this->set_guest_data('braintree_customer_id', $braintree_user_id);
+                } else {
+                    update_user_meta( $current_user->ID, "braintree_customer_id", $braintree_user_id );
+                }
+            }
         }
         return $braintree_user_id;
     }
 
-    function create_braintree_user()
+    function detele_session_data($key)
     {
-        $billing = $this->get_billing_details();
-        $result = Braintree_Customer::create([
-            'firstName'             => $billing['first_name'],
-            'lastName'              => $billing['last_name'],
-            'company'               => $billing['company'],
-            'phone'                 => $billing['phone'],
-            'email'                 => $billing['email'],
-        ]);
-        if ($result->success) {
-            global $current_user;
-            $braintree_user_id = $result->customer->id;
-            if ($guest = $this->guest_data()) {
-                $this->set_guest_data('braintree_customer_id', $braintree_user_id);
-            } else {
-                update_user_meta( $current_user->ID, "braintree_customer_id", $braintree_user_id );
-            }
-            return $result->customer->id;
+        $oldData = $this->guest_data();
+        if (isset($oldData[$key])) {
+            unset($oldData[$key]);
         }
-        return false;
+        WC()->session->checkout_as_guest = $oldData;
     }
 
     function guest_data()
     {
-        return (isset($_SESSION['checkout_as_guest']) && !is_user_logged_in()) ? $_SESSION['checkout_as_guest']: false;
+        return (isset(WC()->session->checkout_as_guest) && !is_user_logged_in()) ? WC()->session->checkout_as_guest: false;
     }
 
     function get_delivery()
@@ -828,22 +835,27 @@ class WP_Checkout_handler
 
     function set_guest_data($key, $data)
     {
-        $_SESSION['checkout_as_guest'][$key]= $data;
+        if (!isset(WC()->session->checkout_as_guest)) {
+            WC()->session->checkout_as_guest = array();
+        }
+        $oldData = WC()->session->checkout_as_guest;
+        $newData[$key] = $data;
+        WC()->session->checkout_as_guest = array_merge($oldData, $newData);
     }
 
     function unset_guest_data()
     {
-        unset($_SESSION['checkout_as_guest']);
+        unset(WC()->session->checkout_as_guest);
     }
-    
+
     function get_current_promo_id()
     {
-        return isset($_SESSION['current_promo_id']) ? $_SESSION['current_promo_id']: false;
+        return isset(WC()->session->current_promo_id) ? WC()->session->current_promo_id: false;
     }
-    
+
     function set_current_promo_id($promo_id)
     {
-        $_SESSION['current_promo_id'] = $promo_id;
+        WC()->session->current_promo_id = $promo_id;
     }
     function get_transaction_id()
     {
