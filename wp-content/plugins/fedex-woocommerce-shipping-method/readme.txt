@@ -1,75 +1,22 @@
-=== Fedex WooCommerce Shipping Method Plugin ===
-Contributors: WooForce
-Donate link: 
-Tags: Fedex, Fedex Shipping, Shipping rates, shipping method, shipping extension,calculator,shipping calculator, tracking, postage, Shipping, WooCommerce
-Requires at least: 3.0.1
-Tested up to: 4.4
-Stable tag: 1.0.0
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+=== FedEx WooCommerce Shipping with Print Label ===
+Contributors: WooForce / DaZ
+Version: 1.4.9
 
-Fedex Shipping Method Plugin for WooCommerce. Displays Live Shipping Rates based on the Shipping Address and Cart Content.
+Tags: FedEx, FedEx Shipping, Shipping rates, Label printing, Auto Tracking, Shipping, WooCommerce, Wordpress
+Requires at least: 3.0.1
+Tested up to: Latest
 
 == Description ==
+== Screenshots ==
+== Changelog ==
+Please refer our product page for above details --> http://www.wooforce.com/product/fedex-woocommerce-shipping-with-print-label-plugin/
 
-= Introduction =
-
-Fedex WooCommerce Shipping plugin helps WooCommerce based stores to streamline Fedex shipping integration. This plugin helps you to get shipping rates from Fedex APIs based on product weight, post code and other relevant details. Based on the postal codes and other parameters, all available shipping services along with the rates are listed for the customers to choose from.
-
-<blockquote>
-
-= Premium version Features =
-
-Fedex Premium version streamlines your complete shipping process and saves time
-
-<ul>
-<li>Print shipping label with postage.</li>
-<li>Auto Shipment Tracking: It happens automatically while generating the label.</li>
-<li>Box packing.</li>
-<li>Enable/disable, edit the names of, and add handling costs to shipping services.</li>
-<li>Excellent Support for setting it up!</li>
-</ul>
-
-To know about the premium version, WooCommerce FedEx Shipping Plugin with Print Label, please visit [www.woooforce.com/fedex-shipping-plugin/](http://www.wooforce.com/product/woocommerce-fedex-shipping-plugin-with-print-label/)
-
-</blockquote>
-
-= Integrates WooCommerce to Fedex =
-
-Once this plugin is installed and configured with necessary information (please visit installation section for more info), your WordPress/WooCommerce Shop will be ready to ship using Fedex. This plugin will add Fedex shipping method as one of the shipping methods in WooCommerce.
-
-= Calculate shipping rates dynamically =
-
-While checking out, a customer is presented with the available shipping services and the rates based on his/her postal code, product weight and dimensions. Customer can choose the best method that matches his/her requirements and proceed to payment.
-
-= About WooForce.com =
-[WooForce.com](http://www.wooforce.com/?utm_source=wordpress&utm_medium=referral&utm_content=fedex) creates quality WordPress/WooCommerce plugins that are easy to use and customize. We are proud to have thousands of customers actively using our plugins across the globe.
-
-Please [contact us](http://www.wooforce.com/contact/?utm_source=wordpress&utm_medium=referral&utm_content=fedex) in case you have any questions
-
+= Contact Us =
+Please use our contact us form --> http://support.wooforce.com/
+Or make use of questions and comments section in individual product page --> http://www.wooforce.com/product/fedex-woocommerce-shipping-with-print-label-plugin/
 
 == Installation ==
+http://www.wooforce.com/how-to-download-install-update-wordpresswoocommerce-plugin/
 
-1. Upload the plugin folder to the ‘/wp-content/plugins/’ directory.
-2. Activate the plugin through the ‘Plugins’ menu in WordPress.
-3. Thats it – you can now configure the plugin.
-
-== Frequently Asked Questions ==
-
-= After the setup, my site is still saying “There doesn‘t seem to be any available shipping methods”. =
-
-You can enable debug in settings and debug messages will start showing up in cart/checkout page, from which you will get a clue what is the issue about. Hope Fedex shipping method is enabled. Product dimensions and weight is configured correctly.
-
-== Screenshots ==
-
-1. Plugin Configuration Screen
-2. Checkout Screen
-
-== Changelog ==
-= 1.0 =
- * Realtime Shipping Rates
-
-
-== Upgrade Notice ==
-= 1.0 =
-Initial release
+== Tutorial / Manual ==
+http://www.wooforce.com/getting-started-with-fedex-woocommerce-shipping-with-print-label-plugin/

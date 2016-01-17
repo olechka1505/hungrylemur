@@ -1,5 +1,5 @@
 <?php
-error_reporting(E_ALL);
+@ini_set('display_errors', 0);
 require_once (get_template_directory() . '/lib/autoload.php');
 
 class WP_Checkout_handler
@@ -515,13 +515,16 @@ class WP_Checkout_handler
                 $bt_customer = Braintree_Customer::find($braintree_user_id);
             } catch (Exception $e) {
                 delete_user_meta($current_user->ID, "braintree_customer_id");
-                $braintree_user_id = $this->get_braintree_user_id();
+                $braintree_user_id = $this->create_braintree_user();
             }
 
             // charge credit card
             $result = Braintree_PaymentMethod::create([
                 'customerId' => $braintree_user_id,
-                'paymentMethodNonce' => $nonce
+                'paymentMethodNonce' => $nonce,
+                'options' => [
+                    'verifyCard' => true
+                ]
             ]);
 
             if ($result->success) {
@@ -780,24 +783,32 @@ class WP_Checkout_handler
             $braintree_user_id = get_user_meta( $current_user->ID, 'braintree_customer_id', true );
         }
         if (!$braintree_user_id) {
-            $billing = $this->get_billing_details();
-            $result = Braintree_Customer::create([
-                'firstName'             => $billing['first_name'],
-                'lastName'              => $billing['last_name'],
-                'company'               => $billing['company'],
-                'phone'                 => $billing['phone'],
-                'email'                 => $billing['email'],
-            ]);
-            if ($result->success) {
-                $braintree_user_id = $result->customer->id;
-                if ($guest = $this->guest_data()) {
-                    $this->set_guest_data('braintree_customer_id', $braintree_user_id);
-                } else {
-                    update_user_meta( $current_user->ID, "braintree_customer_id", $braintree_user_id );
-                }
-            }
+            $braintree_user_id = $this->create_braintree_user();
         }
         return $braintree_user_id;
+    }
+
+    function create_braintree_user()
+    {
+        $billing = $this->get_billing_details();
+        $result = Braintree_Customer::create([
+            'firstName'             => $billing['first_name'],
+            'lastName'              => $billing['last_name'],
+            'company'               => $billing['company'],
+            'phone'                 => $billing['phone'],
+            'email'                 => $billing['email'],
+        ]);
+        if ($result->success) {
+            global $current_user;
+            $braintree_user_id = $result->customer->id;
+            if ($guest = $this->guest_data()) {
+                $this->set_guest_data('braintree_customer_id', $braintree_user_id);
+            } else {
+                update_user_meta( $current_user->ID, "braintree_customer_id", $braintree_user_id );
+            }
+            return $result->customer->id;
+        }
+        return false;
     }
 
     function guest_data()

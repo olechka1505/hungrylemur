@@ -1,9 +1,9 @@
 <?php
 /*
-	Plugin Name: FedEx WooCommerce Shipping Basic
-	Plugin URI: http://www.wooforce.com
-	Description: Obtain real time shipping rates via FedEx Shipping API. Upgrade to Premium version for Print label & Tracking features.
-	Version: 1.0.0
+	Plugin Name: FedEx WooCommerce Shipping with Print Label
+	Plugin URI: http://www.wooforce.com/shop
+	Description: Obtain real time shipping rates and Print shipping labels via FedEx Shipping API.
+	Version: 1.4.9
 	Author: WooForce
 	Author URI: http://www.wooforce.com
 */
@@ -57,12 +57,31 @@ if (in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', ge
 	class wf_fedEx_wooCommerce_shipping_setup {
 		
 		public function __construct() {
+			$this->wf_init();
 			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ) );
 			add_action( 'woocommerce_shipping_init', array( $this, 'wf_fedEx_wooCommerce_shipping_init' ) );
 			add_filter( 'woocommerce_shipping_methods', array( $this, 'wf_fedEx_wooCommerce_shipping_methods' ) );		
-			add_filter( 'admin_enqueue_scripts', array( $this, 'wf_fedex_scripts' ) );						
+			add_filter( 'admin_enqueue_scripts', array( $this, 'wf_fedex_scripts' ) );		
+			
+			$fedex_settings = get_option( 'woocommerce_'.WF_Fedex_ID.'_settings', array() );
+
+			if ( isset( $fedex_settings['freight_enabled'] ) && 'yes' === $fedex_settings['freight_enabled'] ) {
+				// Make the city field show in the calculator (for freight)
+				add_filter( 'woocommerce_shipping_calculator_enable_city', '__return_true' );
+
+				// Add freight class option for shipping classes (for freight)
+				if ( is_admin() ) {
+					include( 'includes/class-wf-fedex-freight-mapping.php' );
+				}
+			}			
 		}
 		
+		public function wf_init() {
+			include_once ( 'includes/class-wf-fedex-woocommerce-shipping-admin.php' );
+			include_once ( 'includes/class-wf-tracking-admin.php' );
+			include_once ( 'includes/wf-multi-address-shipping.php' );
+			include_once ( 'includes/class-wf-request.php' );
+		}
 		
 		public function wf_fedex_scripts() {
 			wp_enqueue_script( 'jquery-ui-sortable' );
@@ -71,7 +90,7 @@ if (in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', ge
 		public function plugin_action_links( $links ) {
 			$plugin_links = array(
 				'<a href="' . admin_url( 'admin.php?page=' . wf_get_settings_url() . '&tab=shipping&section=wf_fedex_woocommerce_shipping_method' ) . '">' . __( 'Settings', 'wf_fedEx_wooCommerce_shipping' ) . '</a>',
-				'<a href="http://www.wooforce.com/pages/contact/">' . __( 'Support', 'wf_fedEx_wooCommerce_shipping' ) . '</a>',
+				'<a href="http://support.wooforce.com/">' . __( 'Support', 'wf_fedEx_wooCommerce_shipping' ) . '</a>',
 			);
 			return array_merge( $plugin_links, $links );
 		}			

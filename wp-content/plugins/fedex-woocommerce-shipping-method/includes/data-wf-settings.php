@@ -3,6 +3,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+$freight_classes = include( 'data-wf-freight-classes.php' );
 $smartpost_hubs  = include( 'data-wf-smartpost-hubs.php' );
 $smartpost_hubs  = array( '' => __( 'N/A', 'wf-shipping-fedex' ) ) + $smartpost_hubs;
 
@@ -20,7 +21,7 @@ return array(
 		'title'           => __( 'Method Title', 'wf-shipping-fedex' ),
 		'type'            => 'text',
 		'description'     => __( 'This controls the title which the user sees during checkout.', 'wf-shipping-fedex' ),
-		'default'         => __( 'FedEx Basic Version', 'wf-shipping-fedex' ),
+		'default'         => __( 'FedEx', 'wf-shipping-fedex' ),
 		'desc_tip'        => true
 	),
 	'account_number'           => array(
@@ -61,17 +62,32 @@ return array(
 		'desc_tip'    => true,
 		'description'     => __( 'If this is a production API key and not a developer key, check this box.', 'wf-shipping-fedex' )
 	),
+	'dimension_weight_unit' => array(
+			'title'           => __( 'Dimension/Weight Unit', 'wwf-shipping-fedex' ),
+			'label'           => __( 'This unit will be passed to FedEx.', 'wf-shipping-fedex' ),
+			'type'            => 'select',
+			'default'         => 'LBS_IN',
+			'description'     => 'Product dimensions and weight will be converted to the selected unit and will be passed to FedEx.',
+			'options'         => array(
+				'LBS_IN'	=> __( 'Pounds & Inches', 'wf-shipping-fedex'),
+				'KG_CM' 	=> __( 'Kilograms & Centimeters', 'wf-shipping-fedex')			
+			)
+	),
     'packing_method'   => array(
 		'title'           => __( 'Parcel Packing Method', 'wf-shipping-fedex' ),
 		'type'            => 'select',
-		'default'         => 'per_item',
+		'default'         => '',
 		'class'           => 'packing_method',
 		'options'         => array(
-			'per_item'       => __( 'Default: Pack items individually', 'wf-shipping-fedex' )
+			'per_item'       => __( 'Default: Pack items individually', 'wf-shipping-fedex' ),
+			'box_packing'    => __( 'Recommended: Pack into boxes with weights and dimensions', 'wf-shipping-fedex' ),
 		),
-		'description'     => __( 'Determine how items are packed before being sent to FedEx. Upgrade to Premium version for Box packing feature.', 'wf-shipping-fedex' ),
+		'description'     => __( 'Determine how items are packed before being sent to FedEx.', 'wf-shipping-fedex' ),
 	),
-	'residential'      => array(
+	'boxes'  => array(
+		'type'            => 'box_packing'
+	),
+    'residential'      => array(
 		'title'           => __( 'Residential', 'wf-shipping-fedex' ),
 		'label'           => __( 'Default to residential delivery', 'wf-shipping-fedex' ),
 		'type'            => 'checkbox',
@@ -199,15 +215,13 @@ return array(
 	'freight'           => array(
 		'title'           => __( 'FedEx LTL Freight', 'wf-shipping-fedex' ),
 		'type'            => 'title',
-		'label'           => __( 'Upgrade to Premium version for Label Printing & Freight features.', 'wf-shipping-fedex' ),
 		'description'     => __( 'If your account supports Freight, we need some additional details to get LTL rates. Note: These rates require the customers CITY so won\'t display until checkout.', 'wf-shipping-fedex' ),
     ),
     'freight_enabled'      => array(
 		'title'           => __( 'Enable', 'wf-shipping-fedex' ),
 		'label'           => __( 'Enable Freight', 'wf-shipping-fedex' ),
 		'type'            => 'checkbox',
-		'default'         => 'no',
-		'description'     => 'Upgrade to Premium version for Label Printing & Freight features.'
+		'default'         => 'no'
 	),
 	'freight_number' => array(
 		'title'       => __( 'FedEx Freight Account Number', 'wf-shipping-fedex' ),
@@ -252,13 +266,13 @@ return array(
 		'description'     => sprintf( __( 'This is the default freight class for shipments. This can be overridden using <a href="%s">shipping classes</a>', 'wf-shipping-fedex' ), admin_url( 'edit-tags.php?taxonomy=product_shipping_class&post_type=product' ) ),
 		'type'            => 'select',
 		'default'         => '50',
-		'options'         => array(),
+		'options'         => $freight_classes
     ),
 	
 	'output_format'   => array(
 		'title'           => __( 'Label print size', 'wf-shipping-fedex' ),
 		'type'            => 'select',
-		'description'     => '8.5x11 indicates paper and 4x6 indicates thermal size. Upgrade to premium version for Print label feature.',
+		'description'     => '8.5x11 indicates paper and 4x6 indicates thermal size.',
 		'default'         => 'PAPER_7X4.75',
 		'options'         => array(
 			'PAPER_4X6' 						      	=> __( 'PAPER_4X6', 						'woocommerce-shipping-fedex'),
@@ -273,7 +287,7 @@ return array(
 	'image_type'   => array(
 		'title'           => __( 'Image Type', 'wf-shipping-fedex' ),
 		'type'            => 'select',
-		'description'     => '4x6 output format best fit with type PNG. Upgrade to premium version for Print label feature.',
+		'description'     => '4x6 output format best fit with type PNG',
 		'default'         => 'pdf',
 		'options'         => array(
 			'pdf' 						      	=> __( 'PDF', 						'woocommerce-shipping-fedex'),
@@ -285,7 +299,7 @@ return array(
 			'label'           => __( 'Add Tracking PIN to customer order notes', 'wf-shipping-canada-post' ),
 			'type'            => 'checkbox',
 			'default'         => 'no',
-			'description'     => 'Upgrade to premium version for Tracking feature.'
+			'description'     => ''
 		),	
 	'convert_currency' => array(
 		'title'           => __( 'Rates in base currency', 'wf-shipping-canada-post' ),
@@ -293,6 +307,109 @@ return array(
 		'type'            => 'checkbox',
 		'default'         => 'no',
 		'description'     => 'Ex: FedEx returned rates in USD and would like to convert to the base currency EUR. Convertion happens only FedEx API provide the exchange rate.'
+	),
+    'cod_collection_type'   => array(
+		'title'           => __( 'COD Collection Type', 'wf-shipping-fedex' ),
+		'type'            => 'select',
+		'description'     => 'Identifies the type of funds FedEx should collect upon shipment delivery.',
+		'default'         => 'ANY',
+		'options'         => array(
+			'ANY' 						      	=> __( 'ANY', 						'woocommerce-shipping-fedex'),
+			'CASH' 						      	=> __( 'CASH', 						'woocommerce-shipping-fedex'),
+			'GUARANTEED_FUNDS'   		      	=> __( 'GUARANTEED_FUNDS',			'woocommerce-shipping-fedex')
+			)				
+		)	,
+	'shipping_charges_payment_type'   => array(
+		'title'           => __( 'Shipping Charges Payment Type', 'wf-shipping-fedex' ),
+		'type'            => 'select',
+		'description'     => 'Select the payer for shipping and customs charges',
+		'default'         => 'SENDER',
+		'options'         => array(
+			'SENDER' 						      	=> __( 'Sender', 						'woocommerce-shipping-fedex'),
+			//'RECIPIENT' 						      	=> __( 'Recipient', 						'woocommerce-shipping-fedex'),
+			'THIRD_PARTY' 						      	=> __( 'Third Party', 						'woocommerce-shipping-fedex'),
+		)				
+	),
+	'shipping_payor_acc_no'           => array(
+		'title'           => __( 'Third Party Account Number', 'wf-shipping-fedex' ),
+		'type'            => 'text',
+		'default'         => '',
+		'description'     => 'Required if third party payment selected',
+    ),
+	'shipping_payor_cname'           => array(
+		'title'           => __( 'Payer Contact Person', 'wf-shipping-fedex' ),
+		'type'            => 'text',
+		'default'         => '',
+    ),
+	'shipping_payor_company'           => array(
+		'title'           => __( 'Payer Company', 'wf-shipping-fedex' ),
+		'type'            => 'text',
+		'default'         => '',
+    ),
+	'shipping_payor_phone'           => array(
+		'title'           => __( 'Payer Contact Phone Number', 'wf-shipping-fedex' ),
+		'type'            => 'text',
+		'default'         => '',
+    ),
+	'shipping_payor_email'           => array(
+		'title'           => __( 'Payer Contact Email', 'wf-shipping-fedex' ),
+		'type'            => 'text',
+		'default'         => '',
+    ),
+	'shipping_payor_address1'           => array(
+		'title'           => __( 'Payer Address Line 1', 'wf-shipping-fedex' ),
+		'type'            => 'text',
+		'default'         => '',
+    ),
+	'shipping_payor_address2'           => array(
+		'title'           => __( 'Payer Address Line 2', 'wf-shipping-fedex' ),
+		'type'            => 'text',
+		'default'         => '',
+    ),
+	'shipping_payor_city'           => array(
+		'title'           => __( 'Payer City', 'wf-shipping-fedex' ),
+		'type'            => 'text',
+		'default'         => '',
+    ),
+	'shipping_payor_state'           => array(
+		'title'           => __( 'Payer State Code', 'wf-shipping-fedex' ),
+		'type'            => 'text',
+		'default'         => '',
+    ),
+	'shipping_payor_postal_code'           => array(
+		'title'           => __( 'Payer Postal Code', 'wf-shipping-fedex' ),
+		'type'            => 'text',
+		'default'         => '',
+    ),
+	'shipping_payor_country'           => array(
+		'title'           => __( 'Payer Country', 'wf-shipping-fedex' ),
+		'type'            => 'select',
+		'default'         => '',
+		'options'		  => WC_Countries::get_countries()
+    ),
+	'shipping_customs_duties_payer'   => array(
+		'title'           => __( 'Customs Duties Payer', 'wf-shipping-fedex' ),
+		'type'            => 'select',
+		'description'     => 'Select customs duties payer',
+		'default'         => 'SENDER',
+		'options'         => array(
+			'SENDER' 						      	=> __( 'Sender', 						'woocommerce-shipping-fedex'),
+			'RECIPIENT' 						      	=> __( 'Recipient', 						'woocommerce-shipping-fedex'),
+		)				
+	),
+	'shipping_customs_shipment_purpose'   => array(
+		'title'           => __( 'Purpose Of Shipment', 'wf-shipping-fedex' ),
+		'type'            => 'select',
+		'description'     => 'Select purpose of shipment',
+		'default'         => 'SOLD',
+		'options'         => array(
+			'GIFT' 				=> __( 'Gift', 				'woocommerce-shipping-fedex'),
+			'NOT_SOLD' 			=> __( 'Not Sold', 			'woocommerce-shipping-fedex'),
+			'PERSONAL_EFFECTS' 	=> __( 'Personal effects', 	'woocommerce-shipping-fedex'),
+			'REPAIR_AND_RETURN' => __( 'Repair and return', 'woocommerce-shipping-fedex'),
+			'SENDER' 			=> __( 'Sample', 			'woocommerce-shipping-fedex'),
+			'SOLD' 				=> __( 'Sold', 	 			'woocommerce-shipping-fedex'),
+		)				
 	),
 	'debug'      => array(
 		'title'           => __( 'Debug Mode', 'wf-shipping-fedex' ),
