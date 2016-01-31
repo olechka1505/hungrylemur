@@ -46,7 +46,10 @@ checkoutApp.controller('CheckoutDetailsCtrl',['$scope','$http', '$location', '$s
     $scope.isPromo = false;
     $scope.shipping_loading = false;
     $scope.paymentData = {};
-    $scope.years = [2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025,2026,2027,2028,2029,2030];
+    $scope.years = [];
+    for (var i = new Date().getFullYear(); i < (new Date().getFullYear()) + 10; i++) {
+        $scope.years.push(i);
+    }
     $scope.month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
     $scope.errors = {
         number: false,
@@ -107,14 +110,6 @@ checkoutApp.controller('CheckoutDetailsCtrl',['$scope','$http', '$location', '$s
     };
     
     $scope.payment = function() {
-        if ($scope.detailsData.rates_error) {
-            return;
-        }
-        $scope.errors.number = typeof($scope.paymentData.number) == 'undefined' || !$scope.paymentData.number.length;
-        $scope.errors.month = typeof($scope.paymentData.month) == 'undefined' || !$scope.paymentData.month.length;
-        $scope.errors.year = typeof($scope.paymentData.year) == 'undefined' || !$scope.paymentData.year.length;
-        $scope.errors.cvc = typeof($scope.paymentData.cvc) == 'undefined' || !$scope.paymentData.cvc.length;
-
         if (!$scope.errors.number && !$scope.errors.month && !$scope.errors.year && !$scope.errors.cvc) {
             $scope.process = true;
             var client = new braintree.api.Client({clientToken: $scope.clientToken});
@@ -124,14 +119,16 @@ checkoutApp.controller('CheckoutDetailsCtrl',['$scope','$http', '$location', '$s
               expirationYear: $scope.paymentData.year,
               cvv: $scope.paymentData.cvc,
             }, function (err, nonce, card) {
-                var promise = CheckoutService.request('payment', {nonce: nonce, deliveryData: $scope.deliveryData});
-                promise.then(function(response){
-                    if (response.status !== 500) {
-                        $state.go('confirmOrder');
-                    } else {
-                        $scope.process = false;
-                    }
-                })
+                if (!err) {
+                    var promise = CheckoutService.request('payment', {nonce: nonce, card: card});
+                    promise.then(function(response){
+                        if (response.status !== 500) {
+                            $state.go('confirmOrder');
+                        } else {
+                            $scope.process = false;
+                        }
+                    })
+                }
             });
         }
     }

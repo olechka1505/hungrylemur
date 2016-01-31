@@ -13,8 +13,9 @@ Tags: FOR_WP_THEME_SEARCH_IF_PUBLISHED
 @import url('css/newstyle.css');
 @import url(https://fonts.googleapis.com/css?family=Montserrat);
 
+
 .main-home-video2 { 
-    background-image:url(../../../wp-content/uploads/2016/01/MGG_DETAIL-HOME.jpg);
+    background-image:url(../../../wp-content/uploads/2016/01/MGG_DETAIL-HOME-2.jpg);
     /*background-position: center bottom;*/
 	background-position: center top;
 	background-size: cover;
@@ -383,6 +384,15 @@ ul#menu-main-menu-1 li { line-height: 30px; }
 }
 
 /* Cart */
+/* coupon */
+.cart_totals .coupon { float: right; }
+.cart_totals .cart-discount .amount { display: none; }
+.cart-total tbody { max-width: 500px; float: right; }
+
+tr.cart-subtotal { float: right; text-align: right; }
+tr.cart-discount { text-align: right; width: 100%; float: right; }
+tr.cart-discount td { max-width: 100px; }
+ 
 div.cart-quantity { display: none; }
 .woocommerce a.button.alt {  
 	border: solid 1px #777777 !important; 

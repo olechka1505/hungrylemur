@@ -62,13 +62,13 @@ get_header( 'shop' ); ?>
 	
 	?>
   <div class="slik_product_slider">
-  	<div><a href="<?php the_permalink()?>"><img src="<?=$url?>" width="70%" height="200" style="margin:0px auto;"></a></div>
+  	<div><a href="<?php the_permalink()?>"><img src="<?php echo $url; ?>" width="70%" height="200" style="margin:0px auto;"></a></div>
     <?php
     foreach( $attachment_ids as $attachment_id ) 
 	{
 	  $image_link = wp_get_attachment_url( $attachment_id );
 	  ?>
-      <div><a href="<?php the_permalink()?>"><img src="<?=$image_link?>" width="70%" height="200" style="margin:0px auto;"></a></div>
+      <div><a href="<?php the_permalink()?>"><img src="<?php echo $image_link; ?>" width="70%" height="200" style="margin:0px auto;"></a></div>
       <?php
 		}
 		?>

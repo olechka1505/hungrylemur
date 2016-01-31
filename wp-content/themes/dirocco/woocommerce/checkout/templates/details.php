@@ -38,33 +38,35 @@
             <h3 class="checkout-form-title no-padding-left">PAYMENT DETAILS</h3>
         </div>
 
-        <div class="col-md-8 col-xs-12 no-padding">
-            <div class="form-group col-md-6 col-xs-12 no-padding-left">
-                <input data-braintree-name="number" ng-class="{'error-field': errors.number}" type="text" maxlength="16" ng-model="paymentData.number" class="form-control" placeholder="Credit Card">
+        <form name="paymentForm">
+            <div class="col-md-8 col-xs-12 no-padding">
+                <div class="form-group col-md-6 col-xs-12 no-padding-left">
+                    <input name="cardNumber" cc-eager-type cc-number data-braintree-name="number" ng-class="{'error-field': paymentForm.cardNumber.$viewValue.length && paymentForm.cardNumber.$invalid}" type="text" maxlength="16" ng-model="paymentData.number" class="form-control" placeholder="Credit Card">
+                </div>
+                <div class="form-group col-md-2 col-xs-12 no-padding-left" style="width: 85px;">
+                    <select name="cardExpMonth" cc-exp-month data-braintree-name="expiration_month" ng-class="{'error-field': (paymentForm.cardCVC.$viewValue.length || paymentForm.cardNumber.$viewValue.length) && paymentForm.cardExpMonth.$invalid}"  ng-model="paymentData.month" class="form-control">
+                        <option value="">Month</option>
+                        <option value="{{key + 1}}" ng-repeat="(key, value) in month">{{value}}</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-2 col-xs-12 no-padding-left" style="width: 75px;">
+                    <select name="cardExpYear" cc-exp-year data-braintree-name="expiration_year" ng-class="{'error-field': (paymentForm.cardCVC.$viewValue.length || paymentForm.cardNumber.$viewValue.length) && paymentForm.cardExpYear.$invalid}" ng-model="paymentData.year" class="form-control">
+                        <option value="">Year</option>
+                        <option value="{{year - 2000}}" ng-repeat="year in years">{{year}}</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-2 col-xs-12 no-padding-left" style="width: 75px;">
+                    <input cc-cvc cc-type="paymentForm.cardNumber.$ccType" name="cardCVC" data-braintree-name="cvv" ng-class="{'error-field': paymentForm.cardCVC.$viewValue.length && paymentForm.cardCVC.$invalid}"  type="text" maxlength="4" ng-model="paymentData.cvc" class="form-control" placeholder="CVC">
+                </div>
             </div>
-            <div class="form-group col-md-2 col-xs-12 no-padding-left" style="width: 85px;">
-                <select data-braintree-name="expiration_month" ng-class="{'error-field': errors.month}"  ng-model="paymentData.month" class="form-control">
-                    <option value="">Month</option>
-                    <option value="{{key + 1}}" ng-repeat="(key, value) in month">{{value}}</option>
-                </select>
-            </div>
-            <div class="form-group col-md-2 col-xs-12 no-padding-left" style="width: 75px;">
-                <select data-braintree-name="expiration_year" ng-class="{'error-field': errors.year}" ng-model="paymentData.year" class="form-control">
-                    <option value="">Year</option>
-                    <option value="{{year}}" ng-repeat="year in years">{{year}}</option>
-                </select>
-            </div>
-            <div class="form-group col-md-2 col-xs-12 no-padding-left" style="width: 75px;">
-                <input data-braintree-name="cvv" ng-class="{'error-field': errors.cvc}"  type="text" maxlength="4" ng-model="paymentData.cvc" class="form-control" placeholder="CVC">
-            </div>
-        </div>
+        </form>
 
         <div class="separator"></div>
         <div class="separator"></div>
 
         <div class="col-xs-12 text-right">
             <a ui-sref="billing" class="btn btn-checkout">GO BACK</a>
-            <input ng-class="{disabled: detailsData.rates_error}" type="button" ng-click="payment()" class="btn btn-checkout" value="REVIEW ORDER">
+            <input ng-disabled="detailsData.rates_error || paymentForm.cardCVC.$invalid || paymentForm.cardNumber.$invalid || paymentForm.cardExpMonth.$invalid || paymentForm.cardExpYear.$invalid" type="button" ng-click="payment()" class="btn btn-checkout" value="REVIEW ORDER">
         </div>
     </div>
 </div>

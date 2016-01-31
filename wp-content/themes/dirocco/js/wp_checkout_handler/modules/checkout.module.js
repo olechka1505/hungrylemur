@@ -1,1 +1,1 @@
-checkoutApp = angular.module('checkoutApp', ['ui.router', 'ui.bootstrap', 'angular.chosen', 'ngSanitize']);
+checkoutApp = angular.module('checkoutApp', ['ui.router', 'ui.bootstrap', 'angular.chosen', 'ngSanitize', 'credit-cards']);

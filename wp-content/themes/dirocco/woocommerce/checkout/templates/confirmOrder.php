@@ -41,7 +41,7 @@
             <div ng-if="confirmData.subtotal" class="text-right"><div ng-bind-html="'SUBTOTAL: ' + confirmData.subtotal"></div>
             <div class="text-right">TAX: {{confirmData.tax | currency}}</div>
             <div ng-if="confirmData.shipping_total" class="text-right">SHIPPING: {{confirmData.shipping_total | currency}}</div>
-            <div ng-if="confirmData.coupons_total" class="text-right">COUPONS: -{{confirmData.coupons_total | currency}}</div>
+<!--            <div ng-if="confirmData.coupons_total" class="text-right">COUPONS: -{{confirmData.coupons_total | currency}}</div>-->
             <div ng-if="confirmData.total" class="text-right">TOTAL: {{confirmData.total | currency}}</div>
 
             <div class="separator"></div>

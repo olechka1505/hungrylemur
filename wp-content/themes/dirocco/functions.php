@@ -22,6 +22,48 @@ require_once ('functions/wp_bootstrap_navwalker.php');
 require_once ('functions/wp_checkout_handler.php');
 
 
+/**
+
+ * Show the cart subtotal before (striked out) and after coupon discount
+
+ * @uses wpq_9522_discount()
+
+ * @link http://www.wpquestions.com/question/showChronoLoggedIn/id/9522
+
+ */
+
+function wpq_9522_woocommerce_cart_subtotal(  $cart_subtotal, $compound, $obj  ){
+
+
+    $t = 0;
+
+    foreach ( $obj->cart_contents as $key => $product ) : 
+
+        $product_price = $product['line_total'];
+
+        foreach ( WC()->cart->get_coupons( 'order' ) as $code => $coupon ) : 
+
+            if( in_array( $product['product_id'], $coupon->product_ids ) 
+
+                || in_array( $coupon->discount_type, array( 'percent_cart', 'fixed_cart' ) ) ):
+
+                $product_price  = wpq_9522_discount( $product['line_total'], $coupon->discount_type, $coupon->amount ); 
+
+            endif;
+
+        endforeach; 
+
+        $t += $product_price;
+
+    endforeach; 
+
+	
+
+    return ( $t > 0 ) ? sprintf( '<s>%s</s> %s', $cart_subtotal, wc_price( $t ) ) : $cart_subtotal ;
+
+}
+
+add_filter( 'woocommerce_cart_subtotal', 'wpq_9522_woocommerce_cart_subtotal', 99, 3 );
 
 /* This is the length of the excerpt -- Used for homepage slider */
 function custom_excerpt_length( $length ) {

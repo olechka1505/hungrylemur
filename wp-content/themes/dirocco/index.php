@@ -46,7 +46,7 @@ get_header(); ?>
 	<div id="fullpage">
 		<div class="section slider2" style="height: 100%;">
 			<div id="main-home-video2" class="main-home-video2">
-				<img src="../../../wp-content/uploads/2016/01/MGG_DETAIL-HOME.jpg" alt="">
+				<img src="../../../wp-content/uploads/2016/01/MGG_DETAIL-HOME-2.jpg" alt="">
 				<!-- <img src="http://dev.hungrylemur.com/wp-content/uploads/2015/09/MGG_FRONT.jpg"/> -->
 			</div>
 
